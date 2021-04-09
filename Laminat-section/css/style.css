@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+ body {
+    font-family: 'Nunito Sans', sans-serif !important;
+    padding: 0px;
+    margin: 0px;
+    font-size: 16px;
+}
+img {
+    max-width: 100%;
+}
+.container {
+    max-width: 1170px;
+}
+.double_laminal-sec {
+    width: 100%;
+    background: #242424;
+    margin: 22px 0px;
+}
+.double_laminal-sec .col-triple {
+    border: 15px solid #1869ff;
+    background: white;
+    transform: scale(1.1);
+    padding: 55px 15px;
+    text-align: center;
+}
+.double_laminal-sec .col-triple h3 {
+    font-size: 22px;
+    color: #404040;
+    font-weight: 700;
+    font-family: "Nunito Sans";
+    margin-bottom: 50px;
+}
+.double_laminal-sec .call {
+    border: 3px solid #1869ff;
+    max-width: 328px;
+    padding: 35px 20px;
+    text-align: center;
+}
+.double_laminal-sec .call .call_text {
+    border-top: 1px solid #6c6c6c;
+    margin-top: 25px;
+    padding-top: 25px;
+}
+.double_laminal-sec .call_text a {
+    font-size: 34px;
+    color: #ececec;
+    font-weight: 900;
+    text-decoration: none;
+    margin: 0px;
+}
+.double_laminal-sec .call_text h4 {
+    font-size: 20px;
+    color: #ffffff;
+    font-weight: 600;
+    font-style: italic;
+    margin-bottom: 5px;
+}
+.double_laminal-sec .row {
+    align-items: center;
+}
+.double_laminal-sec .custom_laser {
+    background-image: url(../images/custom-design.png);
+    max-width: 330px;
+    min-height: 270px;
+    background-size: cover;
+    margin: 0px 0px auto auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #1869ff;
+    padding: 15px;
+}
+.double_laminal-sec .custom_laser h4 {
+    font-size: 22px;
+    color: #ffffff;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+}
+.double_laminal-sec .call_text a:hover {
+    color: #006afa;
+}

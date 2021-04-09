@@ -1,0 +1,37 @@
+
+@media only screen and (max-width: 991px) {
+	.sec-pd {
+		padding: 40px 0px;
+	}
+}
+@media only screen and (max-width: 767px) {
+	.boats-sec {
+		padding-right: 15px;
+		padding-left: 15px;
+	}
+	.boats-sec .space_tb {
+		margin: 7.5px 0px;
+	}
+	.boats-sec .boat-caption img {
+    max-width: 150px;
+    margin-bottom: 10px;
+   }
+   .boats-sec .boat-boxs {
+    border-right: 0px solid #fff;
+  }
+}
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+	.boats-sec h4 {
+		font-size: 18px;
+	}
+	.boats-sec .boat-caption img {
+    margin-bottom: 10px;
+    max-width: 140px;
+    }
+}
+@media only screen and (min-width: 1025px) and (max-width: 1199px) {
+	.boats-sec .boat-caption img {
+    margin-bottom: 10px;
+    max-width: 150px;
+    }
+}

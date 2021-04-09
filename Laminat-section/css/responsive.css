@@ -1,0 +1,49 @@
+@media only screen and (max-width: 767px) {
+	.double_laminal-sec {
+		margin: 0px;
+		padding: 40px 0px;
+	}
+	.double_laminal-sec .space_tb {
+		margin: 7.5px 0px;
+	}
+	.double_laminal-sec .col-triple {
+		transform: none;
+	}
+	.double_laminal-sec .call_text a {
+		font-size: 26px;
+	}
+	.double_laminal-sec .call_text h4 {
+		font-size: 18px;
+	}
+	.double_laminal-sec .custom_laser {
+		margin: auto;
+	}
+	.double_laminal-sec .call {
+		margin: auto;
+	}
+}
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+	.double_laminal-sec .call {
+		padding: 10px 20px;
+	}
+	.double_laminal-sec .call_text a {
+		font-size: 24px;
+	}
+	.double_laminal-sec .call_text h4 {
+		font-size: 14px;
+	}
+	.double_laminal-sec .custom_laser h4 {
+		font-size: 19px;
+	}
+	.double_laminal-sec .col-triple {
+		padding: 30px 10px;
+		border: 7px solid #1869ff;
+	}
+	.double_laminal-sec .col-triple h3 {
+		font-size: 19px;
+		margin-bottom: 30px;
+	}
+	.double_laminal-sec .custom_laser {
+		min-height: 210px;
+	}
+}
