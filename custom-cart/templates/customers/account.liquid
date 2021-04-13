@@ -1,0 +1,122 @@
+
+<!-- /templates/customers/account.liquid -->
+{% layout 'theme-condensed' %}
+{% comment %}
+
+  For all available customer liquid tags:
+    - http://docs.shopify.com/themes/liquid-variables/customer
+
+{% endcomment %}
+
+<div class="grid page__account">
+  {% include 'account-tab-nav' %}
+
+  <div class="grid__item one-whole large--two-thirds push--large--one-sixth">
+    {% comment %}
+      If we have past orders, loop through each one
+    {% endcomment %}
+    {% paginate customer.orders by 20 %}
+      {% if customer.orders.size != 0 %}
+
+        <div class="table-wrap" style="margin-bottom: 40px">
+          <h2>{{ 'customer.orders.title' | t }}</h2>
+          <table class="full">
+            <tbody>
+              {% for order in customer.orders %}
+              <p>{{ customer.note }}</p>
+         {% comment %}     <form action="/customer/{{customer.id}}/" method="post">
+                <input type="text">
+                <input type="submit">
+              </form>{% endcomment %}
+                <tr data-order-link="{{ order.customer_url }}">
+                  <td>
+                    <span class="order-name">{{ order.name }}</span>
+                    <br>
+                    {{ order.created_at | date: format: 'numeric_day_month_year' }}
+                  </td>
+                  <td>
+                    <i class="icon-calendar-outline"></i>
+                    {{ order.attributes.date | date: format: 'numeric_day_month_year' }}
+                    <br>
+                    <i class="icon-plane-outline"></i>
+                    {{ order.attributes.flight_number }}
+                  </td>
+                  <td class="medium-down--hide">{{ order.financial_status_label }}/{{ order.fulfillment_status_label }}</td>
+                  <td class="text-right">{{ order.total_price | money }}</td>
+                  <td class="text-right">
+                    <p class="download"  data-href="{{ order.customer_url }}?action=telecharger" ><i class="icon-order-details"></i></p>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      {% else %}
+
+        <p>{{ 'customer.orders.none' | t }}</p>
+
+      {% endif %}
+      {% if paginate.pages > 1 %}
+        <hr>
+        <div class="pagination">
+          {{ paginate | default_pagination | replace: '<ly-as-6590256>« Previous</ly-as-6590256>', '←' | replace: '<ly-as-6590257>Next »</ly-as-6590257>', '→' }}
+        </div>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+
+<!--   <div class="grid__item one-third medium-down--one-whole">
+    <h2 class="h4">{{ 'customer.account.details' | t }}</h2>
+
+    <h3 class="h5">{{ customer.name }}</h3>
+
+    {% if customer.default_address != nil %}
+      <p>
+      {{ customer.default_address.address1 }}<br>
+
+      {% if customer.default_address.address2 != "" %}
+        {{ customer.default_address.address2 }}<br>
+      {% endif %}
+
+      {% if customer.default_address.city != "" %}
+        {{ customer.default_address.city }}<br>
+      {% endif %}
+
+      {% if customer.default_address.province_code != "" %}
+        {{ customer.default_address.province_code | upcase }}<br>
+      {% endif %}
+
+      {% if customer.default_address.zip != "" %}
+        {{ customer.default_address.zip | upcase }}<br>
+      {% endif %}
+
+      {% if customer.default_address.country != "" %}
+        {{ customer.default_address.country }}<br>
+      {% endif %}
+
+      {% if customer.default_address.phone != "" %}
+        {{ customer.default_address.phone }}
+      {% endif %}
+      </p>
+
+    {% endif %}
+
+    <p><a href="/account/addresses">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a></p>
+  </div> -->
+
+</div>
+
+<script type="text/javascript">
+  $(function() {
+    $('[data-order-link]').on('click', function(event) {
+      var link = $(event.currentTarget).data('order-link');
+      window.location.href = link;
+    });
+    $('.download').on('click', function(event) {
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      window.location.href = $('.download').data('href');
+    })
+  })
+</script>

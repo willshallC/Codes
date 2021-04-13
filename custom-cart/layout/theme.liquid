@@ -1,0 +1,43 @@
+
+  {{ content_for_header }}
+	
+	
+	
+	
+	
+	
+	
+	
+{% comment %}	
+
+
+
+
+
+
+
+{% endcomment %}
+
+
+ 
+
+{% include 'theme-post-header-hook' %}
+
+<div class="header--background">
+  {% include 'header' %}
+</div>
+
+<main class="wrapper main-content" role="main">
+
+  
+  {% if request.path == '/challenge' %}
+    {% include 'challenge' %}
+  {% else %}
+    {{ content_for_layout }}
+  {% endif %}
+
+</main>
+
+{% include 'footer' %}
+
+{% include 'theme-post-content' %}

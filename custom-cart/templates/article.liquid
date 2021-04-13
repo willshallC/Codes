@@ -1,0 +1,241 @@
+
+<!-- /templates/article.liquid -->
+{% layout 'theme-condensed' %}
+
+{% comment %}
+
+  Comments will not appear right after they are submitted, either to be checked for spam
+  or to await moderation. When a comment is submitted, the browser is redirected to a page
+  that includes the new comment id in its URL.
+    Example: http://shopname.myshopify.com/blogs/news/2022072-my-post?comment=3721372
+
+  More information:
+    - http://docs.shopify.com/themes/liquid-variables/comment
+
+{% endcomment %}
+
+{% assign number_of_comments = article.comments_count %}
+
+{% comment %}
+  If a comment was just submitted and it has no blank fields, we have an extra comment to count.
+{% endcomment %}
+{% if comment and comment.created_at %}
+  {% assign number_of_comments = article.comments_count | plus: 1 %}
+{% endif %}
+
+<div class="section-header--bar">
+  <header class="section-header">
+    <div class="section-header__left medium-down--hide">
+      <span>{{ 'blogs.article.share' | t }}</span>
+      <ul>
+        {% assign share_channels_list = 'facebook,twitter,pinterest' %}
+        {% assign share_channels = share_channels_list | split: ',' %}
+        {% for share in share_channels %}
+          <li>
+            <a data-share-{{ share }} href="#">
+              <i class="icon-{{ share }}-outline-circled-sm">
+                <span class="visually-hidden">{{ share | capitalize }}</span>
+              </i>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="section-header__center">
+      {% capture category %}<strong>{{ article.tags.first }}</strong>{% endcapture %}
+      {% capture date %}<time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'day_month_year' }}</time>{% endcapture %}
+      <p>{{ 'blogs.article.category_on_date_html' | t: category: category, date: date }}</p>
+    </div>
+    <div class="section-header__right medium-down--hide">
+      <a href="{{ blog.url }}">
+        <i class="icon-right-open"></i><span>{{ 'blogs.article.return' | t }}</span>
+      </a>
+    </div>
+  </header>
+</div>
+
+<article itemscope itemtype="http://schema.org/Article">
+
+  <div class="grid">
+
+    <div class="grid__item one-whole large--two-thirds push--large--one-sixth">
+      <h1>{{ article.title}}</h1>
+    </div>
+
+    <div class="grid__item one-whole large--two-thirds push--large--one-sixth">
+      <div class="article__featured-image" itemprop="articleImage">
+        {{ article | img_url: '1024x1024' | img_tag: article.title}}
+      </div>
+
+      <div class="rte" itemprop="articleBody">
+        {{ article.content}}
+      </div>
+    </div>
+  </div>
+
+</article>
+
+{% comment %}
+  Create links to the next and previous articles, if available.
+  TODO: Should be articles related by tag
+{% endcomment %}
+{% if blog.next_article or blog.previous_article %}
+  <hr>
+  <h3>{{ 'blogs.article.related' | t }}</h3>
+  <p class="clearfix">
+    {% if blog.previous_article %}
+      <span class="left">
+        &larr; {{ 'blogs.article.older_post' | t | link_to: blog.previous_article }}
+      </span>
+    {% endif %}
+    {% if blog.next_article %}
+      <span class="right">
+        {{ 'blogs.article.newer_post' | t | link_to: blog.next_article }} &rarr;
+      </span>
+    {% endif %}
+  </p>
+{% endif %}
+
+{% if blog.comments_enabled? %}
+  <hr>
+
+  <h2 class="h3">{% if number_of_comments  == 0 %}{{ 'blogs.comments.with_count' | t: count: number_of_comments }} {% endif %}</h2>
+
+  <hr>
+
+  {% comment %}
+    Just like blog.liquid page, define how many comments should be on each page.
+  {% endcomment %}
+  {% paginate article.comments by 5 %}
+    {% comment %}
+      #comments is required, it is used as an anchor link by Shopify.
+    {% endcomment %}
+    <div id="comments">
+
+      {% if comment and comment.created_at %}
+        <p class="note form-success">
+          {% if blog.moderated? %}
+            {{ 'blogs.comments.success_moderated' | t }}
+          {% else %}
+            {{ 'blogs.comments.success' | t }}
+          {% endif %}
+        </p>
+      {% endif %}
+
+      {% if number_of_comments > 0 %}
+        <ul class="no-bullets">
+          {% comment %}
+            If a comment was just submitted with no blank field, show it.
+          {% endcomment %}
+          {% if comment and comment.created_at %}
+            <li id="{{ comment.id }}" class="comment first{% if article.comments_count == 0 %} last{% endif %}">
+              {% include 'comment' %}
+            </li>
+          {% endif %}
+
+          {% comment %}
+            Showing the rest of the comments.
+          {% endcomment %}
+          {% for comment in article.comments %}
+            <li id="{{ comment.id }}" class="comment{% unless number_of_comments > article.comments_count %}{% if forloop.first %} first{% endif %}{% endunless %}{% if forloop.last %} last {% endif %}">
+              {% include 'comment' %}
+            </li>
+
+            {% unless forloop.last %}
+              <li><hr></li>
+            {% endunless %}
+          {% endfor %}
+        </ul>
+
+        {% if paginate.pages > 1 %}
+          <hr>
+          <div class="pagination">
+            {{ paginate | default_pagination | replace: '&laquo; <ly-as-6590667>Previous</ly-as-6590667>', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}
+          </div>
+        {% endif %}
+
+        <hr>
+
+      {% endif %}
+
+      <div class="form-vertical">
+        {% form 'new_comment', article %}
+          <h2 class="h3">{{ 'blogs.comments.title' | t }}</h2>
+
+          {{ form.errors | default_errors }}
+
+          <div class="grid">
+
+            <div class="grid__item large--one-half">
+              <label for="CommentAuthor" class="hidden-label">{{ 'blogs.comments.name' | t }}</label>
+              <input type="text" name="comment[author]" id="CommentAuthor" class="input-full{% if form.errors contains 'author' %} error{% endif %}" placeholder="{{ 'blogs.comments.name' | t }}" value="{{ form.author }}" autocapitalize="words">
+
+              <label for="CommentEmail" class="hidden-label">{{ 'blogs.comments.email' | t }}</label>
+              <input type="email" name="comment[email]" id="CommentEmail" class="input-full{% if form.errors contains 'email' %} error{% endif %}" placeholder="{{ 'blogs.comments.email' | t }}" value="{{ form.email }}" autocorrect="off" autocapitalize="off">
+            </div>
+
+            <div class="grid__item large--one-half">
+              <label for="CommentBody" class="hidden-label">{{ 'blogs.comments.message' | t }}</label>
+              <textarea name="comment[body]" id="CommentBody" class="input-full{% if form.errors contains 'body' %} error{% endif %}" placeholder="{{ 'blogs.comments.message' | t }}">{{ form.body }}</textarea>
+            </div>
+
+          </div>
+
+          {% if blog.moderated? %}
+            <p>{{ 'blogs.comments.moderated' | t }}</p>
+          {% endif %}
+
+          <input type="submit" class="btn" value="{{ 'blogs.comments.post' | t }}">
+        {% endform %}
+      </div>
+
+    </div>
+  {% endpaginate %}
+{% endif %}
+
+{% capture absolute_url %}{{ {{
+shop.url }}{{ article.url }}{% endcapture %}
+{% capture encoded_url %}{{ absolute_url | url_encode }}{% endcapture %}
+{% capture encoded_title %}{{ article.title | url_encode}}{% endcapture %}
+{% capture encoded_image_url %}{{ article.image.src | img_url: '1024x1024' | url_encode }}{% endcapture %}
+<script type="text/javascript">
+  function openPopup(url) {
+    var dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : screen.left;
+    var dualScreenTop = window.screenTop !== undefined ? window.screenTop : screen.top;
+
+    var w = window.innerWidth / 2;
+    var h = window.innerHeight / 2;
+
+    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+    var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+    var top = ((height / 3) - (h / 3)) + dualScreenTop;
+
+    var newWindow = window.open(url, '{{ {{
+shop.name }}', 'scrollbars=yes,width=' + w + ',height=' + h + ',top=' + top + ',left=' + top);
+
+    // Puts focus on the newWindow
+    if (newWindow && newWindow.focus) {
+      newWindow.focus();
+    }
+  }
+
+  $(function() {
+    $('[data-share-facebook]').on('click', function(event) {
+      event.preventDefault();
+      openPopup('https://www.facebook.com/sharer/sharer.php?u={{ encoded_url }}');
+      console.log(decodeURIComponent('{{ encoded_url }}'));
+    });
+
+    $('[data-share-twitter]').on('click', function(event) {
+      event.preventDefault();
+      openPopup('https://twitter.com/intent/tweet?text={{ encoded_title }}&url={{ encoded_url }}')
+    });
+
+    $('[data-share-pinterest]').on('click', function(event) {
+      event.preventDefault();
+      openPopup('https://pinterest.com/pin/create/button/?url={{ encoded_url }}&media={{ encoded_image_url }}&description={{ encoded_title }}')
+    })
+  });
+</script>

@@ -1,0 +1,42 @@
+<div class="badges-cont">
+  <div class="badges">
+
+    {% if product.tags contains 'label||Bio' %}
+      <img src="https://cdn.shopify.com/s/files/1/0066/7670/9461/files/label-bio.png?665" alt="Produit Bio" class="badge">
+    {% endif %}
+
+    {% if product.tags contains 'allergene||Gluten' %}
+      <img src="https://cdn.shopify.com/s/files/1/0066/7670/9461/files/label-gluten.png?762" alt="Contient du gluten" class="badge">
+    {% endif %}
+
+    {% if product.tags contains 'allergene||Lactose' %}
+      <img src="https://cdn.shopify.com/s/files/1/0066/7670/9461/files/label-lactose.png?762" alt="Contient du lactose" class="badge">
+    {% endif %}
+
+    {% if product.tags contains 'allergene||Arachide' %}
+      <img src="https://cdn.shopify.com/s/files/1/0066/7670/9461/files/label-nuts.png?762" alt="Contient de l'arachide" class="badge">
+    {% endif %}
+
+  </div>
+
+  <div class="tooltiped"></div>
+</div>
+<script>
+  $('.tooltiped').on("touchstart", function(){$(this).hide()})
+  $('.badges img')
+  .on("mouseenter", function() {
+    var $allerg = $(this).attr('alt');
+    $('.tooltiped').text($allerg);
+    $('.tooltiped').show();
+  })
+  .on("mouseleave", function() {
+    $('.tooltiped').hide();
+  })
+  .on("touchstart", function() {
+    $('.tooltiped').hide();
+    var $allerg = $(this).attr('alt');
+    $('.tooltiped').text($allerg);
+    $('.tooltiped').show();
+  });
+
+</script>

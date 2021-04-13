@@ -1,0 +1,66 @@
+
+<!-- /templates/index.liquid -->
+{% layout 'theme-index' %}
+{% comment %}
+
+  This is the homepage of your site.
+
+  More info on global variables (available on all templates):
+    - http://docs.shopify.com/themes/liquid-variables/global
+{% endcomment %}
+
+{% comment %}
+  Use class grid-uniform to have evenly sized columns clear
+  each other properly at each breakpoint.
+{% endcomment %}
+
+<h2 class="text-center">{{ 'homepage.sections.title' | t }}</h2>
+
+<div class="grid--full">
+  <div class="grid__item one-whole large--one-half push--large--one-sixth">
+    <input type="text" name="location" placeholder="{{ 'homepage.sections.location_prompt' | t }}" autocomplete="off" value=""></input>
+    <label for="location">{{ 'homepage.sections.location_prompt' | t }}</label>
+    <i class="icon-pin-outline"></i>
+    <div class="no-locations-message--wrapper">
+      <div data-no-locations-message class="no-locations-message">
+        <p>{{ 'homepage.sections.no_locations' | t }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="grid__item one-half push--one-quarter large--one-sixth push--large--one-sixth">
+    <button data-href="/collections" class="btn" name="order" onclick="orderPressed();">
+      {{ 'homepage.sections.order' | t }}
+    </button>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var locations = {{ settings.locations | json }};
+    var locationNames = $.map(locations, function(location) {
+      return [location.name, ' (', location.code.toUpperCase(), ') – ', location.city_country].join('');
+    });
+    var $orderButton = $('button[name=order]');
+
+    // $('input[name="location"]').val(locationNames[0]);
+    $('input[name="location"]').on('focus', function(event) {
+      //force first location
+      $(event.target).val("");
+      $('[data-no-locations-message]').show();
+    });
+
+    // $('input').on('blur', function(event) {
+    //   // $('[data-no-locations-message]').hide();
+    // });
+
+    // $('input').on('keydown', function(event) {
+    //   event.preventDefault();
+    // });
+
+    // $('input[name="location"]').val(locationNames[0]);
+
+    orderPressed = function() {
+      document.location.href = $orderButton.data('href');
+    };
+  });
+</script>

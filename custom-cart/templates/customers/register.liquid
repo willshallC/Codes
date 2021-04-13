@@ -1,0 +1,56 @@
+
+<!-- /templates/customers/register.liquid -->
+{% layout 'theme-condensed' %}
+<div class="grid page__account">
+
+  <div class="grid__item one-whole large--two-thirds push--large--one-sixth">
+    <h1 class="no-rte">{{ 'customer.register.title' | t }}</h1>
+    <p>{{ 'customer.register.subtitle' | t }}</p>
+  </div>
+
+  <div class="grid__item one-whole large--one-half push--large--one-quarter">
+    <div class="form-vertical">
+      {% form 'create_customer' %}
+
+        {{ form.errors | default_errors }}
+
+        <label for="FirstName" class="hidden-label">{{ 'customer.register.first_name' | t }}</label>
+        <input type="text" name="customer[first_name]" id="FirstName" class="input-full" placeholder="{{ 'customer.register.first_name' | t }}" {% if form.first_name %}value="{{ form.first_name }}"{% endif %} autocapitalize="words" autofocus>
+
+        <label for="LastName" class="hidden-label">{{ 'customer.register.last_name' | t }}</label>
+        <input type="text" name="customer[last_name]" id="LastName" class="input-full" placeholder="{{ 'customer.register.last_name' | t }}" {% if form.last_name %}value="{{ form.last_name }}"{% endif %} autocapitalize="words">
+
+        <label for="Email" class="hidden-label">{{ 'customer.register.email' | t }}</label>
+        <input type="email" name="customer[email]" id="Email" class="input-full{% if form.errors contains 'email' %} error{% endif %}" placeholder="{{ 'customer.register.email' | t }}" {% if form.email %} value="{{ form.email }}"{% endif %} autocorrect="off" autocapitalize="off">
+
+        <label for="CreatePassword" class="hidden-label">{{ 'customer.register.password' | t }}</label>
+        <input type="password" name="customer[password]" id="CreatePassword" class="input-full{% if form.errors contains 'password' %} error{% endif %}" placeholder="{{ 'customer.register.password' | t }}">
+
+        <p>
+          <input type="submit" value="{{ 'customer.register.submit' | t }}" disabled class="btn btn--full disabled">
+        </p>
+        <p style="line-height: 0px;">
+          <input type="checkbox" name="agreed">
+          <label for="agreed">J'accepte explicitement l'utilisation de mon téléhone et/ou adresse email à l'usage exclusif de Fly Me to the Food. </label>
+
+        </p>
+        <script>
+          $('input[name="agreed"]').on("change", function() {
+            if ($(this).is(':checked')) {
+              $('.register input[type="submit"]').removeClass('disabled')
+              $('.register input[type="submit"]').removeAttr('disabled')
+
+            } else {
+              $('.register input[type="submit"]').addClass('disabled')
+              $('.register input[type="submit"]').attr('disabled', 'disabled')
+
+            }
+          })
+        </script>
+
+      {% endform %}
+
+    </div>
+  </div>
+
+</div>

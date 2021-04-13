@@ -1,0 +1,203 @@
+
+<!-- /snippets/product-grid-item.liquid -->
+{% comment %}
+This snippet is used to showcase each product during the loop,
+'for product in collection.products' in collection.liquid.
+A liquid variable (grid_item_width) is set just before the this
+snippet is included to change the size of the container.
+Once the variable is set on a page, all future instances of this
+snippet will use that width. Overwrite the variable to adjust this.
+Example
+- assign grid_item_width = 'large--one-quarter medium--one-half'
+{% endcomment %}
+{% comment %}
+Set the default grid_item_width if no variable is set
+{% endcomment %}
+
+{% unless grid_item_width %}
+  {% assign grid_item_width = 'large--one-third medium--one-half' %}
+{% endunless %}
+{% comment %}
+Check if the product is on sale and set a variable to be used below.
+{% endcomment %}
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+  {% assign on_sale = true %}
+{% endif %}
+{% comment %}
+Check if the product is sold out and set a variable to be used below.
+{% endcomment %}
+{% assign sold_out = true %}
+{% if product.available %}
+{% assign sold_out = false %}
+  {% endif %}
+{% if product_description_split.size > 1 %}
+  {% assign product_contents = product_description_split.last | prepend: '<h3>' %}
+{% endif %}
+    <div class="product-grid__item grid__item {{ grid_item_width }} product-id{{product.id}}">
+        {% comment %}
+        Link to your product with the 'within: collection' filter for the link to be aware of the collection.
+        This allows you to create collection-based navigation on the product page.
+        Results of using 'within: collection':
+        - Instead of a URL with /products/product-handle
+        you would get /collections/collection-handle/products/product-handle
+        For more info on navigation within a collection
+        - http://docs.shopify.com/support/your-store/collections/how-to-navigate-within-a-collection
+        {% endcomment %}
+        <div class="product-grid__item-wrapper{% if show_description %} has-description{% endif %} ">
+            <a href="#" class="trigger-add-to" >
+                <div class="grid__image">
+                    <img src="{{ product.featured_image.src | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+
+                </div>
+                <div class="grid__item-content">
+                  {% include 'badge-bio' with product %}
+
+                  <p class="h6">{{ product.title}}</p>
+                  <p class="price">
+                      {% comment %}
+                      You can show a leading 'from' or 'up to' by checking 'product.price_varies'
+                      if your variants have different prices.
+                      {% endcomment %}
+                      {% if on_sale %}
+                        {% if product.price_varies %}
+                          {% assign sale_price = product.price | money %}
+                          {{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+                          {% else %}
+                          <strong>{{ 'products.product.on_sale' | t }}</strong>
+                          {{ product.price | money }}
+                        {% endif %}
+                      {% else %}
+
+                        {% if product.price_varies %}
+                          {% assign price = product.price | money %}
+                          {{ 'products.general.from_text_html' | t: price: price }}
+                          {% else %}
+                          {{ product.price | money }}
+                          {% endif %}
+                        {% endif %}
+                        {% if sold_out %}
+                          <br><strong>{{ 'products.product.sold_out' | t }}</strong>
+                        {% endif %}
+                        {% if on_sale %}
+                          <span class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+                          <br><s>{{ product.compare_at_price | money }}</s>
+                        {% endif %}
+                  </p>
+
+
+                  <br>
+                    <div class="rte">
+                        {{ product.description }}
+                    </div>
+                      <form action="/cart/add" method="post" enctype="multipart/form-data" data-add-to-cart-form class="form-vertical add-to-cart__form spe_form">
+                          <span class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+                          {% if product.compare_at_price_max > product.price %}
+                          <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+                          {% endif %}
+
+                          <input type="hidden" id="Quantity" name="quantity" value="1" min="1" class="quantity-selector">
+                          <button type="submit" name="add" data-add-to-cart class="spe__button">
+                              <i class="icon-plus" aria-hidden="true"></i>
+                              Ajouter
+                          </button>
+                          <select name="id" id="id" class="product-single__variants visually-hidden">
+                              {% for variant in product.variants %}
+                              {% if variant.available %}
+                              {% comment %}
+                              Note: if you use option_selection.js, your <select> tag will be overwritten, meaning what you have inside <option> will not reflect what you coded below.
+                                      {% endcomment %}
+                                  <option {% if variant==product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}"  value="{{ variant.id }}">{{ variant.title}} - {{ variant.price | money_with_currency }}</option>
+                                  {% else %}
+                                  <option disabled="disabled">
+                                      {{ variant.title}} - {{ 'products.product.sold_out' | t }}
+                                  </option>
+                                  {% endif %}
+                                  {% endfor %}
+                              </select>
+                      </form>
+
+                </div>
+            </a>
+            <div class="grid__image--dummy">
+                <img src="{{ product.featured_image.src | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+                <div class="spe__button--wrapper">
+
+
+                </div>
+            </div>
+        </div>
+
+<style>
+  .grid__item-content {
+    position: relative;
+  }
+  .slidup .spe_form {
+    margin-top: 20px;
+    text-align: center;
+    position: absolute;
+    bottom: 15px;
+    opacity:1;
+    transition-property: opacity;
+    transition-duration: 1s;
+  }
+  .slidedown .spe_form {
+    margin-top: 20px;
+    text-align: center;
+    position: absolute;
+    bottom: 15px;
+    opacity: 0;
+    transition-property: opacity;
+
+    transition-duration: 1s;
+
+  }
+
+
+  .spe__button {
+    padding: 10px 20px;
+    border: 2px solid #ECEFF1;
+    border-radius: 2px;
+  }
+  .spe__button:hover {
+    padding: 10px 20px;
+    border: 2px solid #FE5442;
+    color: #FE5442;
+  }
+</style>
+    </div>
+
+    <script>
+      if (screen.width > 960) {
+        $('.trigger-add-to').one('click', function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          $('.spe__button', this).click();
+        });
+      } else {
+        $('.trigger-add-to').one('click', function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        });
+      }
+      var isMobile = {
+          android: () => navigator.userAgent.match(/Android/i),
+          blackberry: () => navigator.userAgent.match(/BlackBerry/i),
+          ios: () => navigator.userAgent.match(/iPhone|iPad|iPod/i),
+          opera: () => navigator.userAgent.match(/Opera Mini/i),
+          windows: () => navigator.userAgent.match(/IEMobile/i),
+          any: () => (isMobile.android() || isMobile.blackberry() ||
+              isMobile.ios() || isMobile.opera() || isMobile.windows())
+      };
+      isMobile.any() ? document.body.classList.add('is-touch') : document.body.classList.add('no-touch');
+
+    $('.no-touch .product-grid__item')
+        .on("mouseenter", function() {
+
+            $('.add-to-cart__button', this).fadeIn(200)
+        })
+        .on("mouseleave", function() {
+
+            $('.add-to-cart__button', this).fadeOut(200)
+        });
+    </script>

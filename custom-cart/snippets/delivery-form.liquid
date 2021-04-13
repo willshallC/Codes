@@ -1,0 +1,267 @@
+
+{{ '//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' | stylesheet_tag }}
+{{ '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js' | script_tag }}
+
+<div class="container-item">
+  <div class="two-third-column summary">
+
+    <div class="step-line active" data="step-1">
+      <div class="left-column">
+        <div class="circle">1</div> votre aéroport
+      </div>
+      <div class="right-column">
+        {% for location in settings.locations %}
+          {% if location == settings.locations.first %}
+            <div class="airport active">
+              <span class="orange bold">{{ location.name }}</span><br>
+              {{ location.city_country }}
+            </div>
+          {% else %}
+            <div class="airport">
+              <span class="bold">{{ location.name }}</span><br>
+              {{ location.city_country }}
+            </div>
+          {% endif %}
+
+        {% endfor %}
+        <input type="hidden" name="airport">
+      </div>
+    </div>
+    <div class="step-line" data="step-2">
+      <div class="left-column">
+        <div class="circle">1</div> votre aéroport
+      </div>
+      <div class="right-column">
+        <input type="text">
+      </div>
+    </div>
+    <div class="step-line" data="step-3">
+      <div class="left-column">
+        <div class="circle">1</div> votre aéroport
+      </div>
+      <div class="right-column">
+        <input type="text">
+      </div>
+    </div>
+  </div>
+
+  <div class="one-third-column cart-step2">
+    <div class="items">
+      {% for item in cart.items %}
+        <div class="item">
+          <div class="img">
+            {{ item.image | img_url: '60x60' | img_tag }}
+          </div>
+          <div class="title">
+            {{ item.quantity}} x <b>{{ item.product.title | }}</b>
+          </div>
+          <div class="price">
+            {{ item.final_line_price | money }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="total">
+      <hr style="width: 80%; margin: 10px 10%">
+      <div class="left">SOUS-TOTAL</div>
+      <div class="right">
+        {{ cart.original_total_price | money }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .airport.active:after {
+    background-image: url('https://cdn.shopify.com/s/files/1/0066/7670/9461/files/check.png?1846');
+    background-size: 30px 30px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    content:"";
+    top: calc(50% - 15px);
+    float: right;
+  }
+  .hidden {
+    display: none !important;
+  }
+  .orange {
+    color: {{ settings.color_primary }};
+  }
+  .bold {
+    font-weight: 700;
+  }
+  .circle
+      {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 15px;
+    color: #fff;
+    line-height: 23px;
+    text-align: center;
+    background: #FE5442;
+      }
+  .step-line {
+    display: flex;
+  }
+  .left-column * {
+    display: inline-grid;
+  }
+  .total {
+    padding: 15px;
+  }
+  .total .left {
+    float: left;
+  }
+  .total .right {
+    float: right;
+  }
+  .items>*,  .item>* {
+    padding: 5px;
+  }
+  .img {
+    min-width: 70px;
+  }
+  .img img {
+    object-fit: cover;
+    width: 60px;
+    height: 60px;
+  }
+  .item {
+
+
+    display: flex;
+  }
+  .item .price {
+    -webkit-flex: 1 1 26%;
+    -moz-flex: 1 1 26%;
+    -ms-flex: 1 1 26%;
+    -o-flex: 1 1 26%;
+    flex: 1 1 26%;
+  }
+  .cart-step2 {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+  }
+  .container-item {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .one-third-column {
+    width: 30%;
+    margin: 1%;
+  }
+  .two-third-column {
+    width: 60%;
+    margin: 2%;
+  }
+  .right-column,
+  .left-column {
+    width: 48%;
+    margin: 1%;
+  }
+</style>
+
+<script>
+$(function() {
+  //if is weekend
+  var is_weekend =  function(date1){
+    var dt = new Date(date1);
+
+    if(dt.getDay() == 6 || dt.getDay() == 0)
+    {
+      return "weekend";
+    }else{
+      return "not weekend";
+    }
+  }
+  function updateCartDate(dateText) {
+   // var formattedDate = $.datepicker.formatDate('d MM yy', new Date(dateText));
+
+
+
+    //console.log(is_weekend(formattedDate));
+
+
+    var today = new Date();
+
+    //restore datepicker to its original DOM position
+    $('[data-datepicker-wrapper]').addClass('medium-down--hide');
+    $('[data-datepicker-wrapper]').appendTo($('[data-datapicker-container]'));
+  }
+
+
+    var datepicker = $("#datepicker").datepicker({
+      //dateFormat: $.datepicker.ATOM,
+      dateFormat: 'd MM yy',
+      minDate: +1,
+      maxDate: '+2M',
+      firstDay: 1,
+      onSelect: function (dateText) {
+          $('input[name^=display_date]').val($("#datepicker").val());
+          $('input[name="attributes[date]"]').val($("#datepicker").val());
+        //updateCartDate(dateText);
+        //$('input[name="attributes[date]"]').val($.datepicker.formatDate('d MM yy', new Date(dateText)));
+      }
+    });
+
+
+  var cartDate = '{{ cart.attributes.date }}';
+  if (cartDate) {
+    datepicker.datepicker('setDate', cartDate);
+  }
+
+
+  updateCartDate(datepicker.datepicker('getDate'));
+
+  $('[data-datepicker-button]').on('click', function(event) {
+    if($(this).parent().parent().hasClass("fieldset--fill")){
+      $('[data-datepicker-wrapper]').removeClass('medium-down--hide');
+      //iOS requires the element at the top of the DOM to function as a modal
+      $('[data-datepicker-wrapper]').prependTo($('body'));
+      event.preventDefault();
+    }
+  });
+
+  var $flightNumber = $('input[name="attributes[flight_number]"]');
+  var $hour = $('select[name="attributes[display_hour_lg]"]');
+  var $times = $('input[name="display_date_lg"]');
+ // var $submit = $('button[name=checkout]');
+  $hour.on('input', function() {
+    var hour = $hour.val();
+    var times = $times.val();
+    var voo = $flightNumber.val();
+
+    /*
+    if($("select[name='attributes[terminal]']").val()=="Terminal 1"){
+      if (hour != 'Heure de votre vol' && times != '' && voo != '') {
+        $submit.removeAttr('disabled');
+        $('[data-breadcrumb-step-3]').removeClass('disabled');
+      } else {
+        $submit.attr('disabled', '');
+        $('[data-breadcrumb-step-3]').addClass('disabled');
+      }
+    }else{
+      if (hour != 'Heure de votre vol' && times != '') {
+        $submit.removeAttr('disabled');
+        $('[data-breadcrumb-step-3]').removeClass('disabled');
+      } else {
+        $submit.attr('disabled', '');
+        $('[data-breadcrumb-step-3]').addClass('disabled');
+      }
+    }
+    */
+      if (hour != 'Heure de votre vol' && times != '') {
+        $submit.removeAttr('disabled');
+        $('[data-breadcrumb-step-3]').removeClass('disabled');
+      } else {
+        $submit.attr('disabled', '');
+        $('[data-breadcrumb-step-3]').addClass('disabled');
+      }
+
+  })
+  .trigger('input');
+});
+</script>

@@ -1,0 +1,207 @@
+{
+  "current": {
+    "color_primary": "#fe5442",
+    "color_secondary": "#37474f",
+    "color_borders": "#e0e0e0",
+    "color_body_bg": "#fafafa",
+    "color_body_text": "#bdbdbd",
+    "color_footer_bg": "#f2f2f2",
+    "color_footer_text": "#bdbdbd",
+    "color_footer_social_link": "#ffffff",
+    "logo_use_image": true,
+    "logo_max_width": "450",
+    "favicon_enable": true,
+    "footer_social_enable": true,
+    "footer_newsletter_enable": true,
+    "newsletter_form_action": "",
+    "cart_notes_enable": false,
+    "cart_vendor_enable": false,
+    "ajax_cart_method": "drawer",
+    "social_twitter_link": "",
+    "social_facebook_link": "https:\/\/www.facebook.com\/flymetothefood\/",
+    "social_linkedin_link": "https:\/\/www.linkedin.com\/company\/fly-me-to-the-food\/",
+    "checkout_header_image": "",
+    "checkout_use_storefront_logo": true,
+    "checkout_logo_image": "",
+    "checkout_logo_position": "center",
+    "checkout_logo_size": "large",
+    "checkout_body_background_image": "",
+    "checkout_body_background_color": "#f2f2f2",
+    "checkout_input_background_color_mode": "white",
+    "checkout_sidebar_background_image": "",
+    "checkout_sidebar_background_color": "#ffffff",
+    "checkout_heading_font": "Helvetica Neue",
+    "checkout_body_font": "Helvetica Neue",
+    "checkout_accent_color": "#37474f",
+    "checkout_button_color": "#fe5442",
+    "checkout_error_color": "#ff6d6d",
+    "social_instagram_link": "https:\/\/www.instagram.com\/flymetothefoood\/",
+    "social_pinterest_link": "",
+    "content_for_index": [],
+    "locations": [
+      {
+        "code": "L6E",
+        "name": "Lyon 6e",
+        "city_country": "Je renseigne une adresse de livraison",
+        "disable": 0,
+        "terminals": [
+          {
+            "name": "Retrait au point de vente au T12",
+            "price_info": "Gratuit",
+            "message": "",
+            "description": "Un plan d'accès détaillé vous sera fourni dans le mail de confirmation de votre commande."
+          }
+        ]
+      },
+      {
+        "code": "RBL",
+        "name": "Retrait en boutique à Lyon",
+        "city_country": "5 quai General Sarrail, 69006 Lyon",
+        "disable": 0,
+        "terminals": [
+          {
+            "name": "Retrait au point de vente au T13",
+            "price_info": "Gratuit",
+            "message": "",
+            "description": "Un plan d'accès détaillé vous sera fourni dans le mail de confirmation de votre commande."
+          }
+        ]
+        
+      },
+      {
+        "code": "SEL",
+        "name": "Lyon Saint-Exupéry",
+        "city_country": "Lyon, France",
+        "disable": 0,
+        "terminals": [
+          {
+            "name": "Retrait en boutique au T2",
+            "price_info": "",
+            "link": "https:\/\/cdn.shopify.com\/s\/files\/1\/0066\/7670\/9461\/files\/FMTTF_-_Plan_d_acces_POS_Lyon_Saint_Exupery.pdf?v=1592224828",
+            "message": "",
+            "code" : "QO6",
+            "description": "En porte QO6 (voir plan d'accés)",
+            "subterminals": [
+              {
+                "name": "Je pars J11",
+                "description" : "Mon avion décolle de I'aeroport"
+              }
+              
+            ]
+          },
+          {
+            "name": "Livraison au T1",
+            "price_info": "<span class='price-terminal'>3,00 €<\/span> Gratuit",
+            "link": "https:\/\/cdn.shopify.com\/s\/files\/1\/0066\/7670\/9461\/files\/Map_Nice_-_Document_2.pdf?12771",
+            "message": "",
+            "code" : "LT1",
+            "description": "En porte d'embarquement",
+            "subterminals": [
+              { 
+                "name": "Je pars",
+                "description" : "Mon avion décolle de I'aeroport"
+              },
+              {
+                "name": "J'arrive",
+                "description" : "Mon avion décolle a I'aeroport"
+              }
+            ]
+          },
+          {
+            "name": "Livraison au T2",
+            "price_info": "<span class='price-terminal'>1,00 €<\/span> Gratuit",
+            "link": "#Livraison au T2",
+            "message": "",
+            "code": "LT2",
+            "description": "En porte d'embarquement",
+            "subterminals": [
+              {
+                "name": "Je pars J31",
+                "description" : "Mon avion décolle de I'aeroport"
+              },
+              {
+                "name": "J'arrive J32",
+                "description" : "Mon avion décolle a I'aeroport"
+              }
+            ]
+          }
+        ]
+        
+      },
+      {
+        "code": "ADN",
+        "name": "Nice (non disponible)",
+        "city_country": "Lyon, France",
+        "disable": 1,
+        "terminals": [
+          {
+            "name": "Retrait au point de vente au T1",
+            "price_info": "Gratuit",
+            "link": "#LYON-LINK",
+            "message": "",
+            "description": "Lorem ipsun armet, consectetur adipiscing elit eiusmod incididunt ut labore et dolore adipiecing consectetur."
+          },
+          {
+            "name": "Livraison au T2",
+            "price_info": "<span class='price-terminal'>15,20 €<\/span> Gratuit",
+            "link": "#Livraison au T2",
+            "message": "Merci d'avoir choisi notre service de livraison. Nos équipes vous contacterons avant le début de l'embarquement pour vous apporter votre commande. Fly Me to the Food vous souhaite un excellent vol",
+            "description": "Lorem ipsun armet, consectetur adipiscing elit eiusmod incididunt ut labore et dolore adipiecing consectetur."
+          }
+        ]
+      }
+    ]
+  },
+  "presets": {
+    "Default": {
+      "color_primary": "#fe5442",
+      "color_secondary": "#37474f",
+      "color_borders": "#e0e0e0",
+      "color_body_bg": "#fafafa",
+      "color_body_text": "#bdbdbd",
+      "color_footer_bg": "#f2f2f2",
+      "color_footer_text": "#bdbdbd",
+      "color_footer_social_link": "#ffffff",
+      "logo_use_image": true,
+      "logo_max_width": "450",
+      "favicon_enable": true,
+      "footer_social_enable": true,
+      "footer_newsletter_enable": false,
+      "newsletter_form_action": "",
+      "cart_notes_enable": false,
+      "cart_vendor_enable": false,
+      "ajax_cart_method": "drawer",
+      "social_twitter_link": "",
+      "social_facebook_link": "https:\/\/www.facebook.com\/flymetothefood\/",
+      "checkout_header_image": "",
+      "checkout_use_storefront_logo": true,
+      "checkout_logo_image": "",
+      "checkout_logo_position": "center",
+      "checkout_logo_size": "large",
+      "checkout_body_background_image": "",
+      "checkout_body_background_color": "#f2f2f2",
+      "checkout_input_background_color_mode": "white",
+      "checkout_sidebar_background_image": "",
+      "checkout_sidebar_background_color": "#ffffff",
+      "checkout_heading_font": "Helvetica Neue",
+      "checkout_body_font": "Helvetica Neue",
+      "checkout_accent_color": "#37474f",
+      "checkout_button_color": "#fe5442",
+      "checkout_error_color": "#ff6d6d",
+      "social_instagram_link": "https:\/\/www.instagram.com\/flymetothefoood\/",
+      "social_pinterest_link": "",
+      "social_linkedin_link": "https:\/\/www.linkedin.com\/company\/fly-me-to-the-food\/",
+      "content_for_index": [],
+      "locations": [
+        {
+          "code": "LYS",
+          "name": "Lyon Saint Exupéry",
+          "city_country": "Lyon, France",
+          "terminals": [
+            "Terminal 2"
+          ]
+        }
+      ]
+    }
+  }
+}

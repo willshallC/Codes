@@ -1,0 +1,47 @@
+
+<div class="grid__item one-whole">
+  <div class="grid--full tab-nav--container">
+    <div class="grid__item three-fifths large--three-quarters">
+      {% if canonical_langify_url contains '/account/addresses' %}
+        {% assign is_address = true %}
+      {% else %}
+        {% assign is_address = false %}
+      {% endif %}
+      <ul class="tab-nav medium-down--hide">
+        <li{% unless is_address %} class="filter--active"{% endunless %}>
+          <a href="/account">{{ 'customer.orders.title' | t }}</a>
+        </li>
+        <li{% if is_address %} class="filter--active"{% endif %}>
+          <a href="/account/addresses">{{ 'customer.account.view_addresses' | t }}</a>
+        </li>
+      </ul>
+
+      <div class="tab-nav--mobile large--hide">
+        <button data-tab-nav--toggle class="tab-nav--toggle">
+          {% if is_address %}
+            {{ 'customer.account.view_addresses' | t }}
+          {% else %}
+            {{ 'customer.orders.title' | t }}
+          {% endif %}
+        </button>
+
+        <ul class="tab-nav">
+          <li{% unless is_address %} class="filter--active"{% endunless %}>
+            <a href="/account">{{ 'customer.orders.title' | t }}</a>
+          </li>
+          <li{% if is_address %} class="filter--active"{% endif %}>
+            <a href="/account/addresses">{{ 'customer.account.view_addresses' | t }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid__item two-fifths large--one-quarter text-right">
+      <div class="logout-link">
+        <a href="/account/logout">{{ 'customer.account.logout' | t }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'tab-nav-js' %}

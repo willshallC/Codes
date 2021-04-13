@@ -1,0 +1,101 @@
+
+<!-- /templates/page.partners.liquid -->
+{% layout 'theme-condensed' %}
+<div class="page__partners">
+  <div class="grid">
+    <div class="grid__item one-whole">
+      <h1>{{ page.title}}</h1>
+    </div>
+
+    {% comment %}
+      sections are delineated by `h2` tags
+      this makes editing simpler in the rte
+    {% endcomment %}
+    {% assign sections = page.content | split: '<h2>' %}
+    <div data-section-button-container class="grid__item one-whole large--one-whole">
+      <div class="grid-uniform">
+        {% for section in sections %}
+          {% if forloop.first %}
+            {% comment %}
+              First item will be an empty artefact of the split
+            {% endcomment %}
+            {% continue %}
+          {% endif %}
+          <div data-section-button class="grid__item one-half large--one-quarter">
+            {% assign section_name = section | split: '</h2>' | first %}
+            {% assign section_handle = section_name | handleize %}
+            <a href="#{{ section_handle }}" class="btn__partners" data-show-section="{{ section_handle }}">
+              {% comment %}
+                `img` gets inserted here from rte content
+              {% endcomment %}
+              <div class="icon-wrapper">
+                <i class="icon-menu"></i>
+              </div>
+              <p class="h4">{{ section_name }}</p>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="grid__item one-whole large--one-half">
+      <div class="grid">
+        {% for section in sections %}
+          {% if forloop.first %}
+            {% comment %}
+              First item will be an empty artefact of the split
+            {% endcomment %}
+            {% continue %}
+          {% endif %}
+          {% assign section_handle = section | split: '</h2>' | first | handleize %}
+          <section data-section="{{ section_handle }}" class="grid__item one-whole">
+            <div id="{{ section_handle }}" class="section-anchor"></div>
+            <div class="rte">
+              {% comment %}
+                Re-insert the `h2` tag lost in the split
+              {% endcomment %}
+              {{ section | prepend: '<h2>' }}
+            </div>
+          </section>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(function() {
+    $('[data-section]').hide();
+
+    //move images
+    $('[data-section] h2 + img').each(function(index, element) {
+      var section = $(element).closest('[data-section]').data('section');
+      $(element).prependTo('[data-show-section="' + section + '"]');
+    })
+
+    $('[data-section]').prepend(
+      '<a href="#" data-close-section class="btn__close"><i class="icon-cancel"></i></a>'
+    );
+
+    $('[data-show-section]').click(function(event) {
+      var target = $(event.target).closest('[data-show-section]');
+      var section = target.data('show-section');
+
+      $('[data-section]').hide();
+      $('[data-section="' + section + '"]').show();
+
+      $('[data-show-section]').removeClass('active');
+      target.addClass('active');
+
+      $('[data-section-button-container]').removeClass('large--one-whole').addClass('large--one-half');
+      $('[data-section-button]').removeClass('large--one-quarter').addClass('large--one-half');
+    });
+
+    $('[data-close-section]').click(function(event) {
+      $('[data-section]').hide();
+      $('[data-show-section]').removeClass('active');
+      $('[data-section-button-container]').removeClass('large--one-half').addClass('large--one-whole');
+      $('[data-section-button]').removeClass('large--one-half').addClass('large--one-quarter');
+    });
+  });
+</script>

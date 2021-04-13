@@ -1,0 +1,821 @@
+
+{{ '//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' | stylesheet_tag }}
+{{ '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js' | script_tag }}
+{{ 'datepicker-fr.js' | asset_url | script_tag }}
+{{ 'intlTelInput.min.css' | asset_url | stylesheet_tag }}
+{{ 'intlTelInput.min.js' | asset_url | script_tag }}
+<div class="grid--full">
+  <div class="grid__item one-whole large--two-thirds active-cart-box">
+    <div class="steps">
+      <div class="step step-one active">
+        <h3 class="grid__item one-half medium-down--one-whole step-title"><div class="step-number">1</div> Où souhaitez vous être livré ?</h3>
+        <div class="grid__item one-half medium-down--one-whole step-content edit-step-one">Modifier</div>
+        <div class="grid__item one-half medium-down--one-whole step-content">
+          <div class="radio-toolbar">
+            {% for location in settings.locations %}
+            {% capture location_name_code %}{{ location.name }} ({{ location.code | upcase }}){% endcapture %}
+            
+            {% capture location_disable %}{% if location.disable == 1 %}disabled{% endif %}{% endcapture %}
+            <fieldset class="fieldset--fill {{ location_disable }} {% if forloop.first == true %} first {% else %} not-first {% endif %}" id="{{location.code}}">
+              <input class="radio-location" type="radio" id="location-{{ forloop.index }}" name="attributes[location]" value="{{ location_name_code }}" {% if forloop.first == true %} checked {% endif %}  {{ location_disable }} data-code="{{ location.code | handleize }}">
+              <label for="location-{{ forloop.index }}">
+                <span class="location-title">
+                  <span class="location-name {{ location_disable }}"> {% if location.code == 'ADN' or location.code == 'SEL' or location.code == 'sel' %}Aéroport de {% endif %}{{ location.name }} </span>
+                  <span class="location-city">{{ location.city_country }} </span>
+                </span>
+                <span class="checked-icon">{% include 'checked-icon' %}</span>
+              </label>
+            </fieldset>
+            {% endfor %}
+            <hr/>
+            {% comment %}
+            <fieldset class="fieldset--fill">
+              <input type="radio" id="come-1" name="attributes[come-from]" value="Je pars" checked >
+              <label for="come-1">
+                <span class="air-icon">{% include 'icon-air-from' %}</span>
+                <span class="location-title">
+                  <span class="location-name">Je pars</span>
+                  <span class="location-city">Mon avion décolle de l'aéroport</span>
+                </span>
+                <span class="checked-icon">{% include 'checked-icon' %}</span>
+              </label>
+            </fieldset>
+            <fieldset class="fieldset--fill">
+              <input type="radio" id="come-2" name="attributes[come-from]" value="J'arrive" >
+              <label for="come-2">
+                 <span class="air-icon">{% include 'icon-air-to' %}</span>
+                <span class="location-title">
+                  <span class="location-name">J'arrive</span>
+                  <span class="location-city">Mon avion atterrit à l'aéroport</span>
+                </span>
+                <span class="checked-icon">{% include 'checked-icon' %}</span>
+              </label>
+            </fieldset>
+            {% endcomment %}
+            <label class="container">Enregistrer ces informations pour ma prochaine commande
+              <input type="checkbox" class="check-agreed" name="attributes[save-to-next-order]" value="yes">
+            </label>
+            <span class="btn continuer-step-two" style="width: 100%; cursor: pointer; background-color: rgb(254, 84, 66); color: rgb(255, 255, 255);">Continuer vers l'étape suivante</span>
+            <hr/>
+          </div>
+        </div>
+      </div>
+      <div class="step step-two">
+        <h3 class="grid__item one-half medium-down--one-whole step-title active" id="h3_text1"><div class="step-number">2</div> Dites-nous tout, on prépare votre commande !</h3>
+        <h3 class="grid__item one-half medium-down--one-whole step-title hide" id="h3_text2"><div class="step-number">2</div> Vous ne passez pas devant notre boutique ? Pas de soucis, on vous livre !</h3>
+        <div class="grid__item one-half medium-down--one-whole step-content edit-step-two" style="display: none;">Modifier</div>
+       
+        <div class="grid__item one-half medium-down--one-whole step-content">
+          <div class="radio-toolbar">
+            {% comment %}
+            <input type="hidden" id="terminal-link" name="attributes[terminal_link]" value=""/>
+            {% endcomment %}
+            <input type="hidden" id="terminal-message" name="attributes[terminal_message]" value=""/>
+            {% for location in settings.locations %}
+            {% capture location_name_code %}{{ location.name }} ({{ location.code | upcase }}){% endcapture %}
+              {% for terminal in location.terminals %}
+           
+            <input type="hidden" id="link-terminal-{{ forloop.index }}-{{ location.code | handleize }}" value="{{ terminal.link }}">
+            <input type="hidden" id="message-terminal-{{ forloop.index }}-{{ location.code | handleize }}" value="{{ terminal.message }}">
+            <fieldset class="fieldset--fill {% if forloop.first == true %} first {% else %} not-first {% endif %} localiton-{{ location.code | handleize }} terminals" id="{{terminal.code}}">
+              <input type="radio" id="terminal-{{ forloop.index }}-{{ location.code | handleize }}" class="radio-terminals" name="{% if  location.code == 'SEL' %}attributes[terminal_name]{% endif %}" value="{{ terminal.name }}" {% if forloop.first == true %} checked {% endif %}>
+              <label for="terminal-{{ forloop.index }}-{{ location.code | handleize }}" class="terminal-{{ location.code | handleize }}">
+                <span class="location-title">
+                 
+                  <span class="location-name">{{ terminal.name }} </span>
+                  <span class="location-city">{{ terminal.price_info }} </span>
+                  <span class="location-desc">{{ terminal.description }} </span>
+                </span>
+                <span class="checked-icon">{% include 'checked-icon' %}</span>
+              </label>
+              {% if location.code == 'L6E' or location.code == 'l6e' %}
+            <!-- for Lyon Airport 6th start-->
+            <div class="location-{{location.code}}">
+            <div class="field-group">
+              <label for="attributes[Date de livraison]">Date de livraison</label>
+              <div class="input_container">
+                <input type="text" id="datepickerx1" name="attributes[Date de livraison]">
+                <i class="icon-calendar-outline"></i>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="attributes[Heure de livraison]">Heure de livraison</label>
+              <div class="input_container">
+                <select name="attributes[Heure de livraison]" id="Heure_de_livaraison">
+                  <option value="">--Select--</option>
+                  <option class="ctm1" data-id="1" data-hour = "11" data-min ="30" value="Entre 11h30 et 12h00">Entre 11h30 et 12h00</option>
+                  <option class="ctm2" data-id="2" data-hour = "12" data-min = "00" value="Entre 12h00 et 12h30">Entre 12h00 et 12h30</option>
+                  <option class="ctm3" data-id="3" data-hour = "12" data-min = "30" value="Entre 12h30 et 13h00">Entre 12h30 et 13h00</option>
+                  <option class="ctm4" data-id="4" data-hour = "13" data-min = "00" value="Entre 13h00 et 13h30">Entre 13h00 et 13h30</option>
+                  <option disabled>-------------------</option>
+                  <option class="ctm5" data-id="5" data-hour = "18" data-min = "00" value="Entre 18h00 et 18h30">Entre 18h00 et 18h30</option>
+                  <option class="ctm6" data-id="6" data-hour = "18" data-min = "30" value="Entre 18h30 et 19h00">Entre 18h30 et 19h00</option>
+                  <option class="ctm7" data-id="7" data-hour = "19" data-min = "00" value="Entre 19h00 et 19h30">Entre 19h00 et 19h30</option>
+                  
+                </select>
+                <i class="icon-down-open"></i>
+              </div>
+            </div>
+           
+            <div class="field-group">
+              <label for="attributes[Adresse de livraison]">Adresse de livraison</label>
+              <div class="input_container">
+                <input autocomplete="false" id="Adresse_de_livaraison" name="attributes[Adresse de livraison]" type="text" placeholder="ex: 18 rue du commerce">
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="attributes[Appartement, étage, digicode, etc.]">Appartement, étage, digicode, etc.</label>
+              <div class="input_container">
+                <input autocomplete="false" name="attributes[Appartement, étage, digicode, etc.]" type="text" placeholder="ex: Flat C, #1234">
+              </div>
+            </div>
+            <div class="one-whole l6e">
+            <div class="field-group one-half postal_code">
+              <label for="attributes[Code Postal]">Code Postal</label>
+              <div class="input_container">
+                <input name="attributes[Code Postal]" id="code_postal" type="text" placeholder="ex: 69006" value="69006" readonly>
+              </div>
+            </div>
+            <div class="field-group one-half ville_post">
+              <label for="attributes[Ville]">Ville</label>
+              <div class="input_container">
+                <input autocomplete="false" name="attributes[Ville]" id="ville_input" type="text" value="Lyon" placeholder="ex: Lyon" readonly>
+              </div>
+            </div>
+            </div>  
+            </div>
+            <!-- for Lyon Airport 6th end--> 
+            <button id="l6e_button" type="submit" name="checkout" class="btn" style="margin-top: 20px; width: 100%; cursor: pointer; background-color: rgb(254, 84, 66); color: rgb(255, 255, 255);" >{{ 'cart.general.checkout' | t }}</button>
+            {% endif %}
+            {% if location.code == 'rbl' or location.code == 'RBL' %}
+             <!-- for Lyon Airport rbl start--> 
+             <div class="location-{{location.code}}">
+              <div class="field-group">
+                <label for="attributes[Date de retrait]">Date de retrait</label>
+                <div class="input_container">
+                  <input type="text" id="datepickerx2" name="attributes[Date de retrait]">
+                  <i class="icon-calendar-outline"></i>
+                </div>
+              </div>
+              <div class="field-group">
+                <label for="attributes[Heure de retrait]">Heure de retrait</label>
+                <div class="input_container">
+                  <select name="attributes[Heure de retrait]" id="Heure_de_retrait">
+                    <option value="">--Select--</option>
+                    <option value="11h30" data-min="30" data-hour="11">11h30</option>
+                    <option value="12h00" data-min="00" data-hour="12">12h00</option>
+                    <option value="12h30" data-min="30" data-hour="12">12h30</option>
+                    <option value="13h00" data-min="00" data-hour="13">13h00</option>
+                    <option value="13h30" data-min="30" data-hour="13">13h30</option>
+                  </select>
+                  <i class="icon-down-open"></i>
+                </div>
+              </div>
+              </div>
+              <button type="submit" name="checkout" class="btn rbl_terminal" style="margin-top: 20px; width: 100%; cursor: pointer; background-color: rgb(254, 84, 66); color: rgb(255, 255, 255);" >{{ 'cart.general.checkout' | t }}</button>
+              <!-- for Lyon Airport rbl end--> 
+            {% endif %}
+            </fieldset>
+
+           
+              {% endfor %}
+            {% endfor %}
+            
+            <span class="btn continuer-step-three" style="margin-top: 20px; width: 100%; cursor: pointer; background-color: rgb(254, 84, 66); color: rgb(255, 255, 255);">Continuer vers l'étape suivante</span>
+
+            <hr/>
+          </div>
+        </div>
+      </div>
+      <div class="step step-three" id="retrait_section">
+        <h3 class="grid__item one-half medium-down--one-whole step-title active" id="h3_title1"><div class="step-number">3</div> Dites-nous tout, on prepare votre commande !</h3>
+        <h3 class="grid__item one-half medium-down--one-whole step-title hide" id="h3_title2"><div class="step-number">3</div> Dites-nous tout, on vous livre a votre porte d'embarquement !</h3>
+        <div class="grid__item one-half medium-down--one-whole step-content">
+          <div class="radio-toolbar">
+          {% for location in settings.locations %}
+            {% capture location_name_code %}{{ location.name }} ({{ location.code | upcase }}){% endcapture %}
+              {% for terminal in location.terminals %}
+              {% if terminal.code == 'QO6' or terminal.code == 'qo6' %}          
+                  <fieldset class="fieldset--fill {% if forloop.first == true %} first {% else %} not-first {% endif %} localiton-{{ terminal.code | handleize }} terminals">
+                            
+                    <div class="field-group" style="display:none;">
+                      <label for="attributes[Numéro de téléphone portable]" style=" top: 0; ">Numéro de téléphone portable</label>
+                      <div class="input_container">
+                        <input id="dial-code" name="dialCode" type="hidden" value="1">
+                        <input autocomplete="false" style="width:100%" name="Numéro de téléphone portable" type="tel" id="phone" placeholder="ex: +33 (0) 6 12 34 56 78">
+                      </div>
+                    </div>
+                    <!--<button data-checkout-button type="submit" name="checkout" class="btn" style="margin-top: 20px; width: 100%; cursor: pointer; background-color: rgb(254, 84, 66); color: rgb(255, 255, 255);" >{{ 'cart.general.checkout' | t }}</button>-->
+                      <div class="field-group">
+                        <label for="attributes[Date de votre vol]">Date de votre vol</label>
+                        <div class="input_container">
+                          <input type="text" name="attributes[Date de votre vol]" id="datepickerx4">
+                          <i class="icon-calendar-outline"></i>
+                        </div>
+                      </div>
+                      <div class="field-group">
+                        <label for="attributes[Heure de votre vol]">Heure de votre vol</label>
+                        <div class="input_container">
+                          <select name="attributes[Heure de votre vol]" id="Heure_de_votre_vol">
+                            <option value="">--Select--</option>
+                            <option value="Entre 06:00 et 08:00" data-min="00" data-hour="06">Entre 06:00 et 08:00</option>
+                            <option value="Entre 08:00 et 10:00" data-min="00" data-hour="08">Entre 08:00 et 10:00</option>
+                            <option value="Entre 10:00 et 12:00" data-min="00" data-hour="10">Entre 10:00 et 12:00</option>
+                            <option value="Entre 12:00 et 14:00" data-min="00" data-hour="12">Entre 12:00 et 14:00</option>
+                            <option value="Entre 14:00 et 16:00" data-min="00" data-hour="14">Entre 14:00 et 16:00</option>
+                            <option value="Entre 16:00 et 18:00" data-min="00" data-hour="16">Entre 16:00 et 18:00</option>
+                            <option value="Entre 18:00 et 20:00" data-min="00" data-hour="18">Entre 18:00 et 20:00</option>
+                            <option value="Entre 20:00 et 21:30" data-min="00" data-hour="20">Entre 20:00 et 21:30</option>
+                          </select>
+                          <i class="icon-down-open"></i>
+                        </div>
+                      </div> 
+                      <button type="submit" name="checkout" class="btn heure_deBtn" style="margin-top: 20px; width: 100%; cursor: pointer; background-color: rgb(254, 84, 66); color: rgb(255, 255, 255);" >{{ 'cart.general.checkout' | t }}</button>
+                      
+                    
+                   </fieldset>
+                   {% endif %}
+                {% endfor %}
+          {% endfor %}
+          <fieldset class="fieldset--fill aero_section active_text je_pars">
+            <input type="radio" id="come-1" name="attributes[come-from]" value="Je pars" >
+            <label for="come-1">
+              <span class="air-icon">{% include 'icon-air-from' %}</span>
+              <span class="location-title">
+                <span class="location-name">Je pars</span>
+                <span class="location-city">Mon avion décolle de l'aéroport</span>
+              </span>
+              <span class="checked-icon">{% include 'checked-icon' %}</span>
+            </label>
+          </fieldset>
+          <fieldset class="fieldset--fill aero_section je_arrive">
+            <input type="radio" id="come-2" name="attributes[come-from]" value="J'arrive" >
+            <label for="come-2">
+               <span class="air-icon">{% include 'icon-air-to' %}</span>
+              <span class="location-title">
+                <span class="location-name">J'arrive</span>
+                <span class="location-city">Mon avion atterrit à l'aéroport</span>
+              </span>
+              <span class="checked-icon">{% include 'checked-icon' %}</span>
+            </label>
+          </fieldset>
+          <div class="aero_section">
+            <div class="field-group">
+              <label for="attributes[Date de votre vol]">Date de votre vol</label>
+              <div class="input_container">
+                <input type="text" id="datepickerx3" name="attributes[Date de votre vol]">
+                <i class="icon-calendar-outline"></i>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="attributes[Heure de votre vol]">Heure de votre vol</label>
+              <div class="input_container">
+                <select name="attributes[Heure de votre vol]" id="Heure_de_votre_livarison">
+                  <option value="">--Select--</option>
+                  <option value="Entre 06:00 et 08:00" data-min="00" data-hour="06">Entre 06:00 et 08:00</option>
+                  <option value="Entre 08:00 et 10:00" data-min="00" data-hour="08">Entre 08:00 et 10:00</option>
+                  <option value="Entre 10:00 et 12:00" data-min="00" data-hour="10">Entre 10:00 et 12:00</option>
+                  <option value="Entre 12:00 et 14:00" data-min="00" data-hour="12">Entre 12:00 et 14:00</option>
+                  <option value="Entre 14:00 et 16:00" data-min="00" data-hour="14">Entre 14:00 et 16:00</option>
+                  <option value="Entre 16:00 et 18:00" data-min="00" data-hour="16">Entre 16:00 et 18:00</option>
+                  <option value="Entre 18:00 et 20:00" data-min="00" data-hour="18">Entre 18:00 et 20:00</option>
+                  <option value="Entre 20:00 et 21:30" data-min="00" data-hour="20">Entre 20:00 et 21:30</option>
+                </select>
+                <i class="icon-down-open"></i>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="attributes[Numéro de votre vol]" style=" top: 0; ">Numéro de votre vol</label>
+              <div class="input_container">
+                  <input name="attributes[Numéro de votre vol]" type="text"  id="flightNumber" placeholder="ex: AF1724">
+              </div>
+            </div>
+            <button type="submit" name="checkout" class="btn flightBtn" style="margin-top: 20px; width: 100%; cursor: pointer; background-color: rgb(254, 84, 66); color: rgb(255, 255, 255);" >{{ 'cart.general.checkout' | t }}</button>
+          </div>
+         </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grid__item one-whole large--one-third">{% include 'total-cart' %}</div>
+</div>
+<script>
+  
+$(function() {
+  
+  
+  var $flightNumber = $('input[name="attributes[Numéro de votre vol]"]');
+  var $Date_livaraison = $('input[name="Date de livraison"]');
+  var $heure_livaraison = $('select[name="attributes[Heure de livraison]"]');
+  var $hour = $('select[name="attributes[Reure de votre vol]"]');
+  var $times = $('input[name="attributes[Date de vontre vol]"');
+  //var $phone = $('input[name="attributes[Numéro de téléphone portable]"]');
+  var $submit = $('button[name=checkout]');
+  var $delivery_address = $('input[name="attributes[Adresse de livraison]"]');
+  var $apartment_address = $('input[name="attributes[Appartement, étage, digicode, etc.]"]');
+  var $code_postal = $('input[name="attributes[Code Postal]"]');
+  var $ville = $('input[name="attributes[Ville]"]');
+  var $rbl_date = $('input[name="attributes[Date de retrait]"]');
+  var $rbl_hours = $('input[name="attributes[Heure de retrait]"]');
+  var $date_votre = $('input[name="attributes[Date de votre vol]"]');
+  var $heure_vol = $('input[name="attributes[Heure de votre vol]"]');
+  var $come_from = $('input[name="attributes[come-from]');
+  var $change = $('input[name="attributes[Numéro de votre vol]"], input[name="Date de livraison"], select[name="attributes[Heure de livraison]"], select[name="attributes[Reure de votre vol]"], input[name="attributes[Date de vontre vol]"], input[name="attributes[Adresse de livraison]"], input[name="attributes[Appartement, étage, digicode, etc.]"], input[name="attributes[Code Postal]"], input[name="attributes[Ville]"], input[name="attributes[Date de retrait]"], input[name="attributes[Heure de retrait]"], input[name="attributes[come-from]' );
+  
+  //if is weekend
+  var is_weekend =  function(date1){
+    var dt = new Date(date1);
+
+    if(dt.getDay() == 6 || dt.getDay() == 0)
+    {
+      return "weekend";
+    }else{
+      return "not weekend";
+    }
+  }
+  function updateCartDate(dateText) {
+   // var formattedDate = $.datepicker.formatDate('d MM yy', new Date(dateText));
+
+    //console.log(is_weekend(formattedDate));
+
+
+    var today = new Date();
+
+    //restore datepicker to its original DOM position
+    $('[data-datepicker-wrapper]').addClass('medium-down--hide');
+    $('[data-datepicker-wrapper]').appendTo($('[data-datapicker-container]'));
+  }
+
+
+     $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals #l6e_button").attr("disabled", true);
+	   $("#Heure_de_livaraison").attr("disabled", true);
+     $("#Heure_de_votre_vol").attr("disabled", true);
+     $("#Heure_de_votre_livarison").attr("disabled", true);
+     $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-rbl.terminals .btn.rbl_terminal").attr("disabled", true);
+     $("#retrait_section .radio-toolbar fieldset.fieldset--fill.first.localiton-qo6.terminals .btn.heure_deBtn").attr("disabled", true);
+     $("#retrait_section .radio-toolbar .aero_section .btn.flightBtn").attr("disabled", true);
+     setTimeout(function(){
+      $("#Heure_de_retrait").attr("disabled", true);
+     
+    },50);
+    //current time
+    var datepickerx1_min_date = "";
+    var datepickerx2_min_date = "";
+    var datepickerx3_min_date = "";
+    var datepickerx4_min_date = "";
+    var dt_curr = new Date(new Date().toLocaleString("en-FR",{timeZone:'Europe/Paris'}));
+    var curr_hour = dt_curr.getHours();
+    var curr_minute = dt_curr.getMinutes();
+    var curr_time = curr_hour + ":" +curr_minute;
+    var curr_totalMin = curr_hour*60 + curr_minute;
+    console.log("current time: "+curr_time);
+    
+    if(curr_totalMin >= "1111")
+    {
+      datepickerx1_min_date = "+1";
+    }
+    else
+    {
+      datepickerx1_min_date = "0";
+    }
+    if(curr_totalMin >= "811")
+    {
+      datepickerx2_min_date = "+1";
+    }
+    else
+    {
+      datepickerx2_min_date = "0";
+    }
+    if(curr_totalMin >= "1081")
+    {
+      datepickerx4_min_date = "+1";
+    }
+    else
+    {
+      datepickerx4_min_date = "0";
+    }
+    if(curr_totalMin >= "1081")
+    {
+      datepickerx3_min_date = "+1";
+    }
+    else
+    {
+      datepickerx3_min_date = "0";
+    }
+    //#datepickerx1 start
+  	var datepicker = $( "#datepickerx1" ).datepicker({
+        dateFormat: 'd MM yy',
+        
+        minDate: datepickerx1_min_date,
+        maxDate: '+2M',
+        firstDay: 1,
+        regional: "fr",
+        showTimezone: true,
+        mask: true,
+        onSelect: function (dateText) {
+        var hour = $hour.val();
+        var times = $times.val();
+        var voo = $flightNumber.val();
+        //var phone = $phone.val();
+        var delivery_address = $delivery_address.val();
+        var apartment_address = $apartment_address.val();
+        var code_postal = $code_postal.val();
+        var ville = $ville.val();
+        var rbl_date = $rbl_date.val();
+        var rbl_hours = $rbl_hours.val();
+        var heure_vol = $heure_vol.val();
+        var date_votre = $date_votre.val();
+        var Date_livaraison = $Date_livaraison.val();
+        if (hour != '' && times != '' && voo != "") {
+          $('#dial-code').val('+'+instance.getSelectedCountryData().dialCode);
+          $submit.removeAttr('disabled');
+          $('[data-breadcrumb-step-3]').removeClass('disabled');
+        } else {
+          //$submit.attr('disabled', '');
+          $('[data-breadcrumb-step-3]').addClass('disabled');
+        }
+        $("#Heure_de_livaraison").removeAttr("disabled");
+               
+        const monthNames = ["janvier", "février", "Mars", "avril", "Mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+        var dt = new Date(new Date().toLocaleString("en-FR",{timeZone:'Europe/Paris'}));
+        var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        var hours_time  = dt.getHours();
+        var day = dt.getDate();
+        var month = monthNames[dt.getMonth()];
+        var year = dt.getFullYear();
+        var today_date = day+' '+month+' '+year;
+        var newHour =  dt.getHours() + 1;
+        //var newHour =  18;
+        var new_time = newHour + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+       var new_Minute = dt.getMinutes();
+       //var new_Minute = 31;
+       var totalMin = newHour*60 + new_Minute;
+        var new_hourMin = newHour + ":" + new_Minute;
+        console.log("Old Hour: "+time);
+        console.log("New Hour: "+new_hourMin);
+        if(today_date == dateText)
+        {
+         setTimeout(function(){
+          $("#Heure_de_livaraison option").each(function(){
+              var data_hour = $(this).attr("data-hour");
+              var data_min = $(this).attr("data-min");
+              //console.log(data_min);
+
+              var optiontime = parseInt(data_hour)*60 + parseInt(data_min);
+              //console.log("totalMin = "+totalMin);
+              //console.log("optiontime = "+optiontime);
+              if(totalMin > optiontime){
+                $(this).attr("disabled", true);
+                $(this).css("color", "#bdbdbd");
+              }
+
+              /*if(newHour > data_hour)
+              {
+                $(this).attr("disabled", true);
+                $(this).css("color", "#bdbdbd");
+              }else if(newHour == data_hour){
+                if(new_Minute >= "30" && data_min == "30")  
+                {   
+                  $(this).attr("disabled", true);
+                  $(this).css("color", "#bdbdbd");
+                }else if(new_Minute >= "00"){
+                  $(this).attr("disabled", true);
+                  $(this).css("color", "#bdbdbd");
+                }
+              }*/
+              
+
+          });
+       
+        },50);
+          
+        }
+        else
+        {
+          setTimeout(function(){
+          $("#Heure_de_livaraison option").removeAttr("disabled");
+          $("#Heure_de_livaraison option").css("color", "#000");
+          },50);
+          console.log("selected another date");
+        }
+        if(dateText != '' && $("input#Adresse_de_livaraison").val() != '')
+         {
+          $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals #l6e_button").attr("disabled", false);
+        }
+        else
+        {
+          $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals #l6e_button").attr("disabled", true);
+        }
+
+      } // datepickerx1
+     
+    });//#datepickerx1 end
+//#datepickerx2 start
+    var datepicker = $( "#datepickerx2" ).datepicker({
+      dateFormat: 'd MM yy',
+      minDate: datepickerx2_min_date,
+      maxDate: '+2M',
+      firstDay: 1,
+      regional: "fr",
+      showTimezone: true,
+      mask: true,
+      onSelect: function (dateText1) {
+
+        $("#Heure_de_retrait").removeAttr("disabled");
+        const monthNames = ["janvier", "février", "Mars", "avril", "Mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+        var dt = new Date(new Date().toLocaleString("en-FR",{timeZone:'Europe/Paris'}));
+        var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        //var time = "11:05:28";
+        var hours_time  = dt.getHours();
+        var day = dt.getDate();
+        var month = monthNames[dt.getMonth()];
+        var year = dt.getFullYear();
+        var today_date = day+' '+month+' '+year;
+        var newHour =  dt.getHours() + 1;
+        //var newHour =  12;
+        var new_time = newHour + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+       var new_Minute = dt.getMinutes();
+       //var new_Minute = 14;
+       var totalMin = newHour*60 + new_Minute;
+        var new_hourMin = newHour + ":" + new_Minute;
+        console.log("Old Hour: "+time);
+        console.log("New Hour: "+new_hourMin);
+        if(today_date == dateText1)
+        {
+         setTimeout(function(){
+            $("#Heure_de_retrait option").each(function(){
+              var data_hour1 = $(this).attr("data-hour");
+              var data_min1 = $(this).attr("data-min");
+
+              var optiontime = parseInt(data_hour1)*60 + parseInt(data_min1);
+              //console.log("totalMin = "+totalMin);
+              //console.log("optiontime = "+optiontime);
+              if(totalMin > optiontime){
+                $(this).attr("disabled", true);
+                $(this).css("color", "#bdbdbd");
+              }
+          
+          });
+        },50);
+          
+        }
+        else
+        {
+          setTimeout(function(){
+          $("#Heure_de_retrait option").removeAttr("disabled");
+          $("#Heure_de_retrait option").css("color", "#000");
+          },50);
+          console.log("selected another date");
+        }
+
+        if(dateText1 != '')
+         {
+          $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-rbl.terminals .btn.rbl_terminal").attr("disabled", false);
+        }
+        else
+        {
+          $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-rbl.terminals .btn.rbl_terminal").attr("disabled", true);
+        }
+      }
+    });//#datepickerx2 end
+  //#datepickerx start
+    var datepicker = $( "#datepickerx4" ).datepicker({
+      dateFormat: 'd MM yy',
+      minDate: datepickerx4_min_date,
+      maxDate: '+2M',
+      firstDay: 1,
+      regional: "fr",
+      showTimezone: true,
+      mask: true,
+      onSelect: function (dateText1) {
+
+        $("#Heure_de_votre_vol").removeAttr("disabled");
+        const monthNames = ["janvier", "février", "Mars", "avril", "Mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+        var dt = new Date(new Date().toLocaleString("en-FR",{timeZone:'Europe/Paris'}));
+        var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        //var time = "11:05:28";
+        var hours_time  = dt.getHours();
+        var day = dt.getDate();
+        var month = monthNames[dt.getMonth()];
+        var year = dt.getFullYear();
+        var today_date = day+' '+month+' '+year;
+        var newHour =  dt.getHours() + 1;
+        //var newHour =  12;
+        var new_time = newHour + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+       var new_Minute = dt.getMinutes();
+       //var new_Minute = 14;
+       var totalMin = newHour*60 + new_Minute;
+        var new_hourMin = newHour + ":" + new_Minute;
+        console.log("Old Hour: "+time);
+        console.log("New Hour: "+new_hourMin);
+        if(today_date == dateText1)
+        {
+         setTimeout(function(){
+            $("#Heure_de_votre_vol option").each(function(){
+              var data_hour1 = $(this).attr("data-hour");
+              var data_min1 = $(this).attr("data-min");
+
+              var optiontime = parseInt(data_hour1)*60 + parseInt(data_min1);
+              //console.log("totalMin = "+totalMin);
+              //console.log("optiontime = "+optiontime);
+              if(totalMin > optiontime){
+                $(this).attr("disabled", true);
+                $(this).css("color", "#bdbdbd");
+              }
+          
+          });
+        },50);
+          
+        }
+        else
+        {
+          setTimeout(function(){
+          $("#Heure_de_votre_vol option").removeAttr("disabled");
+          $("#Heure_de_votre_vol option").css("color", "#000");
+          },50);
+          console.log("selected another date");
+        }
+        if(dateText1 != '')
+         {
+          $("#retrait_section .radio-toolbar fieldset.fieldset--fill.first.localiton-qo6.terminals .btn.heure_deBtn").attr("disabled", false);
+        }
+        else
+        {
+          $("#retrait_section .radio-toolbar fieldset.fieldset--fill.first.localiton-qo6.terminals .btn.heure_deBtn").attr("disabled", true);
+        }
+      }
+    }); //#datepickerx end
+
+    
+        //#datepickerx3 start
+    var datepicker = $( "#datepickerx3" ).datepicker({
+      dateFormat: 'd MM yy',
+      minDate: datepickerx3_min_date,
+      maxDate: '+2M',
+      firstDay: 1,
+      regional: "fr",
+      showTimezone: true,
+      mask: true,
+      onSelect: function (dateText3) {
+       
+        $("#Heure_de_votre_livarison").removeAttr("disabled");
+        const monthNames = ["janvier", "février", "Mars", "avril", "Mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+        var dt = new Date(new Date().toLocaleString("en-FR",{timeZone:'Europe/Paris'}));
+        var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        //var time = "11:05:28";
+        var hours_time  = dt.getHours();
+        var day = dt.getDate();
+        var month = monthNames[dt.getMonth()];
+        var year = dt.getFullYear();
+        var today_date = day+' '+month+' '+year;
+       var newHour =  dt.getHours() + 1;
+       // var newHour =  10;
+        var new_time = newHour + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        var new_Minute = dt.getMinutes();
+       //var new_Minute = 30;
+       var totalMin = newHour*60 + new_Minute;
+        var new_hourMin = newHour + ":" + new_Minute;
+        console.log("Old Hour: "+time);
+        console.log("New Hour: "+new_hourMin);
+        if(today_date == dateText3)
+        {
+         setTimeout(function(){
+            $("#Heure_de_votre_livarison option").each(function(){
+              var data_hour1 = $(this).attr("data-hour");
+              var data_min1 = $(this).attr("data-min");
+
+              var optiontime = parseInt(data_hour1)*60 + parseInt(data_min1);
+              //console.log("totalMin = "+totalMin);
+              //console.log("optiontime = "+optiontime);
+              if(totalMin > optiontime){
+                $(this).attr("disabled", true);
+                $(this).css("color", "#bdbdbd");
+              }
+          
+          });
+        },50);
+          
+        }
+        else
+        {
+          setTimeout(function(){
+          $("#Heure_de_votre_livarison option").removeAttr("disabled");
+          $("#Heure_de_votre_livarison option").css("color", "#000");
+          },50);
+          console.log("selected another date");
+        }
+     
+        if(dateText3 != '' && $("input#flightNumber").val() != '')
+         {
+          $("#retrait_section .radio-toolbar .aero_section .btn.flightBtn").attr("disabled", false);
+        }
+        else
+        {
+          $("#retrait_section .radio-toolbar .aero_section .btn.flightBtn").attr("disabled", true);
+        }
+      }
+    });  //#datepickerx3 end
+  var cartDate = '{{ cart.attributes.date }}';
+  if (cartDate) {
+    datepicker.datepicker('setDate', cartDate);
+  }
+   $("input#Adresse_de_livaraison").keyup(function(){
+    if($(this).val() != '' && $("#datepickerx1").val() != '')
+    {
+      $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals #l6e_button").attr("disabled", false);
+    }
+    else
+    {
+      $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals #l6e_button").attr("disabled", true);
+    }
+   
+  });
+   
+  $("input#flightNumber").keyup(function(){
+    if($(this).val() != '' && $("#datepickerx3").val() != '')
+    {
+      $("#retrait_section .radio-toolbar .aero_section .btn.flightBtn").attr("disabled", false);
+    }
+    else
+    {
+      $("#retrait_section .radio-toolbar .aero_section .btn.flightBtn").attr("disabled", true);
+    }
+   
+  }); 
+
+  updateCartDate(datepicker.datepicker('getDate'));
+
+  $('[data-datepicker-button]').on('click', function(event) {
+    if($(this).parent().parent().hasClass("fieldset--fill")){
+      $('[data-datepicker-wrapper]').removeClass('medium-down--hide');
+      //iOS requires the element at the top of the DOM to function as a modal
+      $('[data-datepicker-wrapper]').prependTo($('body'));
+      event.preventDefault();
+    }
+  });
+  var input = document.querySelector("#phone");
+  var instance = window.intlTelInput(input, {
+    // allowDropdown: false,
+    //autoHideDialCode: false,
+    autoPlaceholder: "off",
+    // dropdownContainer: document.body,
+    // excludeCountries: ["us"],
+//     formatOnDisplay: true,
+//           geoIpLookup: function(callback) {
+//             $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+//               var countryCode = (resp && resp.country) ? resp.country : "";
+//               callback(countryCode);
+//             });
+//           },
+    hiddenInput: "full",
+    initialCountry: "fr",
+    //localizedCountries: { 'fr': 'France' },
+    // nationalMode: false,
+    // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+    //placeholderNumberType: "MOBILE",
+    // preferredCountries: ['cn', 'jp'],
+    //separateDialCode: true,
+    //utilsScript: "{{ 'utils.js' | asset_url }}",
+  });
+
+  $('#phone').val('+'+instance.getSelectedCountryData().dialCode);
+  $change.on('input', function() {
+    var hour = $hour.val();
+    var times = $times.val();
+    var voo = $flightNumber.val();
+  //  var phone = $phone.val();
+    var delivery_address = $delivery_address.val();
+    var apartment_address = $apartment_address.val();
+    var code_postal = $code_postal.val();
+    var ville = $ville.val();
+    var rbl_date = $rbl_date.val();
+    var rbl_hours = $rbl_hours.val();
+    var heure_vol = $heure_vol.val();
+    var date_votre = $date_votre.val();
+    var Date_livaraison = $Date_livaraison.val();
+      if (hour != '' && times != '' && voo != "") {
+		$('#dial-code').val('+'+instance.getSelectedCountryData().dialCode);
+        $submit.removeAttr('disabled');
+        $('[data-breadcrumb-step-3]').removeClass('disabled');
+      } else {
+        //$submit.attr('disabled', '');
+        $('[data-breadcrumb-step-3]').addClass('disabled');
+      }
+  })
+  .trigger('input');
+
+  input.addEventListener("countrychange", function() {
+    $('#dial-code').val('+'+instance.getSelectedCountryData().dialCode);
+    $('#phone').val('+'+instance.getSelectedCountryData().dialCode);
+  });
+
+
+
+}); 
+
+$("#code_postal, #ville_input").prop( "readonly", true );
+</script>

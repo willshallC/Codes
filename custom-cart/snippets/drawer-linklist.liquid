@@ -1,0 +1,21 @@
+
+{% for link in linklist.links %}
+  {% comment %}
+    If customer accounts are not enabled, do not provide account link
+  {% endcomment %}
+  {% if link.url == '/account' and shop.customer_accounts_enabled != true %}
+    <h1>{{ shop.customer_accounts_enabled }}</h1>
+    {% continue %}
+  {% endif %}
+  <li class="mobile-nav__item{% if link.active %} mobile-nav__item--active{% endif %}">
+    <a href="{{ link.url }}" class="mobile-nav__link{% if link.url == '/cart' %} js-drawer-close js-drawer-open-right{% endif %}">
+      {% if display_icon %}
+        <span class="icon-menu-{{link.handle}}"></span>
+      {% endif %}
+      <span>{{ link.title}}</span>
+      {% if link.url == '/cart' %}
+        <span id="CartCount">{{ cart.item_count }}</span>
+      {% endif %}
+    </a>
+  </li>
+{% endfor %}

@@ -1,0 +1,441 @@
+
+<!-- /templates/cart.liquid -->
+{% layout 'theme-condensed' %}
+{% comment %}
+
+  For info on test orders:
+    - General http://docs.shopify.com/manual/your-store/orders/test-orders
+    - Shopify Payments - http://docs.shopify.com/manual/more/shopify-payments/testing-shopify-payments
+
+{% endcomment %}
+
+{% if cart.item_count > 0 %}
+
+  {% assign location = settings.locations.first %}
+  {% assign terminal = location.terminals.first %}
+  {% comment %}{% assign terminal2 = location.terminals.last %}{% endcomment %}
+  {% capture location_name_code %}{{ location.name }} ({{ location.code | upcase }}){% endcapture %}
+  {% capture location_terminal %}{{ location_name_code }} – {{ terminal }}{% endcapture %}
+
+<!--  <div class="note note--top">
+    <span class="note__content">
+      {% comment %}
+      {{ 'cart.date.note' | t: location: location_terminal }}
+      {% endcomment %}
+      <ly-as-8023788>Les commandes sont possibles jusqu’à 15hr la veille de votre départ et disponibles du lundi au vendredi pour le Terminal 2.</ly-as-8023788>
+    </span>
+    <button class="note__close">
+      <i class="icon-cancel"></i>
+    </button>
+  </div> -->
+          <h1>{{ 'cart.general.my_cart' | t }}</h1>
+
+  <form autocomplete="off" data-cart-form action="/cart{% if request.host %}{% assign host = request.host %}{% assign domains = shop.metafields.language_domains %}{% for domain in domains %}{% assign key = domain | first %}{% assign value = domain | last | split: ',' %}{% if value contains host %}{% assign language = key %}{% endif %}{% endfor %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% else %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% endif %}{% assign checkout_code = shop.metafields.language_codes[language] %}{% if checkout_code %}{% assign checkout_code = '?locale=' | append: checkout_code %}{{ checkout_code }}{% endif %}" method="post" novalidate class="cart table-wrap">
+    <div data-step-1 class="cart--display">
+      <div class="grid--full">
+        <div class="grid__item one-whole large--two-thirds">
+          <table class="cart-table full table--responsive">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th style="text-align: center" class="bold">Prix</th>
+                <th style="text-align: center" class="bold">Quantité</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in cart.items %}
+                <tr class="cart__row table__section">
+                  <td data-label="{{ 'customer.order.product' | t }}" class="align--top">
+                    <a href="{{ item.url | within: collections.all }}" class="cart__image">
+                      {% comment %}
+                        More image size options at:
+                          - http://docs.shopify.com/themes/filters/product-img-url
+                      {% endcomment %}
+                      <img src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape}}">
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{{ item.url }}" class="h4">
+                      {{ item.product.title}}
+                    </a>
+                    {% unless item.variant.title contains 'Default' %}
+                      <small>{{ item.variant.title}}</small>
+                    {% endunless %}
+
+                    {% if settings.cart_vendor_enable %}
+                      <p>{{ item.vendor}}</p>
+                    {% endif %}
+
+                    <div class="rte medium-down--hide">
+
+                      {{ item.product.description | split: '<h3>' | first}}
+                    </div>
+
+                    {% comment %}
+                      Optional, loop through custom product line items if available
+
+                      For more info on line item properties, visit:
+                        - http://docs.shopify.com/support/your-store/products/how-do-I-collect-additional-information-on-the-product-page-Like-for-a-monogram-engraving-or-customization
+                    {% endcomment %}
+                    {% assign property_size = item.properties | size %}
+                    {% if property_size > 0 %}
+                      {% for p in item.properties %}
+                        {% unless p.last == blank %}
+                          {{ p.first }}:
+
+                          {% comment %}
+                            Check if there was an uploaded file associated
+                          {% endcomment %}
+                          {% if p.last contains '/uploads/' %}
+                            <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                          {% else %}
+                            {{ p.last }}
+                          {% endif %}
+
+                          <br>
+                        {% endunless %}
+                      {% endfor %}
+                    {% endif %}
+                  </td>
+
+                  <td data-label="{{ 'cart.label.total' | t }}" class="text-right " style="width: 95px;">
+                    {% if item.original_line_price != item.line_price %}
+                      <span class="cart-item__original-price"><s>{{ item.original_line_price | money }}</s></span>
+                    {% endif %}
+                    <span class="h3">
+                      {{ item.line_price | money }}
+                    </span>
+                    {% for discount in item.discounts %}
+                      <span class="cart-item__discount">{{ discount.title}}</span>
+                    {% endfor %}
+                  </td>
+                  <td data-label="{{ 'cart.label.quantity' | t }}" class="quantity ">
+
+                  <div >
+
+                    <select name="quantity" class="quantitlect{{item.id}} b" >
+                      {% for i in (0..12) %}
+                        <option value="{{ i }}" {% if i == item.quantity %}selected{% endif %}>{{ i }}</option>
+                      {% endfor %}
+                    </select>
+
+                  </div>
+
+                  <style>
+                    .quantity {
+                      text-align: center
+                    }
+                    .quantity select:focus {
+                      outline-color: none!important;
+                      outline-width: none !important;
+                      box-shadow: none !important;
+                    }
+                  </style>
+                  <script>
+                    $('.quantitlect{{item.id}}').change(function () {
+                         var optionSelected = $(this).find('option:selected');
+                         //var optTextSelected = optionSelected.text();
+                         var itmqty = optionSelected.val();
+                         setTimeout(function() {
+                           $.post('/cart/update.js',"updates[{{item.id}}]="+ itmqty)
+                           .always(function() {
+                             location.href = '/cart'
+                           });
+                         }, 10);
+                       });
+                  </script>
+
+                  </td>
+
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <button type="submit" name="update" class="btn update-cart visually-hidden">{{ 'cart.general.update' | t }}</button>
+        </div>
+        <div class="grid__item one-whole large--one-quarter push--large--one-twelfth">
+          <fieldset class="fieldset--fill">
+            <button type="submit" name="next" class="btn">{{ 'cart.general.confirm' | t }}</button>
+            <a href="/collections" class="btn btn--tertiary">{{ 'cart.general.continue_browsing' | t }}</a>
+            {% if settings.cart_notes_enable %}
+              <p>
+                <label for="CartSpecialInstructions">{{ 'cart.general.note' | t }}</label>
+                <textarea name="note" class="input-full" id="CartSpecialInstructions">{{ cart.note }}</textarea>
+              </p>
+            {% endif %}
+            <div class="cart__subtotal-block">
+
+              <div class="cart__subtotal-row">
+                <div class="left">
+                  <span class="cart__subtotal-title">{{ 'cart.general.subtotal' | t }}</span>
+                </div>
+                <div class="right text-right">
+                  <span class="h3 cart__subtotal">{{ cart.original_total_price | money }}</span>
+                </div>
+              </div>
+
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <div data-step-2 class="visually-hidden pickup-date--display">
+      {% include 'pickup-date' %}
+      {% comment %}{% include 'delivery-form' %}{% endcomment %}
+    </div>
+  </form>
+  <div data-related-products class="grid-uniform flex related-products">
+    <div class="grid__item one-whole">
+      <h4>{{ 'cart.general.related_products' | t}}</h4>
+    </div>
+    {% comment %}
+      Related items
+    {% endcomment %}
+    {% assign grid_item_width = 'large--one-quarter' %}
+    {% assign related_product_count = 0 %}
+    {% assign cart_items = cart.items | map: 'title' | join: ',' %}
+    {% for product in collections.related.products %}
+      {% if cart_items contains product.title %}
+        {% continue %}
+      {% else %}
+        {% include 'product-grid-item' %}
+        {% capture related_product_count %}{{ related_product_count | plus: 1 }}{% endcapture %}
+        {% if related_product_count == "4" %}
+          {% break %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  {% comment %}
+    The cart is empty
+  {% endcomment %}
+  <p>{{ 'cart.general.empty' | t }}</p>
+  <p>{{ 'cart.general.continue_browsing_html' | t }}</p>
+{% endif %}
+<script type="text/javascript">
+  $(function() {
+    function gotoStep1() {
+      $('[data-step-1]').removeClass('visually-hidden');
+      $('[data-step-2]').addClass('visually-hidden');
+      $('[data-breadcrumb-step-1').addClass('active');
+      $('[data-breadcrumb-step-2').removeClass('active');
+      $('[data-related-products]').show();
+    };
+
+    function gotoStep2() {
+      $('[data-step-1]').addClass('visually-hidden');
+      $('[data-step-2]').removeClass('visually-hidden');
+      $('[data-breadcrumb-step-1]').removeClass('active');
+      $('[data-breadcrumb-step-2]').addClass('active');
+      $('[data-related-products]').hide();
+    };
+
+    if (window.location.href.includes('step=2')) {
+      gotoStep2();
+    }
+    $('button[name="next"]').on('click', function(event) {
+      event.preventDefault();
+      {% comment %}
+      {% if customer %}
+        gotoStep2();
+      {% else %}
+        window.location.href = "/account/login?from=funnel";
+      {% endif %}
+      {% endcomment %}
+      gotoStep2();
+    });
+
+    $('[data-breadcrumb-step-1]').on('click', function(event) {
+      event.preventDefault();
+      gotoStep1();
+    });
+
+    $('[data-breadcrumb-step-2]').on('click', function(event) {
+      event.preventDefault();
+      gotoStep2();
+     
+    });
+
+    $('[data-breadcrumb-step-3]').on('click', function(event) {
+      event.preventDefault();
+      $('[data-checkout-button]').trigger('click');
+    });
+  });
+
+  $(".step.step-two .grid__item.one-half.medium-down--one-whole.step-content.edit-step-two").click(function(){
+    $("#retrait_section h3.grid__item.one-half.medium-down--one-whole.step-title").hide();
+    $("#retrait_section .radio-toolbar fieldset.fieldset--fill.first.localiton-qo6.terminals .btn.heure_deBtn").attr("disabled", true);
+  });
+  $(".step.step-one .grid__item.one-half.medium-down--one-whole.step-content.edit-step-one").click(function(){
+    $(".step.step-two h3.grid__item.one-half.medium-down--one-whole.step-title").hide();
+    $("#retrait_section h3.grid__item.one-half.medium-down--one-whole.step-title").hide();
+    $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-rbl.terminals .btn.rbl_terminal").attr("disabled", true);
+
+    $(".step.step-two .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals #l6e_button").attr("disabled", true);
+  });
+
+  $("#h3_text1, #h3_text2, #retrait_section #h3_title1, #retrait_section #h3_title2").hide();
+  $("span.btn.continuer-step-two").click(function(){
+    $("#l6e").removeAttr("disabled");
+    $(".step.step-two h3.grid__item.one-half.medium-down--one-whole.step-title.active").show();
+    
+    setTimeout(function(){
+      if($("#QO6").children(".radio-terminals").is(":checked")){
+       $("#retrait_section").find("fieldset.fieldset--fill.localiton-qo6.terminals").show();
+       $("#retrait_section").find("fieldset.fieldset--fill.localiton-lt1.terminals").hide();
+       
+      }
+      
+      if ($('fieldset.localiton-l6e.terminals').is(':visible') || $('fieldset.fieldset--fill.localiton-rbl.terminals').is(':visible')) {
+       $("span.btn.continuer-step-three").hide();
+      }else{
+     
+       $("span.btn.continuer-step-three").show();
+      }
+      
+    },40);
+     
+  });
+  $(".step.step-three").find(".fieldset--fill:first").show();
+  $(".step.step-three").find(".localiton-qo6").show();
+  $("#terminal-1-sel").click(function(){
+    $(".step.step-three").find(".localiton-qo6").show();
+  });
+ 
+
+  //remove terminal_name from L6e and RBL
+  $(".step.step-two .step-content .radio-toolbar fieldset#QO6 #terminal-1-sel").removeAttr("name");
+  // remove come-from attributes
+  $("#retrait_section").find(".je_pars #come-1").removeAttr("name");
+  $("#retrait_section").find(".je_arrive #come-2").removeAttr("name");
+ //LT1, LT2 code
+  $("#LT1, #LT2").children(".radio-terminals").click(function(){
+       $("#retrait_section").find("fieldset.fieldset--fill.localiton-qo6.terminals").hide();
+       $("#retrait_section").find("fieldset.first.fieldset--fill.localiton-lt1.terminals").show();
+       $("#retrait_section").find("fieldset.fieldset--fill.not-first.localiton-lt2.terminals").show();
+       $("#retrait_section #h3_title2").addClass("active").removeClass("hide");
+       $("#retrait_section #h3_title1").removeClass("active").addClass("hide");
+       $("#retrait_section").find("fieldset.active_text #come-1").attr("checked", true);
+       $("#retrait_section .step-content .radio-toolbar div.aero_section .field-group .input_container #datepickerx3").attr("name", "attributes[Date de votre vol]");
+       $("#retrait_section .step-content .radio-toolbar div.aero_section .field-group .input_container select").attr("name", "attributes[Heure de votre vol]");
+       $("#retrait_section .step-content .radio-toolbar fieldset.fieldset--fill.first.localiton-qo6.terminals .field-group .input_container #datepickerx").removeAttr("name");
+       $("#retrait_section .step-content .radio-toolbar fieldset.fieldset--fill.first.localiton-qo6.terminals .field-group .input_container select").removeAttr("name");
+       $("#retrait_section").find(".je_pars #come-1").attr("name", "attributes[come-from]");
+       $("#retrait_section").find(".je_arrive #come-2").attr("name", "attributes[come-from]");
+  });
+  //LT1 code
+  $("#LT1").children(".radio-terminals").click(function(){
+    $(this).attr("checked", true);
+    $("#QO6").children(".radio-terminals").removeAttr("checked");
+    $("#LT2").children(".radio-terminals").removeAttr("checked");
+  });
+
+  //LT2 code
+  $("#LT2").children(".radio-terminals").click(function(){
+    $(this).attr("checked", true);
+    $("#QO6").children(".radio-terminals").removeAttr("checked");
+    $("#LT1").children(".radio-terminals").removeAttr("checked");
+  });
+
+  // QO6 code
+  $("#QO6").children(".radio-terminals").click(function(){
+    $("#retrait_section").find("fieldset.fieldset--fill.localiton-qo6.terminals").show();
+    $("#retrait_section").find("fieldset.first.fieldset--fill.localiton-lt1.terminals").hide();
+    $("#retrait_section").find("fieldset.fieldset--fill.not-first.localiton-lt2.terminals").hide();
+    $("#retrait_section #h3_title2").removeClass("active").addClass("hide");
+    $("#retrait_section #h3_title1").addClass("active").removeClass("hide");
+    $("#retrait_section").find("fieldset.active_text #come-1").attr("checked", false);
+    $(this).attr("checked", true);
+    $(this).attr("name", "attributes[terminal_name]");
+    $("#LT1").children(".radio-terminals").removeAttr("checked");
+    $("#LT2").children(".radio-terminals").removeAttr("checked");
+    $("#retrait_section .step-content .radio-toolbar fieldset.fieldset--fill.first.localiton-qo6.terminals .field-group .input_container #datepickerx").attr("name", "attributes[Date de votre vol]");
+    $("#retrait_section .step-content .radio-toolbar fieldset.fieldset--fill.first.localiton-qo6.terminals .field-group .input_container select").attr("name", "attributes[Heure de votre vol]");
+    $("#retrait_section .step-content .radio-toolbar div.aero_section .field-group .input_container #datepickerx3").removeAttr("name");
+    $("#retrait_section .step-content .radio-toolbar div.aero_section .field-group .input_container select").removeAttr("name");
+    $(".step.step-two .step-content .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals .location-L6E .field-group .input_container #datepickerx1").removeAttr("name");
+    $(".step.step-two .step-content .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals .location-L6E .field-group .input_container select#Heure_de_livaraison").removeAttr("name");
+  });
+  $(".step-one").find(".radio-toolbar").children("fieldset #location-3").click(function(){
+    $("span.btn.continuer-step-three").show();
+  });
+  $("span.btn.continuer-step-three").click(function(){
+    setTimeout(function(){
+      if ($('fieldset.fieldset--fill.first.localiton-qo6.terminals').is(':visible'))
+      {
+      $("#retrait_section").find("fieldset.fieldset--fill.aero_section").hide();
+      $("#retrait_section").find("div.aero_section").hide();
+      //$("#retrait_section").find("fieldset.fieldset--fill.first.localiton-lt1.terminals").children("label.terminal-lt1").prop("checked", true);
+      }
+      else{
+        $("#retrait_section").find("fieldset.fieldset--fill.aero_section").show();
+        $("#retrait_section").find("div.aero_section").show();
+      }
+      $("div#retrait_section h3.grid__item.one-half.medium-down--one-whole.step-title.active").show();
+    },20);
+  });
+ $("#retrait_section #h3_title2").hide();
+
+ //remove attributed from other fields
+
+ //RBL Code
+ $(".step.step-one.active .step-content .radio-toolbar #RBL").click(function(){
+  $(".step.step-two #h3_text2").removeClass("active").addClass("hide");
+  $(".step.step-two #h3_text1").addClass("active").removeClass("hide");
+    setTimeout(function(){
+      $(".step.step-two .step-content .radio-toolbar .localiton-l6e.terminals .location-L6E .one-whole.l6e .field-group.postal_code .input_container #code_postal").removeAttr("name");
+      $(".step.step-two .step-content .radio-toolbar .localiton-l6e.terminals .location-L6E .one-whole.l6e .field-group.ville_post .input_container #ville_input").removeAttr("name");
+    },50);
+ });
+
+ // L6E code
+ $(".step.step-one.active .step-content .radio-toolbar #L6E").click(function(){
+  $(".step.step-two #h3_text2").removeClass("active").addClass("hide");
+  $(".step.step-two #h3_text1").addClass("active").removeClass("hide");
+  setTimeout(function(){
+    $(".step.step-two .step-content .radio-toolbar .localiton-l6e.terminals .location-L6E .one-whole.l6e .field-group.postal_code .input_container #code_postal").attr("name", "attributes[Code Postal]");
+      $(".step.step-two .step-content .radio-toolbar .localiton-l6e.terminals .location-L6E .one-whole.l6e .field-group.ville_post .input_container #ville_input").attr("name", "attributes[Ville]");
+    },50);  
+ });
+
+ //SEL code
+ $(".step.step-one.active .step-content .radio-toolbar #SEL").click(function(){
+  $(".step.step-two #h3_text1").removeClass("active").addClass("hide");
+  $(".step.step-two #h3_text2").addClass("active").removeClass("hide");
+    setTimeout(function(){
+      $(".step.step-two .step-content .radio-toolbar .localiton-l6e.terminals .location-L6E .one-whole.l6e .field-group.postal_code .input_container #code_postal").removeAttr("name");
+      $(".step.step-two .step-content .radio-toolbar .localiton-l6e.terminals .location-L6E .one-whole.l6e .field-group.ville_post .input_container #ville_input").removeAttr("name");
+      $("#QO6").children(".radio-terminals").attr("checked", true);
+      $("#retrait_section .step-content .radio-toolbar div.aero_section .field-group .input_container #datepickerx3").removeAttr("name");
+      $("#retrait_section .step-content .radio-toolbar div.aero_section .field-group .input_container select").removeAttr("name");
+      $(".step.step-two .step-content .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals .location-L6E .field-group .input_container #datepickerx1").removeAttr("name");
+      $(".step.step-two .step-content .radio-toolbar fieldset.fieldset--fill.first.localiton-l6e.terminals .location-L6E .field-group .input_container select#Heure_de_livaraison").removeAttr("name");
+      $(".step.step-two .step-content .radio-toolbar fieldset#QO6 #terminal-1-sel").attr("name", "attributes[terminal_name]");
+    },50);
+ });
+ $("#retrait_section").hide();
+ $(".step.step-one.active .step-content .radio-toolbar fieldset#SEL").click(function(){
+  $("#retrait_section").show();
+ });
+ $(".step.step-one.active .step-content .radio-toolbar fieldset#RBL, .step.step-one.active .step-content .radio-toolbar fieldset#L6E").click(function(){
+  $("#retrait_section").hide();
+ });
+ $("fieldset.fieldset--fill.je_arrive").click(function(){
+  $(this).children("#come-2").attr("checked", true);
+  $(this).siblings("fieldset.fieldset--fill.je_pars").children("#come-1").removeAttr("checked");
+ });
+ $("fieldset.fieldset--fill.je_pars").click(function(){
+  $(this).children("#come-1").attr("checked", true);
+  $(this).siblings("fieldset.fieldset--fill.je_arrive").children("#come-2").removeAttr("checked");
+ });
+
+ $(".localiton-l6e.terminals #terminal-1-l6e").removeAttr("name");
+ $(".localiton-l6e.terminals #terminal-1-l6e").removeAttr("value");
+ $("fieldset.fieldset--fill.first.localiton-adn.terminals #terminal-1-adn").removeAttr("name");
+ $("fieldset.fieldset--fill.first.localiton-adn.terminals #terminal-1-adn").removeAttr("value");
+ 
+//console.log(time);
+</script>

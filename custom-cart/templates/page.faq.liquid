@@ -1,0 +1,120 @@
+
+<!-- /templates/page.faq.liquid -->
+{% layout 'theme-condensed' %}
+<div class="page__faq">
+  <div class="grid">
+    <div class="grid__item one-whole">
+      <h1>{{ page.title}}</h1>
+    </div>
+
+    {% comment %}
+      sections are delineated by `h2` tags
+      this makes editing simpler in the rte
+    {% endcomment %}
+    {% assign sections = page.content | split: '<h2>' %}
+    <div class="grid__item one-whole">
+      <div class="grid--full tab-nav--container">
+        <div class="grid__item one-whole">
+          <ul class="tab-nav medium-down--hide">
+            {% for section in sections %}
+              {% if forloop.first %}
+                {% comment %}
+                  First item will be an empty artefact of the split
+                {% endcomment %}
+                {% continue %}
+              {% endif %}
+              <li>
+              {% assign section_name = section | split: '</h2>' | first %}
+                <a href="#" data-filter-section="{{ section_name | handleize }}">
+                  <span>{{ section_name }}</span>
+                  <span class="tab-count">{{ section | split: '<h3>' | size | minus: 1 }}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+
+          <div class="tab-nav--mobile large--hide">
+            <button data-tab-nav--toggle class="tab-nav--toggle"></button>
+
+            <ul class="tab-nav">
+              {% for section in sections %}
+                {% if forloop.first %}
+                  {% comment %}
+                    First item will be an empty artefact of the split
+                  {% endcomment %}
+                  {% continue %}
+                {% endif %}
+                <li>
+                {% assign section_name = section | split: '</h2>' | first %}
+                  <a href="#" data-filter-section="{{ section_name | handleize }}">
+                    <span>{{ section_name }}</span>
+                    <span class="tab-count">{{ section | split: '<h3>' | size | minus: 1 }}</span>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% for section in sections %}
+      {% if forloop.first %}
+        {% comment %}
+          First item will be an empty artefact of the split
+        {% endcomment %}
+        {% continue %}
+      {% endif %}
+      {% assign section_handle = section | split: '</h2>' | first | handleize %}
+      <section data-section="{{ section_handle }}" class="grid__item one-whole large--two-thirds push--large--one-sixth">
+        <div class="rte">
+          {% comment %}
+            Re-insert the `h2` tag lost in the split
+          {% endcomment %}
+          {{ section | prepend: '<h2>' }}
+        </div>
+      </section>
+    {% endfor %}
+
+    <div class="note no-icon">
+      <div class="note__content">
+        {{ 'pages.faq.note' | t }}<br>
+        <span class="note__content--minor">{{ 'pages.faq.comment' | t }}</span>
+      </div>
+      <a href="{{ pages.contact.url }}" class="btn note__action">{{ 'pages.faq.contact' | t }}</a>
+    </div>
+
+  </div>
+</div>
+
+{% include 'tab-nav-js' %}
+
+<script type="text/javascript">
+  $(function() {
+    var $mobileTabNavToggle = $('[data-tab-nav--toggle]');
+
+    $('[data-filter-section]').click(function(event) {
+      event.preventDefault();
+      var target = $(event.target).closest('[data-filter-section]');
+      var section = target.data('filter-section');
+
+      $('[data-section]').hide();
+      $('[data-section="' + section + '"]')
+        .show()
+        .find('h3, p').removeClass('show');
+
+      $('[data-filter-section]').closest('li').removeClass('filter--active');
+      target.closest('li').addClass('filter--active');
+
+      $mobileTabNavToggle.html(target.html());
+      $(event.target).closest('.tab-nav--mobile').removeClass('tab-nav--open');
+    });
+
+    $('[data-filter-section]').first().trigger('click');
+
+    $('[data-section] h3').click(function(event) {
+      var target = $(event.target).closest('h3');
+      target.toggleClass('show').next().toggleClass('show');
+    });
+  });
+</script>

@@ -1,0 +1,118 @@
+
+<nav class="nav-bar{%if header %} {{header}}{% endif %}" role="navigation">
+  <div class="wrapper">
+    <div class="medium-down--hide">
+      {% comment %}
+        List out your main-menu linklist (default)
+
+        More info on linklists:
+          - http://docs.shopify.com/themes/liquid-variables/linklists
+      {% endcomment %}
+      {% assign grid_width = 'large--one-third' %}
+      {% assign grid_width_center = grid_width %}
+      {% if template == 'cart' %}
+        {% assign grid_width = 'large--one-sixth' %}
+        {% assign grid_width_center = 'large--two-thirds' %}
+      {% endif %}
+      <div class="grid--full">
+        <div class="grid__item {{ grid_width }}">
+          {% if template == 'cart' %}
+            {% include 'site-logo' %}
+          {% else %}
+            <!-- begin site-nav -->
+            <ul class="site-nav" id="AccessibleNav">
+              {% for link in linklists.main-menu.links %}
+                {% comment %}
+                  Create a dropdown menu by naming a linklist the same as a link in the parent nav
+
+                  More info on dropdowns:
+                    - http://docs.shopify.com/manual/your-website/navigation/create-drop-down-menu
+                {% endcomment %}
+                {% assign child_list_handle = link.title | handleize %}
+                {% if linklists[child_list_handle].links != blank %}
+                  <li class="site-nav--has-dropdown{% if link.active %} site-nav--active{% endif %}" aria-haspopup="true">
+                    <a href="{{ link.url }}" class="site-nav__link">
+                      {{ link.title}}
+                      <span class="icon icon-arrow-down" aria-hidden="true"></span>
+                    </a>
+                    <ul class="site-nav__dropdown">
+                      {% for childlink in linklists[child_list_handle].links %}
+                        <li{% if childlink.active %} class="site-nav--active"{% endif %}>
+                          <a href="{{ childlink.url }}" class="site-nav__link">{{ childlink.title | escape}}</a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                {% else %}
+                  <li {% if link.active %}class="site-nav--active"{% endif %}>
+                    <a href="{{ link.url }}" class="site-nav__link">{{ link.title}}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+            <!-- //site-nav -->
+          {% endif %}
+        </div>
+        <div class="grid__item {{ grid_width_center }}">
+          {% if template == 'cart' %}
+            {% comment %}{% include 'breadcrumb-cart' %}{% endcomment %}
+          {% else %}
+            {% include 'site-logo' %}
+          {% endif %}
+        </div>
+        <div class="grid__item {{ grid_width }}">
+          <!-- right-hand nav -->
+          <ul class="site-nav text-right">
+            {% comment %}
+              If customer accounts are enabled, provide account link
+            {% endcomment %}
+            {% if shop.customer_accounts_enabled and template != 'cart' %}
+              <li{% if link.active %} class="site-nav--active"{% endif %}>
+                <a class="site-nav__link" href="/account">{{ 'customer.account.title' | t }}</a>
+              </li>
+            {% endif %}
+
+            {% comment %}
+              Show number of items in the cart in the /cart link
+
+              Ajax Cart Notes:
+                - #cartCount updates the total number of items in the cart
+                - Documentation:  http://shopify.com/timber#ajax-cart
+            {% endcomment %}
+            <li{% if link.active %} class="site-nav--active"{% endif %}>
+              <a href="/cart" class="site-nav__link site-header__cart-toggle js-drawer-open-right" aria-controls="CartDrawer" aria-expanded="false">
+                {{ 'layout.cart.title' | t }}
+                <span id="CartCount">{{ cart.item_count }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- //right-hand nav -->
+      </div>
+    </div>
+    <div class="large--hide medium-down--show">
+      <div class="site-nav--mobile">
+        {% if template == 'cart' %}
+          <a href="/" class="logo-link">
+            <span class="icon-logo" aria-hidden="true"></span>
+          </a>
+          {% include 'breadcrumb-cart' %}
+        {% else %}
+          <button type="button" class="icon-fallback-text site-nav__link js-drawer-open-left" aria-controls="NavDrawer" aria-expanded="false">
+            <span class="icon icon-hamburger" aria-hidden="true"></span>
+            <span class="fallback-text">{{ 'layout.navigation.menu' | t }}</span>
+          </button>
+          {%include 'site-logo' %}
+        {% endif %}
+        <a href="/cart" class="js-drawer-open-right site-nav__link" aria-controls="CartDrawer" aria-expanded="false">
+          <span id="CartCount">{{ cart.item_count }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+
+
+</script>

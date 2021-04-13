@@ -1,0 +1,68 @@
+
+{% if settings.footer_social_enable %}
+  <ul class="inline-list social-icons">
+    {% if settings.social_facebook_link != blank %}
+      <li>
+        <a class="icon-fallback-text" href="{{ settings.social_facebook_link }}" title="{{ {{
+shop.name }} <ly-as-6692629>on Facebook</ly-as-6692629>" target="_blank">
+          <span class="icon-facebook-outline-circled" aria-hidden="true"></span>
+          <span class="fallback-text"><ly-as-6692626>Facebook</ly-as-6692626></span>
+        </a>
+      </li>
+    {% endif %}
+    {% if settings.social_twitter_link != blank %}
+      <li>
+        <a class="icon-fallback-text" href="{{ settings.social_twitter_link }}" title="{{ {{
+shop.name }} <ly-as-6692630>on Twitter</ly-as-6692630>" target="_blank">
+          <span class="glypher-twitter" aria-hidden="true"></span>
+          <span class="fallback-text"><ly-as-6692627>Twitter</ly-as-6692627></span>
+        </a>
+      </li>
+    {% endif %}
+    {% if settings.social_linkedin_link != blank %}
+      <li>
+        <a class="icon-fallback-text linkedin" href="{{ settings.social_linkedin_link }}" title="{{ {{
+shop.name }} <ly-as-6692630>on Linkedin</ly-as-6692630>" target="_blank">
+          <span class="" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" width="42" height="42"><defs><style>.cls-1{fill:none;stroke:#bdbdbd;stroke-linecap:round;stroke-linejoin:round;}</style></defs><title>Fichier 1</title><g id="Calque_2" data-name="Calque 2"><g id="Layer_1" data-name="Layer 1"><circle class="cls-1" cx="24.5" cy="24.5" r="24"/><path class="cls-1" d="M14.37,20.9h4.27V34.64H14.37Zm2.14-6.83A2.48,2.48,0,1,1,14,16.54a2.48,2.48,0,0,1,2.48-2.48"/><path class="cls-1" d="M21.32,20.9h4.1v1.88h.06a4.49,4.49,0,0,1,4-2.22c4.33,0,5.12,2.85,5.12,6.55v7.54H30.37V28c0-1.59,0-3.64-2.22-3.64s-2.56,1.74-2.56,3.53v6.8H21.32Z"/></g></g></svg></span>
+          <span class="fallback-text"><ly-as-6692627>Linkedin</ly-as-6692627></span>
+        </a>
+      </li>
+      <style>
+        @media (max-width: 768px) {
+          .linkedin svg {
+            height: 28px;
+
+            top: 5px;
+          }
+          .drawer.drawer--left .mobile-nav .social-icons {
+              position: absolute;
+              margin: 0;
+              right: 15px;
+              /*top: -4px;*/
+          }
+        }
+        .linkedin:hover path, .linkedin:hover circle {
+          stroke: #fe5442;
+        }
+      </style>
+    {% endif %}
+    {% if settings.social_instagram_link != blank %}
+      <li>
+        <a class="icon-fallback-text" href="{{ settings.social_instagram_link }}" title="{{ {{
+shop.name }} <ly-as-6692631>on Instagram</ly-as-6692631>" target="_blank">
+          <span class="icon-instagram-outline-circled" aria-hidden="true"></span>
+          <span class="fallback-text"><ly-as-6692628>Instagram</ly-as-6692628></span>
+        </a>
+      </li>
+    {% endif %}
+    {% if settings.social_pinterest_link != blank %}
+      <li>
+        <a class="icon-fallback-text" href="{{ settings.social_pinterest_link }}" title="{{ {{
+shop.name }} <ly-as-6817115>on Pinterest</ly-as-6817115>" target="_blank">
+          <span class="icon-pinterest-outline-circled" aria-hidden="true"></span>
+          <span class="fallback-text"><ly-as-6817114>Pinterest</ly-as-6817114></span>
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+{% endif %}

@@ -1,0 +1,198 @@
+
+<!-- /templates/customers/login.liquid -->
+{% layout 'theme-condensed' %}
+
+<style>
+  .register, .login {
+    width: 50%;
+  }
+  @media (max-width: 1170px) {
+  .register, .login {
+    width: 100%;
+  }
+  }
+</style>
+<div class="grid page__account" style="display: flex; flex-wrap: wrap">
+    <div class="login">
+        {% comment %}
+        If a user has successfully requested a new password, the form.posted_successfully? variable
+        is set to true within the 'recover_customer_password' form only. Within that form you'll see
+        the variable 'resetPassword' set to true, which is used to initialize timber.resetPasswordSuccess().
+        {% endcomment %}
+        <div class="note form-success" id="ResetSuccess" style="display:none;">
+            {{ 'customer.recover_password.success' | t }}
+        </div>
+        <div id="CustomerLoginForm">
+            <div class="grid__item one-whole  ">
+                <h1 class="no-rte login-title">{{ 'customer.login.title' | t }}</h1>
+                <p class="login-subtitle">{{ 'customer.login.subtitle' | t }}</p>
+            <style>
+              .login-title {
+                margin-bottom: 0 !important;
+              }
+              .login-subtitle {
+                margin-bottom: 2rem !important;
+                text-align: center;
+              }
+            </style>
+            </div>
+            <div class="grid__item one-whole text-center">
+                <div class="form-vertical">
+                    {% form 'customer_login' %}
+                    <div class="redirect"></div>
+                <input type="hidden" name="return_to" value='/cart'>
+
+
+
+
+
+                    {{ form.errors | default_errors }}
+                    <label for="CustomerEmail" class="hidden-label">{{ 'customer.login.email' | t }}</label>
+                    <input type="email" name="customer[email]" id="CustomerEmail" class="input-full{% if form.errors contains 'email' %} error{% endif %}" placeholder="{{ 'customer.login.email' | t }}" autocorrect="off" autocapitalize="off" autofocus>
+                    {% if form.password_needed %}
+                    <label for="CustomerPassword" class="hidden-label">{{ 'customer.login.password' | t }}</label>
+                    <input type="password" value="" name="customer[password]" id="CustomerPassword" class="input-full{% if form.errors contains 'password' %} error{% endif %}" placeholder="{{ 'customer.login.password' | t }} ">
+                    {% endif %}
+                    <p>
+                        <input type="submit" class="btn" value="{{ 'customer.login.sign_in' | t }}">
+                    </p>
+                    <fieldset>
+
+                        {% if form.password_needed %}
+                        <p>
+                            <a href="#recover" id="RecoverPassword" class="text-link">{{ 'customer.login.forgot_password' | t }}</a>
+                        </p>
+                        {% endif %}
+                    </fieldset>
+                    {% endform %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="register" >
+        {% comment %}
+        JS shows/hides this form in timber.loginForms()
+        {% endcomment %}
+        <div id="RecoverPasswordForm" style="display: none;">
+            <div class="grid__item one-whole">
+                <h1>{{ 'customer.recover_password.title' | t }}</h1>
+                <p class="login-subtitle">{{ 'customer.register.subtitle' | t }}</p>
+
+                <div class="rte text-center">
+                    <p>{{ 'customer.recover_password.subtext' | t }}</p>
+                </div>
+            </div>
+            <div class="grid__item one-whole text-center">
+                <div class="form-vertical">
+                    {% form 'recover_customer_password' %}
+                    {{ form.errors | default_errors }}
+                    {% comment %}
+                    Assign variable to be used after timber.init() is run in theme.liquid
+                    {% endcomment %}
+                    {% if form.posted_successfully? %}
+                    {% assign resetPassword = true %}
+                    {% endif %}
+                    <label for="RecoverEmail" class="hidden-label">{{ 'customer.recover_password.email' | t }}</label>
+                    <input type="email" value="" name="email" id="RecoverEmail" class="input-full" placeholder="{{ 'customer.recover_password.email' | t }}" autocorrect="off" autocapitalize="off">
+                    <p>
+                        <input type="submit" class="btn" value="{{ 'customer.recover_password.submit' | t }}">
+                    </p>
+                    <button type="button" id="HideRecoverPasswordLink" class="text-link">{{ 'customer.recover_password.cancel' | t }}</button>
+                    {% endform %}
+                </div>
+            </div>
+        </div>
+        {% comment %}
+        If accounts are set as optional, the following will be shown as an option
+        during checkout, not on the default /login page.
+        {% endcomment %}
+        {% if shop.checkout.guest_login %}
+        <hr>
+        <h2>{{ 'customer.login.guest_title' | t }}</h2>
+        {% form 'guest_login' %}
+        <input type="submit" class="btn" value="{{ 'customer.login.guest_continue' | t }}">
+        {% endform %}
+        {% endif %}
+        <div class="grid__item one-whole ">
+            <h1 class="no-rte login-title">{{ 'customer.register.title' | t }}</h1>
+            <p class="login-subtitle">{{ 'customer.register.subtitle' | t }}</p>
+
+        </div>
+        <div class="grid__item one-whole ">
+            <div class="form-vertical">
+                {% form 'create_customer' %}
+                <input type="hidden" name="return_to" value='/cart'>
+                {{ form.errors | default_errors }}
+                <label for="FirstName" class="hidden-label">{{ 'customer.register.first_name' | t }}</label>
+                <input type="text" name="customer[first_name]" id="FirstName" class="input-full" placeholder="{{ 'customer.register.first_name' | t }}" {% if form.first_name %}value="{{ form.first_name }}" {% endif %} autocapitalize="words" autofocus>
+                <label for="LastName" class="hidden-label">{{ 'customer.register.last_name' | t }}</label>
+                <input type="text" name="customer[last_name]" id="LastName" class="input-full" placeholder="{{ 'customer.register.last_name' | t }}" {% if form.last_name %}value="{{ form.last_name }}" {% endif %} autocapitalize="words">
+                <label for="Email" class="hidden-label">{{ 'customer.register.email' | t }}</label>
+                <input type="email" name="customer[email]" id="Email" class="input-full{% if form.errors contains 'email' %} error{% endif %}" placeholder="{{ 'customer.register.email' | t }}" {% if form.email %} value="{{ form.email }}" {% endif %} autocorrect="off" autocapitalize="off">
+
+                <label for="CreatePassword" class="hidden-label">{{ 'customer.register.password' | t }}</label>
+                <input type="password" name="customer[password]" id="CreatePassword" class="input-full{% if form.errors contains 'password' %} error{% endif %}" placeholder="{{ 'customer.register.password' | t }}">
+                <p style="line-height: 0;margin-bottom: 10px">
+                    <input type="checkbox" name="agreed">
+                    <label for="agreed" >J'accepte explicitement l'utilisation de mon téléhone et/ou adresse email à l'usage exclusif de Fly Me to the Food. </label>
+                    <br><br>
+                </p>
+                <p>
+                    <input type="submit" value="{{ 'customer.register.submit' | t }}" disabled class="btn btn--full disabled">
+                </p>
+
+                {% endform %}
+
+                <script>
+
+                  // AGREED CHECK BOX
+                  $('input[name="agreed"]').on("change", function() {
+                      if ($(this).is(':checked')) {
+                          $('.register input[type="submit"]').removeClass('disabled')
+                          $('.register input[type="submit"]').removeAttr('disabled')
+
+                      } else {
+                          $('.register input[type="submit"]').addClass('disabled')
+                          $('.register input[type="submit"]').attr('disabled', 'disabled')
+
+                      }
+                  })
+
+
+                  // REDIRECT IF FROM CART
+                  if ( window.location.href.includes('from=funnel') ) {
+                    $('.redirect').append('<input type="hidden" name="checkout_url" value="/cart?step=2" />');
+
+
+                    $('.redirect2').append('<input type="hidden" name="checkout_url" value="/cart?step=2" />')
+                   }
+
+//   jQuery(function() {
+// jQuery('#create_customer').submit(function(event) {
+//   event.preventDefault();
+//   var data = jQuery(this).serialize();
+
+//  //create new account
+//   jQuery.post('/account', data)
+//     .done(function(data){
+//     var logErrors = jQuery(data).find('.errors').text();
+
+//     //if there are errors show them in the html form
+//     if (logErrors != "" && logErrors != 'undefined'){
+//         jQuery('#create_customer .errors').html(logErrors);
+//         jQuery('#create_customer .errors').show();
+
+//     //if account creation is successful show checkout page
+//     }else{
+//        console.log('success');
+//       document.location.href = '/checkout';
+//     }
+//     }).fail(function(){console.log('error');});
+//    return false;
+// });
+// });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

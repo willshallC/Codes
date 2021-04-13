@@ -1,0 +1,61 @@
+
+<!-- /templates/page.minor.liquid -->
+{% layout 'theme-condensed' %}
+<div class="page__minor">
+  <div data-page-content class="grid-uniform">
+    <div class="grid__item one-whole">
+      <h1>{{ page.title}}</h1>
+    </div>
+    {% comment %}
+      Breaks page into boxes, or sections
+      sections are delineated by `h2` tags
+    {% endcomment %}
+    {% assign sections = page.content | split: '<h2>' %}
+    {% if sections.size > 2 %}
+      {% comment %}
+        Multi-section page
+      {% endcomment %}
+      {% for section in sections %}
+        {% if forloop.first %}
+          {% comment %}
+            First will be before the first `h2` i.e. blank, so ignore
+          {% endcomment %}
+          {% continue %}
+        {% endif %}
+        <div class="grid__item one-half">
+          <div class="rte">
+            {% comment %}
+              Replace the `h2` stripped by the split
+            {% endcomment %}
+            {{ section | prepend: '<h2>' }}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      {% comment %}
+        Single-section page
+      {% endcomment %}
+      <div class="grid__item one-whole large--two-thirds push--large--one-sixth">
+        <div class="rte">
+          {{ page.content}}
+        </div>
+      </div>
+    {% endif %}
+    <div class="grid__item text-center visually-hidden" data-goto-top-container>
+      <a href="#" data-action-goto-top class="btn goto-top__btn">{{ 'pages.general.top_of_page' | t }}</a>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(function() {
+    var contentHeight = $('[data-page-content]').outerHeight();
+    if (contentHeight > $(window).height()) {
+      $('[data-goto-top-container]').removeClass('visually-hidden');
+      $('[data-action-goto-top]').on('click', function(event) {
+        event.preventDefault();
+        $('body,html').animate({scrollTop: '0px'}, 0);
+      });
+    }
+  })
+</script>

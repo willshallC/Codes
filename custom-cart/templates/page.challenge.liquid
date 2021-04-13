@@ -1,0 +1,18 @@
+{% layout 'theme-condensed' %}
+<div class="some-wrapper-around-challenge">
+  {{ content_for_layout }}  {% comment %} <--- conent_for_layout IS the captcha form in this context {% endcomment %}
+  <style>
+    /* NOTE: these classes are subject to change at any time... since they are injected by shopify / google captcha */
+    .shopify-challenge__container {
+    }
+
+    .shopify-challenge__message {
+    }
+
+    #g-recapthca {
+    }
+  </style>
+  <script>
+    $('shopify-challenge__message').text('Custom message or {{ settings.challenge_message }}')
+  </script>
+</div>

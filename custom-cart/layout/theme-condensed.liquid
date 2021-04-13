@@ -1,0 +1,17 @@
+{% include 'theme-pre-header-hook' %}
+
+  {{ content_for_header }}
+
+{% include 'theme-post-header-hook' with 'condensed-menu' %}
+
+{% include 'header' with 'light' %}
+
+<main class="wrapper main-content" role="main">
+
+  {{ content_for_layout }}
+
+</main>
+
+{% include 'footer' %}
+
+{% include 'theme-post-content' %}

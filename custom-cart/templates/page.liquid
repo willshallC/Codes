@@ -1,0 +1,26 @@
+
+<!-- /templates/page.liquid -->
+{% layout 'theme-condensed' %}
+
+<div class="grid page__generic">
+
+  <div class="grid__item one-whole text-center">
+    {% if page.handle == 'concept' %}
+      <i class="icon-down-open color-primary"></i>
+    {% endif %}
+
+    <h1>{{ page.title }}</h1>
+  </div>
+
+  <div class="grid__item large--two-thirds push--large--one-sixth">
+
+    {% comment %}
+      Regular page content goes here.
+    {% endcomment %}
+    <div class="rte">
+      {{ page.content }}
+    </div>
+
+  </div>
+
+</div>

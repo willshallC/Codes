@@ -1,0 +1,33 @@
+
+{% comment %}
+   Use class grid-uniform to have evenly sized columns clear
+   each other properly at each breakpoint.
+{% endcomment %}
+<div class="grid-uniform flex">
+  {% comment %}
+    Loop through products in your Frontpage collection.
+    This collection is created by default, but you must add products to it.
+  {% endcomment %}
+  {% if template == "product" %}
+  <h3 class="grid__item large other-box">NOS AUTRES BOX</h3><br>
+  {% endif %}
+  {% for product in collections.frontpage.products %}
+    {% comment %}
+      Langify requires the description to appear unmodified in the template for translations to work
+    {% endcomment %}
+    {% capture description %}{{ product.description}}{% endcapture %}
+    {% assign product_description_split = description | split: '<h3>' %}
+    {% assign show_description = product_description_split.first %}
+
+    {% comment %}
+      Change the grid item width by using classes from the grid in
+      the grid_item_width variable.
+
+      Example:
+        - {% assign grid_item_width = 'large--one-third medium--one-half' %}
+    {% endcomment %}
+    {% assign grid_item_width = 'large--one-third medium--one-half' %}
+
+    {% include 'product-grid-item' %}
+   {% endfor %}
+ </div>

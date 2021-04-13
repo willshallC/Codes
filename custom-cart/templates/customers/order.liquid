@@ -1,0 +1,238 @@
+
+<!-- /templates/customers/order.liquid -->
+{% layout 'theme-condensed' %}
+{% comment %}<script src="https://raw.githubusercontent.com/Xportability/css-to-pdf/master/js/xepOnline.jqPlugin.js"></script>{% endcomment %}
+{{ 'css2pdf.js' | asset_url | script_tag }}
+
+<div class="grid page__account">
+  {% include 'account-tab-nav' %}
+
+  <div class="grid__item one-whole large--two-thirds push--large--one-sixth">
+    <div class="table-wrap" id="topdf">
+
+
+      <h2 class="h4" style="margin: 0 0 0;font-weight: normal;color: #424242;font-family: 'Campton-Bold' !important;font-size: 1.2pc;">{{ 'customer.order.title' | t: name: order.name }}</h2>
+      {% comment %}<br>{% endcomment %}
+      <p style="text-align: center;margin: 0 0 0em;font-weight: normal;color: #424242;font-family: 'Campton-Bold' !important;font-size: 1.2pc;color:grey">{{ 'customer.order.date' | t: date: order.created_at | date: "%d-%m-%Y, %H:%M" }}
+        </p>
+      {% comment %}<br>{% endcomment %}
+      <p style="text-align: center;margin: 0 0 2em;font-weight: normal;color: #424242;font-family: 'Campton-Bold' !important;font-size: 1.2pc;color:grey">Aéroport Nice Côte d'Azur
+      </p>
+
+
+
+      <p></p>
+
+      {% if order.cancelled %}
+        <div class="errors">
+          {% assign cancelled_at = order.cancelled_at | date: "%B %d, %Y %I:%M%p" %}
+          <p class="h5">{{ 'customer.order.cancelled' | t: date: cancelled_at }}</p>
+          <p>{{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason }}</p>
+        </div>
+      {% endif %}
+
+      {% comment %}<p style="line-height:initial;">{% endcomment %}
+        <p>{{ order.billing_address.name }}</p>
+        {% if order.billing_address.company != blank %}
+          <p>{{ order.billing_address.company }}</p>
+        {% endif %}
+        <p>{{ order.billing_address.street }}</p>
+        <p>{{ order.billing_address.zip | upcase }} <p>{{ order.billing_address.city }}</p>
+        {% if order.billing_address.province != blank %}
+          <p>{{ order.billing_address.province }}</p>
+        {% endif %}
+        <p>{{ order.billing_address.country }}</p>
+        <p>{{ order.billing_address.phone }}
+      {% comment %}</p>{% endcomment %}
+
+      <hr>
+
+      <table class="full" style="min-width: 100%;">
+        <tbody>
+          {% for line_item in order.line_items %}
+          <tr id="{{ line_item.key }}">
+            <td>
+              <p class="text-link--p nowrap" >
+                {{ line_item.title | link_to: line_item.product.url}}
+              </p>
+              {% if line_item.fulfillment %}
+                <div class="note">
+                  {% assign created_at = line_item.fulfillment.created_at | date: format: 'month_day_year' %}
+                  {{ 'customer.order.fulfilled_at' | t: date: created_at }}
+                  {% if line_item.fulfillment.tracking_number %}
+                    <a href="{{ line_item.fulfillment.tracking_url }}" class="text-link">{{ line_item.fulfillment.tracking_company }} #{{ line_item.fulfillment.tracking_number}}</a>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </td>
+            <td class="text-right">{{ line_item.price | money }} x {{ line_item.quantity }}</td>
+            <td class="text-right">{{ line_item.quantity | times: line_item.price | money }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">{{ 'customer.order.subtotal' | t }}</td>
+            <td class="text-right">{{ order.subtotal_price | money }}</td>
+          </tr>
+
+          {% for discount in order.discounts %}
+            <tr class="order_summary discount">
+              <td colspan="2">{{ discount.code }} {{ 'customer.order.discount' | t }}</td>
+              <td class="text-right">{{ discount.savings | money }}</td>
+            </tr>
+          {% endfor %}
+
+          {% for shipping_method in order.shipping_methods %}
+          <tr>
+            <td colspan="2"></td>
+            <td class="text-right">{{ shipping_method.price | money }}</td>
+          </tr>
+          {% endfor %}
+
+          {% for tax_line in order.tax_lines %}
+            <tr>
+              <td colspan="2">TVA ({{ tax_line.rate | times: 100 }}%)</td>
+              <td class="text-right">{{ tax_line.price | money }}</td>
+            </tr>
+          {% endfor %}
+
+          <tr>
+            <td colspan="2"><strong>{{ 'customer.order.total' | t }}</strong></td>
+            <td class="text-right"><strong>{{ order.total_price | money }} </strong></td>
+          </tr>
+
+        </tfoot>
+      </table>
+      <img src="https://cdn.shopify.com/s/files/1/0066/7670/9461/files/Logo_2.1_-_Transparent.png?11090" alt="" style="max-width: 30%;
+    margin-left: 35%;">
+
+    </div>
+
+
+
+
+
+    <div style="display:none">
+      <div class="table-wrap"  id="topdf">
+        <h2 class="h4" style="margin: 0 0 0;font-weight: normal;color: #424242;font-family: 'Campton-Bold' !important;font-size: 1.2pc;">{{ 'customer.order.title' | t: name: order.name }}</h2>
+        {% comment %}<br>{% endcomment %}
+        <p style="text-align: center;margin: 0 0 0em;font-weight: normal;color: #424242;font-family: 'Campton-Bold' !important;font-size: 1.2pc;color:grey">{{ 'customer.order.date' | t: date: order.created_at | date: "%d-%m-%Y, %H:%M" }}
+          </p>
+        {% comment %}<br>{% endcomment %}
+        <p style="text-align: center;margin: 0 0 2em;font-weight: normal;color: #424242;font-family: 'Campton-Bold' !important;font-size: 1.2pc;color:grey">Aéroport Nice Côte d'Azur
+        </p>
+
+
+
+        <p></p>
+
+        {% if order.cancelled %}
+          <div class="errors">
+            {% assign cancelled_at = order.cancelled_at | date: "%B %d, %Y %I:%M%p" %}
+            <p class="h5">{{ 'customer.order.cancelled' | t: date: cancelled_at }}</p>
+            <p>{{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason }}</p>
+          </div>
+        {% endif %}
+
+        <p style="line-height: 0.5;">
+          {{ order.billing_address.name }}<br>
+          {% if order.billing_address.company != blank %}
+            {{ order.billing_address.company }}<br>
+          {% endif %}
+          {{ order.billing_address.street }}<br>
+          {{ order.billing_address.zip | upcase }} {{ order.billing_address.city }}<br>
+          {% if order.billing_address.province != blank %}
+            {{ order.billing_address.province }}<br>
+          {% endif %}
+          {{ order.billing_address.country }}<br>
+          {{ order.billing_address.phone }}
+        </p>
+
+        <hr>
+
+        <table class="full" style="min-width: 100%;">
+          <tbody>
+            {% for line_item in order.line_items %}
+            <tr id="{{ line_item.key }}">
+              <td style="width: 60%">
+                <p class="text-link--p">
+                  {{ line_item.title | link_to: line_item.product.url}}
+                </p>
+                {% if line_item.fulfillment %}
+                  <div class="note">
+                    {% assign created_at = line_item.fulfillment.created_at | date: format: 'month_day_year' %}
+                    {{ 'customer.order.fulfilled_at' | t: date: created_at }}
+                    {% if line_item.fulfillment.tracking_number %}
+                      <a {% comment %}hr{% endcomment %}ef="{{ line_item.fulfillment.tracking_url }}" class="text-link">{{ line_item.fulfillment.tracking_company }} #{{ line_item.fulfillment.tracking_number}}</a>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </td>
+              <td class="text-right" style="padding: 0">{{ line_item.price | money }} x {{ line_item.quantity }}</td>
+              <td class="text-right" style="padding: 0">{{ line_item.quantity | times: line_item.price | money }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">{{ 'customer.order.subtotal' | t }}</td>
+              <td class="text-right">{{ order.subtotal_price | money }}</td>
+            </tr>
+
+            {% for discount in order.discounts %}
+              <tr class="order_summary discount">
+                <td colspan="2">{{ discount.code }} {{ 'customer.order.discount' | t }}</td>
+                <td class="text-right">{{ discount.savings | money }}</td>
+              </tr>
+            {% endfor %}
+
+            {% for shipping_method in order.shipping_methods %}
+            <tr>
+              <td colspan="2"></td>
+              <td class="text-right">{{ shipping_method.price | money }}</td>
+            </tr>
+            {% endfor %}
+
+            {% for tax_line in order.tax_lines %}
+              <tr>
+                <td colspan="2">TVA ({{ tax_line.rate | times: 100 }}%)</td>
+                <td class="text-right">{{ tax_line.price | money }}</td>
+              </tr>
+            {% endfor %}
+
+            <tr>
+              <td colspan="2"><strong>{{ 'customer.order.total' | t }}</strong></td>
+              <td class="text-right"><strong>{{ order.total_price | money }} </strong></td>
+            </tr>
+
+          </tfoot>
+        </table>
+        <img src="https://cdn.shopify.com/s/files/1/0066/7670/9461/files/Logo_2.1_-_Transparent.png?11090" alt="" style="max-width: 30%;
+      margin-left: 35%; display: block">
+
+      </div>
+    </div>
+
+    <div class="text-center">
+      <a href="/account" class="btn">{{ 'customer.account.return' | t }}</a>
+    </div>
+    <br>
+    <button class="download" onclick="return xepOnline.Formatter.Format('topdf', {pageWidth:'216mm', pageHeight:'279mm', filename: 'document',cssStyle:[{fontFamily:'Campton-Book'}]})" >Télécharger au format pdf</button>
+  </div>
+
+</div>
+<script>
+
+  if ( window.location.href.includes('telecharger') ) {
+    setTimeout(function() {
+      $('.download').click();
+      // xepOnline.Formatter.Format('topdf', {pageWidth:'216mm', pageHeight:'279mm'});
+      // setTimeout(function() {
+        // window.location.href = '/account'
+      // }, 2000);
+    }, 10);
+
+  }
+
+</script>

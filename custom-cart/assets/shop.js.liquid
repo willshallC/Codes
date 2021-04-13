@@ -1,0 +1,318 @@
+$(function() {
+  //$("select[name='attributes[terminal]']").wrap('<span/>');
+  //make notes dismissable
+  $('.note__close').click(function(event) {
+    $target = $(event.target);
+    $note = $target.closest('.note');
+    $note.addClass('note--hide');
+  })
+
+  //hide the active Langify language (Langify's html makes this beyond css)
+  {% comment %}$('#ly-languages-switcher li').has('.ly-languages-switcher-link.current_lang').hide();{% endcomment %}
+
+  //toggle the mobile minor links
+  $('[data-toggle-mobile-minor-links]').on('click', function () {
+    $('[data-mobile-minor-more-label]').toggle();
+    $('[data-mobile-minor-less-label]').toggle();
+    $('[data-mobile-minor-links]').toggle();
+  });
+});
+
+$(document).ready(function(){
+  var is_weekend =  function(date1){
+    var dt = new Date(date1);
+
+    if(dt.getDay() == 6 || dt.getDay() == 0)
+    {
+      return "weekend";
+    }else{
+      return "not weekend";
+    }
+  }
+
+  var d = new Date();
+
+  var month = d.getMonth()+1;
+  var day = d.getDate();
+
+  var output = d.getFullYear() + '/' +
+      (month<10 ? '0' : '') + month + '/' +
+      (day<10 ? '0' : '') + day;
+
+  //console.log("output "+output);
+  //console.log(is_weekend(output));
+
+  if(is_weekend(output)=="weekend"){
+    $("select[name='attributes[terminal]']").find('option:last-child').append(" <small style='font-size: 10px'>(Monday to Friday)</small>").css({"color":"#eaeaea"});;
+  }else{
+    //$("select[name='attributes[terminal]']").find('option:last-child').append(" <small style='font-size: 10px'>(not weekend)</small>")
+  }
+
+
+  if($("select[name='attributes[terminal]']").is(':visible')){
+    $(".continuer").css({"cursor":"pointer","background-color":"#fe5442","color":"white"});
+  }else{
+    $(".continuer").css({"cursor":"default","background-color":"#dbdbdb","color":"white"});
+
+  }
+  if($("select[name='attributes[terminal]']").val()=='Choisir un terminal'){
+    $("select[name='attributes[terminal]']").css({"color":"#bdbdbd","font-size":"14px","font-weight":"400"});
+    $("select[name='attributes[terminal]']").parent().css({"border-bottom":"none"});
+    $(".continuer").css({"cursor":"default","background-color":"#dbdbdb","color":"white"});
+  }else{
+    $("select[name='attributes[terminal]']").css({"color":"#424242","font-size":"1.2em","font-weight":"bold","padding-bottom": "0!important"});
+    $("label[for='attributes[terminal]']").css({"display":"inline!important"});
+    $(".continuer").css({"cursor":"pointer","background-color":"#fe5442","color":"white"});
+
+  }
+
+  if($("select[name='attributes[display_hour_lg]']").val()=='Heure de votre vol'){
+    $("select[name='attributes[display_hour_lg]']").css({"color":"#bdbdbd","font-size":"14px","font-weight":"400"});
+    $("select[name='attributes[display_hour_lg]']").parent().parent().css({"border-bottom":"none"});
+  }else{
+    $("select[name='attributes[display_hour_lg]']").css({"color":"#424242","font-size":"1.2em","font-weight":"bold"});
+    $("label[for='attributes[display_hour_lg]']").css({"display":"inline!important"});
+  }
+
+  // $("select[name='attributes[terminal]']").wrap('<span/>');
+  $("select[name='attributes[terminal]']").click(function(){
+    //$(this).children('option:first').attr('hidden','hidden');
+    //$(this).find("option.first-option").wrap('<span/>');
+    //$(this).css({"color":"#424242","font-size":"1.2em","font-weight":"bold","padding-bottom":"0!important"});
+  });
+
+  $("select[name='attributes[terminal]']").change(function(){
+    $('input[name="display_date_lg"]').val("");
+    //$("fieldset").removeClass("fieldset--fill");
+    //$(this).parent().parent().addClass("fieldset--fill");
+    //$(this).find('.first-option').remove();
+    var hour = new Date().getHours();
+    var day = new Date().getDay();
+    console.log("horas "+hour);
+
+    var tomorrow = new Date();
+
+    var formattedDate = $.datepicker.formatDate('d MM yy', new Date(tomorrow.setDate(tomorrow.getDate() + 1)));
+    var formattedDateTomorrow = $.datepicker.formatDate('d MM yy', new Date(tomorrow.setDate(tomorrow.getDate() + 2)));
+
+
+    //$("#datepicker").datepicker("option", "minDate", hour >= 15 ? 2 : 1);
+
+//     if($(this).val()=="Choisir un terminal"){
+//       $(this).css({"color":"#bdbdbd","font-size":"14px","font-weight":"400"});
+//       $(this).parent().css({"border-bottom":"none"});
+//       $(".template-cart .pickup-date--display fieldset label#terminal").hide();
+//       $("#datepickeer").datepicker('option', 'beforeShowDay');
+//       $("select[name='attributes[display_hour_lg]']").css({"color":"#bdbdbd","font-size":"14px","font-weight":"400"});
+
+//     }else if($(this).val()=="Terminal 2"){
+//       //$('#datepicker').datepicker( "option", "beforeShowDay", $.datepicker.noWeekends );
+//       $(this).css({"color":"#424242","font-size":"1.2em","font-weight":"bold","padding-bottom":"0!important"});
+//       $(".continuer").css({"cursor":"pointer","background-color":"#fe5442","color":"white"});
+//       $("label[for='attributes[terminal]']").show();
+//       /*
+//       if(day == 5){
+//         $("#datepicker").datepicker("option", "minDate", hour >= 15 ? 2 : 3);
+
+//       }
+//       */
+//       var todayday = new Date().getDay();
+
+//         if(day=="7"){
+//           $("#datepicker").datepicker("option", "minDate", +1);
+
+//         }else if(day=="6"){
+//           $("#datepicker").datepicker("option", "minDate", +2);
+
+//         }else if(day=="5"){
+//           if(hour >= 15){
+//             $("#datepicker").datepicker("option", "minDate", hour >= 15 ? 2 : 1);
+//             //console.log("datepicker selection "+$("#datepicker").val());
+//           }else{
+//             $("#datepicker").datepicker("option", "minDate", +1);
+
+//           }
+//         }else if(day=="4"){
+//           if(hour >= 15){
+//             $("#datepicker").datepicker("option", "minDate", +4);
+//           }else{
+//             $("#datepicker").datepicker("option", "minDate", +1);
+
+//           }
+//         }else{
+//           if(hour >= 15){
+//             var hoje = new Date();
+//             $("#datepicker").datepicker("option", "minDate", hour >= 15 ? 2 : 1);
+//           }else{
+
+//             $("#datepicker").datepicker("option", "minDate", +1);
+//           }
+//         }
+//     }else{
+//       $(this).css({"color":"#424242","font-size":"1.2em","font-weight":"bold","padding-bottom":"0!important"});
+//       $("label[for='attributes[terminal]']").show();
+//       $('#datepicker').datepicker( "option", "beforeShowDay", $.datepicker.showWeekends );
+//       $(".continuer").css({"cursor":"pointer","background-color":"#fe5442","color":"white"});
+//       if($("input[name='attributes[flight_number]']").val()==""){
+//         console.log("empty");
+//         $('button[name=checkout]').attr('disabled', '');
+//         $('[data-breadcrumb-step-3]').addClass('disabled');
+//       }
+
+
+//         if(hour >= 15){
+//           var hoje = new Date();
+//           $("#datepicker").datepicker("option", "minDate", hour >= 15 ? 2 : 1);
+//         }else{
+
+//           $("#datepicker").datepicker("option", "minDate", +1);
+//         }
+
+
+//     }
+//     $('input[name="attributes[date]"]').val($("input[name='display_date_lg']").val());
+//   });
+
+
+//   $("select[name='attributes[display_hour_lg]']").change(function(){
+//     if($(this).val()=="Heure de votre vol" && $("input[name='display_date_lg']").val()!= ""){
+//       $(this).css({"color":"#bdbdbd","font-size":"14px","font-weight":"400"});
+//       $(this).parent().parent().css({"border-bottom":"none"});
+//       $(".template-cart .pickup-date--display label#hour").hide();
+//     }else{
+//       $(this).css({"color":"#424242","font-size":"1.2em","font-weight":"bold"});
+//       $("label[for='attributes[display_hour_lg]']").show();
+//     }
+//   });
+
+//   //$("select[name='attributes[terminal]']").find("option.first-option").prop('disbled', true);
+//   //$("select[name='attributes[terminal]']").find("option.first-option").attr('disabled', 'disabled').hide();
+
+
+
+
+//   $("select[name='attributes[display_hour_lg]']").click(function(e){
+//     //$(this).find("option.first-option").remove();
+//     if($(".grid-date-content").find(".fieldset--fill").length<=0){
+//       //$(this).attr("disabled","");
+//     }else{
+//       $(this).removeAttr("disabled");
+//     }
+//   });
+
+//   //click continuer first section
+//   $(".continuer").click(function(e){
+//     $('input[name="display_date_lg"]').val("");
+//     if($("select[name='attributes[terminal]']").val()!='Choisir un terminal'){
+//       //$(".fieldset--fill").removeClass("fieldset--fill");
+//      // $(".grid-date-content fieldset").addClass("fieldset--fill");
+//       $("label[for='display_date_lg']").parent().parent().addClass("active-field");
+//       $(".active-field .datepicker--wrapper").attr("disabled","false");
+//       //$("select[name='attributes[display_hour_lg]']").removeAttr("disabled");
+//       $(".datepicker--wrapper").show();
+//       $(".grid").removeClass("pick-date-content");
+//       $(this).hide();
+//       $(this).css({"cursor":"pointer","background-color":"#fe5442","color":"white"});
+//       //console.log(is_weekend($("input[name='display_date_lg']").val()));
+//       $(".button-m").attr("data-datepicker-button","");
+//     }else{
+//       e.preventDefault();
+//       $(this).css({"cursor":"default","background-color":"#bdbdbd","color":"white"});
+//       //console.log("not visible s");
+//     }
+//   });
+  
+
+  
+//   if ($(window).width() < 768) {
+//     $('.date-valid').click(function() {
+//       $('.datepicker--wrapper').hide();
+//     })
+//     $('.icon-calendar-outline').click(function() {
+//       $('.datepicker--wrapper').show();
+
+//     })
+//   }
+
+
+//   $("label[for='attributes[terminal]']").click(function(){
+//     $(this).parent().addClass("active-field");
+
+//     //console.log("click terminal");
+
+//     $(".continuer").css({"cursor":"pointer","background-color":"#fe5442","color":"white"});
+
+//   });
+
+//   $(".data-campo").click(function(){
+//     if($(this).parent().parent().hasClass("fieldset--fill")){
+//       //$(".datepicker--wrapper").toggle();
+//       //$(".grid").toggleClass("pick-date-content");
+//     }
+
+//   });
+
+
+//   $("label[for='attributes[flight_number]']").click(function(){
+//     if($(this).parent().parent().hasClass("fieldset--fill")){
+//       $(this).parent().addClass("active-field");
+//     }
+//   });
+
+//   $("input[name='display_date_lg']").click(function(){
+
+   });
+  
+  var codeTerminals = '.localiton-'+$('.radio-location').attr('data-code');
+  $('.terminals').hide();
+  var terminalLink = $('.terminal-'+$('.radio-location').attr('data-code')).first().trigger( "click" )
+  $(codeTerminals).show();
+  
+  var idLink = '#link-'+terminalLink.attr('for');
+  $('#terminal-link').val($(idLink).val());
+  var idMessage = '#message-'+terminalLink.attr('for');
+  $('#terminal-message').val($(idMessage).val());
+  
+  $('.radio-location').change(function() {
+    var codeTerminals = '.localiton-'+$(this).attr('data-code');
+    $('.terminals').hide();
+    $('.terminal-'+$(this).attr('data-code')).first().trigger( "click" )
+    $(codeTerminals).show();
+  });
+  
+  $('.radio-terminals').change(function() {
+    var idLink = '#link-'+$(this).attr('id');
+    $('#terminal-link').val($(idLink).val());
+        var idMessage = '#message-'+$(this).attr('id');
+    $('#terminal-message').val($(idMessage).val());
+  });
+  
+  $(".edit-step-one").click(function(e){
+    $(".step-one").addClass("active");
+    $(".step-three").removeClass("active");
+    $(".step-two").removeClass("active");
+    $('.edit-step-two').hide();
+  });
+  
+ $(".edit-step-two").click(function(e){
+    $(".step-two").addClass("active");
+    $(".step-three").removeClass("active");
+    $(".step-one").removeClass("active");
+  });
+  
+  $(".continuer-step-two").click(function(e){
+    $(".step-one").removeClass("active");
+    $(".step-three").removeClass("active");
+    $(".step-two").addClass("active");
+  });
+  $(".continuer-step-three").click(function(e){
+    $(".step-one").removeClass("active");
+    $(".step-two").removeClass("active");
+    $(".step-three").addClass("active");
+    $(".edit-step-two").show();
+    $("label[for='display_date_lg']").parent().parent().addClass("active-field");
+    $(".datepicker--wrapper").show();
+    $(".grid").removeClass("pick-date-content");
+  });
+  
+});

@@ -1,0 +1,33 @@
+
+<div data-variant-detail-container>
+  <div data-variant-detail-modal class="variant-detail--modal hide">
+    <div class="wrapper">
+      <button data-previous-variant-detail class="variant-detail--button previous">
+        <i class="icon-chevron-left-small"></i>
+      </button>
+      <div class="variant-detail--content">
+        <button data-hide-variant-detail class="variant-detail--close">
+          <i class="icon-cancel"></i>
+        </button>
+        <div class="grid--full">
+          <div class="grid__item one-whole large--one-half">
+            <img data-variant-detail-image class="variant-detail--image">
+          </div>
+          <div class="grid__item one-whole large--one-half variant-detail--text">
+            <h1 data-variant-detail-title></h1>
+            <div data-variant-detail-price class="h2"></div>
+            <div data-variant-detail-description class="rte">
+            </div>
+            <button data-select-variant class="add-to-cart__button--main btn">
+              <i class="icon-plus" aria-hidden="true"></i>
+              <span>{{ 'products.product.add_to_cart' | t }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <button data-next-variant-detail class="variant-detail--button next">
+        <i class="icon-chevron-right-small"></i>
+      </button>
+    </div>
+  </div>
+</div>

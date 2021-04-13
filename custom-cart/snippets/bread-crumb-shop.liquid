@@ -1,0 +1,21 @@
+{% if has_variants %}
+  <nav class="breadcrumb" role="navigation" aria-label="breadcrumbs">
+    {% capture type_key %}{{ product.type | handleize }}{% endcapture %}
+    {% capture type_t %}{{ 'products.product.types.' | append: type_key | t }}{% endcapture %}
+    {% capture variant_key %}{{ product.options.first | handleize }}{% endcapture %}
+    {% if variant_key == 'boisson' %}
+      {% comment %}
+        Langify needs fully resolved translation key strings to work
+        i.e. dynamically calculating the translation key will not lookup the translation
+      {% endcomment %}
+      {% capture variant_t %}{{ 'products.product.options.boisson' | t }}{% endcapture %}
+    {% endif %}
+    <a data-breadcrumb-product-link href="#"" class="active">
+      <span>{{ 'products.product.choice_of' | t: item: type_t }}</span>
+    </a>
+    <span><i class="icon-delimiter"><span class="visually-hidden">></span></i></span>
+    <a data-breadcrumb-variant-link href="#">
+      <span>{{ 'products.product.choice_of' | t: item: variant_t }}</span>
+    </a>
+  </nav>
+{% endif %}

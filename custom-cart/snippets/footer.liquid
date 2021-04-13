@@ -1,0 +1,144 @@
+
+<!-- begin site-footer -->
+<footer class="site-footer small--text-center" role="contentinfo">
+  <div class="footer--mobile large--hide">
+    <img src="{{ 'logo-mobile.svg' | asset_url }}" alt="{{ {{
+shop.name }}" itemprop="logo" class="footer-logo--mobile">
+  </div>
+  <div class="wrapper large--hide" style="padding-top: 20px" >
+    <span class="site-footer newsletter" style="text-align: right">S'inscrire à la newsletter</span>
+    {%- form 'customer', id: 'footer-newsletter', class: 'Footer__Newsletter Form' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="Form__Alert Alert Alert--success">Vous êtes maintenant inscrit à la newsletter</p>
+      {%- else -%}
+        {%- if form.errors -%}
+          <p class="Form__Alert Alert Alert--error">il y a eu un problème, veuillez réessayer</p>
+        {%- endif -%}
+
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="email" name="contact[email]" class="Form__Input newsletter" aria-label="{{ 'footer.newsletter.input' | t }}" placeholder="Votre email" required>
+        <button type="submit" class="button newsletter"><img src="{{ 'plus.png' | asset_img_url: 42px }}" alt=""></button>
+        </input>
+
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+  <div class="wrapper medium-down--hide">
+    <div class="grid">
+      <div class="grid__item large--one-sixth">
+        <a href="/">
+          <img src="{{ 'logo.svg' | asset_url }}" alt="{{ {{
+shop.name }}" itemprop="logo" class="footer-logo">
+        </a>
+      </div>
+      <div class="grid__item large--one-half">
+        <!-- begin footer-nav -->
+        <div class="grid footer-nav">
+          {% for link in linklists.footer.links %}
+            <ul class="grid__item large--one-third footer-nav no-bullets">
+              {% assign child_list_handle = link.title | handleize %}
+              {% if linklists[child_list_handle].links != blank %}
+                <li{% if link.active %} class="footer-nav--active"{% endif %}>
+                  {% if link.url == '#' %}
+                    <span>{{ link.title}}</span>
+                  {% else %}
+                    <a href="{{ link.url }}" class="footer-nav__link">
+                      <span>{{ link.title}}</span>
+                    </a>
+                  {% endif %}
+                  <ul class="no-bullets">
+                    {% for childlink in linklists[child_list_handle].links %}
+                      <li{% if childlink.active %} class="footer-nav--active"{% endif %}>
+                        <a href="{{ childlink.url }}" class="footer-nav__link">{{ childlink.title | escape}}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% else %}
+                <li{% if link.active %} class="footer-nav--active"{% endif %}>
+                  <a href="{{ link.url }}" class="footer-nav__link">{{ link.title}}</a>
+                </li>
+              {% endif %}
+            </ul>
+          {% endfor %}
+        </div>
+        <!-- //footer-nav -->
+      </div>
+      <div class="grid__item large--one-third text-right">
+        <ul style="list-style: none;">
+          <li>
+            <span class="site-footer newsletter">S'inscrire à la newsletter</span>
+
+            {%- form 'customer', id: 'footer-newsletter', class: 'Footer__Newsletter Form' -%}
+              {%- if form.posted_successfully? -%}
+                <p class="Form__Alert Alert Alert--success">Vous êtes maintenant inscrit à la newsletter</p>
+              {%- else -%}
+                {%- if form.errors -%}
+                  <p class="Form__Alert Alert Alert--error">il y a eu un problème, veuillez réessayer</p>
+                {%- endif -%}
+
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <input type="email" name="contact[email]" class="Form__Input newsletter" aria-label="{{ 'footer.newsletter.input' | t }}" placeholder="Votre email" required>
+                <button type="submit" class="button newsletter"><img src="{{ 'plus.png' | asset_img_url: 42px }}" alt=""></button>
+                </input>
+
+              {%- endif -%}
+            {%- endform -%}
+            <style>
+              .button.newsletter img {
+                height: 16px;
+                vertical-align: bottom;
+                margin-bottom: 3px;
+              }
+              .button.newsletter {
+                margin-left: -26px;
+              }
+              .Form__Input.newsletter {
+                border: 0;
+                border-bottom: 1px solid #e0e0e0;
+                width: 80%;
+              }
+              .Form_Input.newsletter:focus {
+                outline: none !important;
+                box-shadow: 0 0 1px #37474f !important;
+              }
+              .site-footer.newsletter {
+                border-top: 0px;
+                text-transform: uppercase;
+                font-family: 'Campton-Bold';
+                display: inline-block;
+                margin-bottom: 2em;
+                padding: 0;
+
+              }
+            </style>
+            <br><br>
+            {% include 'social-links' %}
+          </li>
+        </ul>
+
+
+      </div>
+      <div class="grid__item clear one-half footer-spacer"></div>
+  {% comment %}    <div class="grid__item clear large--one-sixth">
+        {% include 'ly-languages-switcher' %}
+      </div>{% endcomment %}
+      <div class="grid__item push--one-sixth">
+        <!-- begin footer-minor-nav -->
+          <ul class="no-bullets inline-list footer-minor">
+            {% for link in linklists.footer-minor.links %}
+              <li{% if link.active %} class="footer-nav--active"{% endif %}>
+                <a href="{{ link.url }}" class="footer-nav__link">{{ link.title}}</a>
+              </li>
+            {% endfor %}
+            <li>     
+          </ul>
+        <!-- //footer-minor-nav -->
+      </div>
+
+    </div>
+  </div>
+
+
+</footer>
+<!-- //site-footer -->

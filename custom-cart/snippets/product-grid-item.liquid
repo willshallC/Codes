@@ -1,0 +1,245 @@
+
+<!-- /snippets/product-grid-item.liquid -->
+{% comment %}
+This snippet is used to showcase each product during the loop,
+'for product in collection.products' in collection.liquid.
+A liquid variable (grid_item_width) is set just before the this
+snippet is included to change the size of the container.
+Once the variable is set on a page, all future instances of this
+snippet will use that width. Overwrite the variable to adjust this.
+Example
+- assign grid_item_width = 'large--one-quarter medium--one-half'
+{% endcomment %}
+{% comment %}
+Set the default grid_item_width if no variable is set
+{% endcomment %}
+
+{% unless grid_item_width %}
+  {% assign grid_item_width = 'large--one-third medium--one-half' %}
+{% endunless %}
+{% comment %}
+Check if the product is on sale and set a variable to be used below.
+{% endcomment %}
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+  {% assign on_sale = true %}
+{% endif %}
+{% comment %}
+Check if the product is sold out and set a variable to be used below.
+{% endcomment %}
+{% assign sold_out = true %}
+{% if product.available %}
+{% assign sold_out = false %}
+  {% endif %}
+{% if product_description_split.size > 1 %}
+  {% assign product_contents = product_description_split.last | prepend: '<h3>' %}
+{% endif %}
+    <div class="product-grid__item grid__item {{ grid_item_width }}  slidedown product-id{{product.id}}">
+        {% comment %}
+        Link to your product with the 'within: collection' filter for the link to be aware of the collection.
+        This allows you to create collection-based navigation on the product page.
+        Results of using 'within: collection':
+        - Instead of a URL with /products/product-handle
+        you would get /collections/collection-handle/products/product-handle
+        For more info on navigation within a collection
+        - http://docs.shopify.com/support/your-store/collections/how-to-navigate-within-a-collection
+        {% endcomment %}
+        <div class="product-grid__item-wrapper{% if show_description %} has-description{% endif %} ">
+            <a href="{{ product.url | within: collection }}">
+                <div class="grid__image">
+                    <img src="{{ product.featured_image.src | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+                    <div class="grid__image-hover">
+                        <span>{{ 'products.general.discover' | t }}</span>
+                    </div>
+                </div>
+                <div class="grid__item-content">
+                  {% include 'badge-bio' with product %}
+
+                  <p class="h6">{{ product.title}}</p>
+                  <p class="price">
+                      {% comment %}
+                      You can show a leading 'from' or 'up to' by checking 'product.price_varies'
+                      if your variants have different prices.
+                      {% endcomment %}
+                      {% if on_sale %}
+                        {% if product.price_varies %}
+                          {% assign sale_price = product.price | money %}
+                          {{ 'products.product.on_sale_from_html' | t: price: sale_price }}
+                          {% else %}
+                          <strong>{{ 'products.product.on_sale' | t }}</strong>
+                          {{ product.price | money }}
+                        {% endif %}
+                      {% else %}
+
+                        {% if product.price_varies %}
+                          {% assign price = product.price | money %}
+                          {{ 'products.general.from_text_html' | t: price: price }}
+                          {% else %}
+                          {{ product.price | money }}
+                          {% endif %}
+                        {% endif %}
+                        {% if sold_out %}
+                          <br><strong>{{ 'products.product.sold_out' | t }}</strong>
+                        {% endif %}
+                        {% if on_sale %}
+                          <span class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+                          <br><s>{{ product.compare_at_price | money }}</s>
+                        {% endif %}
+                  </p>
+
+                  {% if show_description %}
+                    <div class="rte">
+                        {{ show_description }}
+                    </div>
+
+                  {% endif %}
+
+                </div>
+            </a>
+            <div class="grid__image--dummy">
+                <img src="{{ product.featured_image.src | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+                <div class="add-to-cart__button--wrapper">
+                    {% if product.tags contains 'Box' %}
+                    {% comment %}
+                    We can't add the product directly to the cart if there are variants
+                    Move to the variants screen of the product to allow the user to choose variant first
+                    {% endcomment %}
+                      <form action="/cart/add" method="post" enctype="multipart/form-data" data-add-to-cart-form class="form-vertical add-to-cart__form">
+                          <span class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+                          {% if product.compare_at_price_max > product.price %}
+                          <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+                          {% endif %}
+
+                          <input type="hidden" id="Quantity" name="quantity" value="1" min="1" class="quantity-selector">
+                          <button type="submit" name="add" data-add-to-cart class="btn add-to-cart__button">
+                              <i class="icon-plus" aria-hidden="true"></i>
+                              <span class="fallback-text visually-hidden" aria-hidden="true">{{ 'products.product.add_to_cart' | t }}</span>
+                          </button>
+                          <select name="id" id="id" class="product-single__variants visually-hidden box">
+                              {% for variant in product.variants %}
+                              {% if variant.available %}
+                              {% comment %}
+                              Note: if you use option_selection.js, your <select> tag will be overwritten, meaning what you have inside <option> will not reflect what you coded below.
+                                      {% endcomment %}
+                                  <option {% if variant==product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}"  value="{{ variant.id }}">{{ variant.title}} - {{ variant.price | money_with_currency }}</option>
+                                  {% else %}
+                                  <option disabled="disabled">
+                                      {{ variant.title}} - {{ 'products.product.sold_out' | t }}
+                                  </option>
+                                  {% endif %}
+                                  {% endfor %}
+                              </select>
+                      </form>
+
+                    {% else %}
+                    {% comment %}
+                    [data-add-to-cart-form] is a selector for the ajax cart plugin
+                    {% endcomment %}
+                    <form action="/cart/add" method="post" enctype="multipart/form-data" data-add-to-cart-form class="form-vertical add-to-cart__form" >
+                        <span class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+                        {% if product.compare_at_price_max > product.price %}
+                        <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+                        {% endif %}
+                        <input type="hidden" id="Quantity" name="quantity" value="1" min="1" class="quantity-selector">
+                        <button type="submit" name="add" data-add-to-cart class="btn add-to-cart__button">
+                            <i class="icon-plus" aria-hidden="true"></i>
+                            <span class="fallback-text visually-hidden" aria-hidden="true">{{ 'products.product.add_to_cart' | t }}</span>
+                        </button>
+                        <select name="id" class="product-single__variants visually-hidden">
+                            {% for variant in product.variants %}
+                            {% if variant.available %}
+                            {% comment %}
+                            Note: if you use option_selection.js, your <select> tag will be overwritten, meaning what you have inside <option> will not reflect what you coded below.
+                                    {% endcomment %}
+                                <option {% if variant==product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title}} - {{ variant.price | money_with_currency }}</option>
+                                {% else %}
+                                <option disabled="disabled">
+                                    {{ variant.title}} - {{ 'products.product.sold_out' | t }}
+                                </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% for tag in product.tags %}
+          {% if tag == 'Box' %}
+
+            <div class="box-contains ">
+              <div class="images"></div>
+              <div class="tooltiped"></div>
+            </div>
+            <div class="box-contains-hidden hidden">
+                <div class="rte">
+                    {{ product_contents }}
+                </div>
+            </div>
+
+            <script>
+              $(document).ready(function() {
+                var product_id_class = ".product-id" + {{ product.id }};
+                var $contains = [];
+                var $title = $(product_id_class + ' .box-contains-hidden h3')
+                $(product_id_class + ' .box-contains-hidden tr').each(function() {
+                    var $img = $(this).find('img').attr('src');
+                    var $name = $(this).find('h4').text();
+                    $contains.push([$name, $img]);
+                });
+
+                $(product_id_class + ' .box-contains').prepend($title);
+                $contains.forEach(function(pair) {
+                  $(product_id_class + ' .box-contains .images').append("<img src='" + pair[1] + "' alt='" + pair[0] + "'>");
+                });
+
+                $(product_id_class + ' .box-contains .images img')
+
+                    .on("mouseenter", function() {
+                      var $title_meal = $(this).attr('alt');
+                      $(product_id_class + ' .tooltiped').text($title_meal);
+                      $(product_id_class + ' .tooltiped').show();
+                    })
+                    .on("mouseleave", function() {
+                      $(product_id_class + ' .tooltiped').hide();
+                    })
+                    .on("touchstart", function() {
+                      var $title_meal = $(this).attr('alt');
+                      $('.tooltiped').hide();
+                      $(product_id_class + ' .tooltiped').text($title_meal);
+                      $(product_id_class + ' .tooltiped').show();
+                    });
+
+              });
+
+
+            </script>
+          {% endif %}
+        {% endfor %}
+
+
+    </div>
+
+    <script>
+      var isMobile = {
+          android: () => navigator.userAgent.match(/Android/i),
+          blackberry: () => navigator.userAgent.match(/BlackBerry/i),
+          ios: () => navigator.userAgent.match(/iPhone|iPad|iPod/i),
+          opera: () => navigator.userAgent.match(/Opera Mini/i),
+          windows: () => navigator.userAgent.match(/IEMobile/i),
+          any: () => (isMobile.android() || isMobile.blackberry() ||
+              isMobile.ios() || isMobile.opera() || isMobile.windows())
+      };
+      isMobile.any() ? document.body.classList.add('is-touch') : document.body.classList.add('no-touch');
+
+    $('.no-touch .product-grid__item')
+        .on("mouseenter", function() {
+
+            $('.add-to-cart__button', this).fadeIn(200)
+        })
+        .on("mouseleave", function() {
+
+            $('.add-to-cart__button', this).fadeOut(200)
+        });
+    </script>

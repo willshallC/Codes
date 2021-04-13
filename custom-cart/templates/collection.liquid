@@ -1,0 +1,311 @@
+
+<!-- /templates/collection.liquid -->
+{% layout 'theme-condensed' %}
+{% comment %}
+
+  For more information on collection tags:
+    - http://docs.shopify.com/themes/liquid-variables/collection
+
+{% endcomment %}
+
+<div class="grid--full tab-nav--container">
+  {% include 'collection-sidebar' %}
+</div>
+
+
+{% if product.variants.size > 1 %}
+  {% assign has_variants = true %}
+{% else %}
+  {% assign has_variants = false %}
+{% endif %}
+
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+{%- assign pageUrl = contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last |
+   replace:'\/','/' |
+   replace:'%20',' ' |
+   replace:'\u0026','&'
+-%}
+
+{% assign debug = false %}
+{%- for i in (1..1) -%}
+  {% comment %} If the string doesn't contain a ? then we have no querystring. Go no further {% endcomment %}
+  {%- unless pageUrl contains "?" -%}{% break %}{%- endunless -%}
+
+  {% comment %} Only work when the cache qs is used. Be aware of the perf issues with using cache=false {% endcomment %}
+  {% comment %}{%- unless pageUrl contains "cache=false" -%}{% break %}{%- endunless -%}{% endcomment %}
+
+  {% comment %} Split the url at the ? to get all values after it {% endcomment %}
+  {%- assign pageQuerystring = pageUrl | split:'?' | last -%}
+
+  {% comment %} Split the remaining string at & to get the list of keys and values (if any) {% endcomment %}
+
+  {%- assign parts = pageQuerystring | split:'&' -%}
+
+{% comment %}  Loop over them...
+{% endcomment %}
+  {%- for part in parts -%}
+    {% comment %} Split the part at the =. Not all querystrings will be in pairs so we need to account for that {% endcomment %}
+    {%- assign keyAndValue = part | split:'=' -%}
+
+    {%- if keyAndValue.size > 1 -%}
+      {% if debug %}
+      <!--
+        key: {{ keyAndValue[0] }}<br>
+        value: {{ keyAndValue[1] }}
+      -->
+      {% endif %}
+
+      {% if keyAndValue[0] == "id" %}
+        {% assign box_id = keyAndValue[1] %}
+
+        <script>
+          var p = $.get('/cart.js');
+          var timeCounter= 0;
+          var interval = setInterval(function() {
+              timeCounter += 500;
+              if (timeCounter > 4000) {
+                  clearInterval(interval);
+              } else {
+                publish()
+              }
+          }, 500);
+
+          $('.return-link').hide();
+
+
+          function publish() { JSON.parse(p.responseText).items.forEach(function(item) {
+              if (item.id == parseInt("{{box_id}}")) {
+                $('.note--top img').attr('src', item.image).attr('alt', item.title);
+                $('.sub-string').text(item.title.replace("- " + item.variant_title, ''))
+              }
+            })
+       }
+        </script>
+
+      {% endif %}
+
+
+
+      {% if keyAndValue[0] == "from" and keyAndValue[1] == "box" %}
+      <div class="note note--top" style="top: -10px;">
+        <img src="{{ featured_image | img_url: 'small' }}" alt="{{ featured_image.alt | escape }}" id="selected-menu">
+        <span class="note__content">
+          Souhaitez-vous ajouter une boisson à votre menu ?
+          <br>
+          <span class="sub-string"></span>
+          {% comment %}{{ 'products.product.variants.note' | t }}{% endcomment %}
+        </span><br>
+
+
+      {% comment %}  <button class="note__close">
+          <i class="icon-cancel"></i>
+        </button>{% endcomment %}
+        <div class="grid__item two-fifths large--one-quarter text-right no-mercy">
+          <a data-select-variant="{{ product.variants.first.id }}" class="btn no-variant--button" href="/cart">
+            {{ 'products.product.variants.none' | t }}
+          </a>
+        </div>
+      </div>
+
+      {% endif %}
+    {%- else -%}
+     {%- if debug -%}
+      <!--
+        value: {{ keyAndValue }}
+      -->
+      {%- endif -%}
+    {%- endif -%}
+
+  {%- endfor -%}
+{%- endfor -%}
+
+
+{% comment %}
+  Use class grid-uniform to have evenly sized columns clear
+  each other properly at each breakpoint.
+{% endcomment %}
+<div class="grid-uniform flex">
+
+  {% comment %}
+    Loop through our products in the current collection.
+    See the snippet 'product-grid-item' for the layout.
+  {% endcomment %}
+  {% if collection.handle != collections.frontpage.handle %}
+    {% assign grid_item_width = 'large--one-quarter' %}
+  {% endif %}
+
+
+  {% for product in collection.products %}
+    {% if box_id %}
+      {% include 'product-grid-item-onboard' %}
+    {% else %}
+      {% include 'product-grid-item' %}
+    {% endif %}
+  {% else %}
+
+    {% if collection.handle == 'all' and current_tags == '' %}
+
+      {% comment %}
+        Add default products to help with onboarding for collections/all only
+      {% endcomment %}
+      {% unless emptyState %}
+        {{ 'theme-onboarding.css' | global_asset_url | stylesheet_tag }}
+        {% assign emptyState = true %}
+      {% endunless %}
+      {% include 'onboarding-empty-collection' %}
+
+    {% else %}
+
+      {% comment %}
+        If collection exists but is empty, display message
+      {% endcomment %}
+      <div class="grid__item">
+        <p>{{ 'collections.general.no_matches' | t }}</p>
+      </div>
+
+    {% endif %}
+
+  {% endfor %}
+
+</div>
+
+{% if box_id %}
+
+    <script>
+      $(document).ready(function() {
+        if ($('html').hasClass('supports-no-touch')) {
+          $('.grid__item').addClass('slidedown')
+          function dostuff(elem) {
+            $(elem).addClass('slidup').removeClass('slidedown');
+            $(this).find('.spe_form').css('z-index', 0);
+            // $(elem).find('.grid__image').slideUp(400);
+            // $(elem).find('.grid__item-content').animate({height: '220px'},400)
+          }
+          function undostuff(elem) {
+            console.log('hoho');
+            $(elem).removeClass('slidup').addClass('slidedown');
+            $(this).find('.spe_form').css('z-index', -1);
+
+            // $(elem).find('.grid__item-content').css('height', '100px')
+            // $(elem).find('.grid__image').slideDown(400);
+          }
+          $('.grid__item.slidedown').on('mouseenter', function(){ dostuff($(this)) })
+          $('.grid__item').on('mouseleave',function(){ undostuff($(this)) });
+
+        } else {
+          $('.grid__item').addClass('slidedown')
+          function dostuff(elem) {
+            console.log('hohi');
+            $(elem).addClass('slidup').removeClass('slidedown');
+            $(elem).on('touchstart', function(e){
+              if ($(e.target).hasClass('spe__button')) {
+                $(this).find('form').submit();
+              } else {
+                undostuff($(this))
+              }
+            });
+
+            // $(elem).find('.grid__image').slideUp(400);
+            // $(elem).find('.grid__item-content').animate({height: '220px'},400)
+          }
+          function undostuff(elem) {
+            console.log('hoho');
+            $(elem).removeClass('slidup').addClass('slidedown');
+            $(elem).on('touchstart',function(){ dostuff($(this)) });
+
+            // $(elem).find('.grid__item-content').css('height', '100px')
+            // $(elem).find('.grid__image').slideDown(400);
+          }
+          $('.grid__item.slidedown').on('touchstart', function(){ dostuff($(this)) })
+        }
+
+      })
+    </script>
+
+    <style>
+      .grid__item .grid__item-content {
+        height: 100px !important;
+        overflow: hidden;
+      }
+      .grid__item .grid__image {
+        height: 220px !important;
+        opacity: 1 !important;
+      }
+      .grid__item.slidedown .grid__item-content {
+        height: 100px !important;
+        overflow: hidden;
+      }
+      .grid__item.slidedown .grid__image {
+        height: 220px !important;
+        opacity: 1 !important;
+      }
+      .grid__item.slidup .grid__item-content {
+        height: 320px !important;
+      }
+      .grid__item.slidup .grid__image {
+        height: 0px !important;
+        opacity: 0 !important;
+      }
+
+      .grid__item.slidedown .grid__item-content {
+        animation-duration: 0.5s;
+        animation-name: cttslidedown;
+      }
+
+      .grid__item.slidup .grid__item-content {
+        animation-duration: 0.5s;
+        animation-name: cttslideup;
+      }
+
+      .grid__item.slidedown .grid__image {
+        animation-duration: 0.5s;
+        animation-name: imgslidedown;
+      }
+      .grid__item.slidup .grid__image {
+        animation-duration: 0.5s;
+        animation-name: imgslideup;
+      }
+
+      @keyframes cttslidedown {
+        from {
+          height: 320px;
+        }
+        to {
+          height: 100px;
+        }
+      }
+      @keyframes cttslideup {
+        from {
+          height: 100px;
+        }
+
+        to {
+          height: 320px;
+        }
+      }
+
+      @keyframes imgslidedown {
+        from {
+          height: 0px;
+          opacity: 0;
+        }
+
+        to {
+          height: 220px;
+          opacity: 1;
+        }
+      }
+      @keyframes imgslideup {
+        from {
+          height: 220px;
+          opacity: 1;
+        }
+
+        to {
+          height: 0px;
+          opacity: 0;
+
+        }
+      }
+    </style>
+{% endif %}

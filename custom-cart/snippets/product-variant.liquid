@@ -1,0 +1,319 @@
+
+{% comment %}
+  Variants are cross-referenced to a collection of the same name
+{% endcomment %}
+{% capture type_key %}{{ product.type | handleize }}{% endcapture %}
+{% capture type_t %}{{ 'products.product.types.' | append: type_key | t }}{% endcapture %}
+{% capture variant_key %}{{ product.options.first | handleize }}{% endcapture %}
+{% assign variant_lookup_key = variant_key | append: 's' %}
+{% for collection in collections %}
+  {% if collection.handle == variant_lookup_key %}
+    {% assign lookup_collection = collection %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+<div class="note note--top">
+  <img src="{{ featured_image | img_url: 'small' }}" alt="{{ featured_image.alt | escape }}" id="selected-menu">
+  <span class="note__content">
+    Souhaitez-vous ajouter une boisson à votre menu ?
+    <br>
+    <span class="sub-string"></span>
+    {% comment %}{{ 'products.product.variants.note' | t }}
+  </span><br>{% endcomment %}
+
+
+{% comment %}  <button class="note__close">
+    <i class="icon-cancel"></i>
+  </button>{% endcomment %}
+  <div class="grid__item two-fifths large--one-quarter text-right no-mercy">
+    <button data-select-variant="{{ product.variants.first.id }}" class="btn no-variant--button">
+      {{ 'products.product.variants.none' | t }}
+    </button>
+  </div>
+</div>
+
+{% comment %}{% for product in lookup_collection.products %}
+  {% assign grid_item_width = 'large--one-quarter' %}
+  {% include 'product-grid-item' with product%}
+{% endfor %}{% endcomment %}
+
+<div class="grid--full tab-nav--container">
+  <div class="grid__item three-fifths large--three-quarters">
+    <ul class="tab-nav medium-down--hide">
+      <li>
+        <a href="#" data-filter-by="none">
+          <span>{{ 'products.product.variants.all' | t }}</span>
+          <span class="tab-count">{{ product.variants.size }}</span>
+        </a>
+      </li>
+      {% for tag in lookup_collection.all_tags %}
+        {% assign tag_count = 0 %}
+        {% for lookup_product in lookup_collection.products %}
+          {% if lookup_product.tags contains tag %}
+            {% capture tag_count %}{{ tag_count | plus: 1 }}{% endcapture %}
+          {% endif %}
+        {% endfor %}
+        <li>
+          <a href="#" data-filter-by="{{ tag }}">
+            <span>{{ tag }}</span>
+            <span class="tab-count">{{ tag_count }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="tab-nav--mobile large--hide">
+      <button data-tab-nav--toggle class="tab-nav--toggle"></button>
+
+      <ul class="tab-nav">
+        <li>
+          <a href="#" data-filter-by="none">
+            <span>{{ 'products.product.variants.all' | t }}</span>
+            <span class="tab-count">{{ product.variants.size }}</span>
+          </a>
+        </li>
+        {% for tag in lookup_collection.all_tags %}
+          {% assign tag_count = 0 %}
+          {% for lookup_product in lookup_collection.products %}
+            {% if lookup_product.tags contains tag %}
+              {% capture tag_count %}{{ tag_count | plus: 1 }}{% endcapture %}
+            {% endif %}
+          {% endfor %}
+          <li>
+            <a href="#" data-filter-by="{{ tag }}">
+              <span>{{ tag }}</span>
+              <span class="tab-count">{{ tag_count }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  {% comment %}<div class="grid__item two-fifths large--one-quarter text-right">{% endcomment %}
+    {% comment %}<button data-select-variant="{{ product.variants.first.id }}" class="btn no-variant--button">{% endcomment %}
+      {% comment %}{{ 'products.product.variants.none' | t }}{% endcomment %}
+    {% comment %}</button>{% endcomment %}
+  {% comment %}</div>{% endcomment %}
+</div>
+
+<script>
+  var variantsLookup = {};
+</script>
+<div data-products class="grid-uniform flex">
+  {% for variant in product.variants %}
+    {% comment %}
+      First variant should be default product
+    {% endcomment %}
+    {% if variant == product.variants.first %}
+      {% continue %}
+    {% endif %}
+
+    {% comment %}
+      Find matching product in variant collection
+    {% endcomment %}
+    {% assign lookup_product = nil %}
+    {% for collection_product in lookup_collection.products %}
+      {% if collection_product.title == variant.title %}
+        {% assign lookup_product = collection_product %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    {% if lookup_product %}
+      <div class="grid__item product-grid__item large--one-quarter medium-down--one-whole" data-product data-product-tags="{{ lookup_product.tags | join: ',' }}{% if variant.price == product.price_min %},recommended{% endif %}">
+        <div class="product-grid__item-wrapper">
+          <a href="#" data-select-variant="{{ variant.id }}">
+            <div class="grid__image">
+              <img src="{{ lookup_product.featured_image.src | img_url: 'large' }}" alt="{{ lookup_product.featured_image.alt | escape }}">
+              <div class="grid__image-hover">
+                <span>{{ 'products.product.variants.choose' | t}}</span>
+              </div>
+            </div>
+            <div class="grid__item-content">
+              <p class="h6">{{ variant.title}}</p>
+              <p class="price">
+                + {{ variant.price | minus: product.price_min | money }}
+              </p>
+            </div>
+          </a>
+
+          <div class="grid__image--dummy">
+            <img src="{{ product.featured_image.src | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+
+            <div class="add-to-cart__button--wrapper">
+              <a href="#" data-show-variant-detail="{{ variant.id }}" class="btn add-to-cart__button">
+                <i class="icon-menu" aria-hidden="true"></i>
+                <span class="fallback-text visually-hidden" aria-hidden="true">{{ 'products.product.add_to_cart' | t }}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <script>
+          var variant = {
+            title: {{ lookup_product.title | json}},
+            price: {{ variant.price | minus: product.price_min | money | prepend: '+ ' | json }},
+            image: {{ lookup_product.featured_image.src | img_url: 'large' | json }},
+            description: {{ lookup_product.description | json}}
+          };
+          variantsLookup['{{ variant.id }}'] = variant;
+        </script>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div class="grid">
+  <div class="grid__item one-whole text-center">
+    <div class="all-variants--button">
+      <a href="#" data-filter-by="none" class="btn">{{ 'products.product.variants.see_all' | t: item: variant_t }}</a>
+    </div>
+  </div>
+</div>
+
+<form action="/cart/add" method="post" enctype="multipart/form-data" data-add-to-cart-form class="form-vertical">
+
+  <input type="hidden" id="Quantity" name="quantity" value="1" min="1" class="quantity-selector">
+
+  {% comment %}
+    Add product variants as a dropdown.
+      - By default, each variant (or combination of variants) will display as its own `option`
+      - To separate these into multiple steps, which we suggest, use option_selection.js (see below)
+
+    You can leverage jQuery to add a callback on page load and each time the select element changes:
+      - Include option_selection.js (as seen at the bottom of this file)
+      - This allows you to use JavaScript anytime the variant dropdown changes
+      - This also separates out your variant options (ie. size, color, etc.) to separate select elements
+
+    For more information on products with multiple options, visit:
+      - http://docs.shopify.com/support/your-website/themes/can-i-make-my-theme-use-products-with-multiple-options#update-product-liquid
+  {% endcomment %}
+  <select name="id" id="productSelect" class="product-single__variants">
+    {% for variant in product.variants %}
+      {% if variant.available %}
+        {% comment %}
+          Note: if you use option_selection.js, your `select` tag will be overwritten, meaning what you have inside `option` will not reflect what you coded below.
+        {% endcomment %}
+        <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">
+          {{ variant.title}} - {{ variant.price | money_with_currency }}
+        </option>
+      {% else %}
+        <option disabled="disabled">
+          {{ variant.title}} - {{ 'products.product.sold_out' | t }}
+        </option>
+      {% endif %}
+    {% endfor %}
+  </select>
+
+  <button type="submit" name="add" data-add-to-cart>
+    <span>{{ 'products.product.add_to_cart' | t }}</span>
+  </button>
+
+</form>
+
+{% include 'product-variant-detail' %}
+
+{% include 'tab-nav-js' %}
+
+<script type="text/javascript">
+  $(function() {
+    var hiddenProducts;
+
+    function openVariantDetailModal(variantId) {
+      var variant = variantsLookup[variantId];
+      var $modal = $('[data-variant-detail-modal]');
+
+      $('[data-variant-detail-image]', $modal).attr('src', variant.image);
+      $('[data-variant-detail-title]', $modal).html(variant.title);
+      $('[data-variant-detail-price]', $modal).html(variant.price);
+      $('[data-variant-detail-description]', $modal).html(variant.description);
+      $('[data-select-variant]', $modal).data('select-variant', variantId);
+
+      //next / previous modal buttons
+      var product = $('[data-product] [data-select-variant="' + variantId + '"]').closest('[data-product]');
+      var next = product.next('[data-product]');
+      if (next.length === 0) {
+        next = product.siblings('[data-product]').first();
+      }
+      var prev = product.prev('[data-product]');
+      if (prev.length === 0) {
+        prev = product.siblings('[data-product]').last();
+      }
+      var nextId = next.find('[data-select-variant]').data('select-variant');
+      var prevId = prev.find('[data-select-variant]').data('select-variant');
+
+      $('[data-next-variant-detail]').data('next-variant-detail', nextId);
+      $('[data-previous-variant-detail]').data('previous-variant-detail', prevId);
+
+      $('[data-variant-detail-modal]').prependTo($('body')).removeClass('hide');
+    }
+
+    function closeVariantDetailModal() {
+      $('[data-variant-detail-modal]').appendTo($('[data-variant-detail-container]')).addClass('hide');
+    }
+
+    // hide the elements required by ajax-cart, but that we don't want visible
+    $('[data-add-to-cart]').hide();
+
+    //tab-nav filter controls
+    var $mobileTabNavToggle = $('[data-tab-nav--toggle]');
+
+    $('[data-product]').each(function(i, e) {
+      $(e).attr('data-index', i);
+    });
+
+    $('[data-filter-by]').click(function(event) {
+      event.preventDefault();
+      var target = $(event.currentTarget);
+      var filter = target.data('filter-by');
+      if (hiddenProducts) {
+        hiddenProducts.appendTo('[data-products]').each(function(i, e) {
+          var index = $(e).data('index');
+          $('[data-product]').eq(index).before(e);
+        });
+        hiddenProducts = null;
+      }
+      if (filter != 'none') {
+        hiddenProducts = $('[data-product][data-product-tags!="' + filter + '"]').detach();
+      }
+      $('[data-filter-by]').closest('li, div').removeClass('filter--active');
+      $('[data-filter-by="' + filter + '"]').closest('li, div').addClass('filter--active');
+      $mobileTabNavToggle.html(target.html());
+      target.closest('.tab-nav--mobile').removeClass('tab-nav--open');
+    });
+
+    //add to cart
+    $('[data-select-variant]').click(function(event) {
+      event.preventDefault();
+      var selectedVariant = $(event.target).closest('[data-select-variant]').data('select-variant');
+      $('#productSelect').val(selectedVariant);
+      closeVariantDetailModal();
+      showStep1();
+      $('[data-add-to-cart-form]').submit();
+    });
+
+    $('[data-show-variant-detail]').click(function(event) {
+      event.preventDefault();
+      var variantId = $(event.target).closest('[data-show-variant-detail]').data('show-variant-detail');
+      openVariantDetailModal(variantId);
+    });
+
+    $('[data-hide-variant-detail]').click(function() {
+      closeVariantDetailModal();
+    });
+
+    $('[data-previous-variant-detail]').click(function(event) {
+      targetId = $(event.currentTarget).data('previous-variant-detail');
+      openVariantDetailModal(targetId);
+    });
+
+    $('[data-next-variant-detail]').click(function(event) {
+      targetId = $(event.currentTarget).data('next-variant-detail');
+      openVariantDetailModal(targetId);
+    });
+
+    //trigger the first filter
+    $('[data-filter-by]').first().trigger('click');
+  });
+</script>

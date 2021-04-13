@@ -1,0 +1,22 @@
+{% include 'theme-pre-header-hook' %}
+
+  {{ content_for_header }}
+
+{% include 'theme-post-header-hook' %}
+
+<div class="header--background">
+  {% include 'header' %}
+
+  <main class="wrapper main-content" role="main">
+
+    {{ content_for_layout }}
+
+  </main>
+</div>
+
+
+{% include 'index-supplemental' %}
+
+{% include 'footer' %}
+
+{% include 'theme-post-content' %}

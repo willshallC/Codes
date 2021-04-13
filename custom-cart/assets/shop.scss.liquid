@@ -1,0 +1,4213 @@
+// Variables
+$colorPrimary: {{ settings.color_primary }} ;
+$colorSecondary: {{ settings.color_secondary }} ;
+$colorFooterBg: {{ settings.color_footer_bg }} ;
+$colorBorders: {{ settings.color_borders }} ;
+$colorBodyText: {{ settings.color_body_text }} ;
+$colorBodyBg: {{ settings.color_body_bg }} ;
+$colorFooterText: {{ settings.color_footer_text }};
+$colorPrimaryLighten: #ff675D;
+$colorDark: #424242;
+$colorGenericTableBg: #3f5767;
+$colorChefFooter: #2c2926;
+$colorCountBg: #eee;
+$navBarHeight: 350px;
+$navBarHeight-lg: 400px;
+$navBarHeightIndex: 230px;
+$navBarHeightLight: 150px;
+$navBarInnerHeight: 100px;
+$navBarBorder: 10px;
+$navBarMarginTop: 20px;
+$navBarMarginTop-lg: 45px;
+$navLogoSize: 85px;
+$cartArrowSize: 16px;
+$noteColorPrimary: #37474f;
+$noteColorSecondary: #cfd8dc;
+$noteBackgroundColor: #eceff1;
+$noteIconSize: 68px;
+$noteIconSize-lg: 80px;
+$imageThumbSize: 40px;
+$imageThumbSize-lg: 68px;
+$border-radius: 2px;
+$footerLogoSize: 32px;
+$countBadgeSize: 24px;
+
+//copied from timber.scss
+$drawerCartWidth: 458px;
+$siteWidth: 1180px;
+$gutter: 30px;
+$viewportIncrement: 1px;
+
+$small: 480px;
+$medium: 768px;
+$large: 769px;
+$xl: 1280px;
+
+$postSmall: $small + $viewportIncrement;
+$preMedium: $medium - $viewportIncrement;
+$preLarge: $large - $viewportIncrement;
+
+$min: min-width;
+$max: max-width;
+@mixin at-query ($constraint_,$viewport1_, $viewport2_:null) {
+ $constraint: $constraint_; $viewport1: $viewport1_; $viewport2: $viewport2_;
+  @if type-of($constraint_) == number {
+    $viewport1 : $constraint_; $viewport2 : $viewport1_; $constraint : null;
+  }
+  @if $constraint == $min {
+    @media screen and ($min: $viewport1) {
+      @content;
+    }
+  } @else if $constraint == $max {
+    @media screen and ($max: $viewport1) {
+      @content;
+    }
+  } @else {
+    @media screen and ($min: $viewport1) and ($max: $viewport2) {
+      @content;
+    }
+  }
+}
+
+@mixin count-badge {
+  border-radius: $countBadgeSize / 2;
+  display: inline-block;
+  font-family: 'Campton-Book';
+  font-size: .9rem;
+  height: $countBadgeSize;
+  line-height: $countBadgeSize;
+  padding: 2px 0 0;
+  text-align: center;
+  width: $countBadgeSize;
+}
+
+//begin ui-datepicker css
+.ui-datepicker {
+  border: none ;
+  padding: 0 !important;
+  width: 100% !important;
+
+  .ui-datepicker-header {
+    background: transparent !important;
+    border: none !important;
+
+    .ui-datepicker-title {
+      font-family: 'Campton-Bold';
+      font-weight: normal;
+      color: $colorBodyText;
+      text-transform: uppercase;
+    }
+
+    .ui-datepicker-prev,
+    .ui-datepicker-next,
+    .ui-datepicker-prev-hover,
+    .ui-datepicker-next-hover {
+      width: auto;
+      height: auto;
+      border: none;
+      background: none;
+      cursor: pointer;
+      top: 2px;
+      padding: 0 2px;
+    }
+
+    .ui-datepicker-prev,
+    .ui-datepicker-prev-hover {
+      left: 10px;
+    }
+
+    .ui-datepicker-next,
+    .ui-datepicker-next-hover {
+      right: 10px;
+    }
+
+    .ui-datepicker-prev-hover,
+    .ui-datepicker-next-hover {
+      border-radius: 1em;
+      background-color: $colorFooterBg;
+    }
+
+    .ui-icon {
+      display: none;
+    }
+  }
+
+  th {
+    font-family: 'Campton-Book';
+    font-weight: normal;
+    color: $colorBodyText;
+  }
+
+  td {
+    min-width: 3em;
+    padding: 0 0.4em !important;
+  }
+
+  .ui-state-default {
+    border: none !important;
+    background: none !important;
+    font-family: 'Campton-Book';
+    color: $colorDark !important;
+    background: none;
+    text-align: center;
+    border-radius: 2em;
+    padding: 0.35em 0 0.25em !important;
+    &:not(span) {
+      &:hover {
+        background-color: $colorFooterBg !important;
+      }
+    }
+
+    @include at-query($min, $large) {
+      padding: 0.5em 0 0.4em !important;
+    }
+  }
+
+  .ui-state-active {
+    font-family: 'Campton-Bold';
+    background-color: $colorPrimary !important;
+    color: white !important;
+  }
+
+  .ui-datepicker-other-month {
+    visibility: hidden; //Chrome does very strange things without this
+  }
+}
+
+//for iOS the datepicker modal must be at the top of the dom
+.datepicker--wrapper {
+  display: none;
+  @include at-query($max, $medium) {
+    align-items: center;
+    background-color: rgba($colorSecondary, .5);
+    bottom: 0;
+    display: flex;
+    float: none;
+    justify-content: center;
+    padding: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 1;
+  }
+}
+
+//end ui-datepicker css
+
+body {
+  background-color: $colorBodyBg;
+  font-family: 'Campton-Book';
+}
+
+html,
+body {
+  &.js-drawer-open-left {
+    overflow: hidden;
+  }
+}
+
+#PageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content,
+.supplemental-content {
+  flex: 1 1 auto; //IE11 requires 3rd prop
+  width: 100%;
+}
+
+.wrapper {
+  padding-left: $gutter;
+  padding-right: $gutter;
+}
+
+.relative {
+  position: relative;
+}
+
+.color-primary {
+  color: $colorPrimary;
+}
+
+h1 {
+  font-family: 'Campton-Bold';
+  font-weight: normal;
+  font-size: 1.75em;
+  color: $colorDark;
+}
+
+input:focus {
+  outline: none !important;
+  box-shadow: 0 0 5px $colorSecondary;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: 'Campton-Bold';
+  font-weight: normal;
+
+  &:enabled:hover {
+    background-color: $colorPrimaryLighten;
+  }
+}
+
+.btn--secondary {
+  font-family: 'Campton-Bold';
+  font-weight: normal;
+  background-color: $colorDark;
+  &:enabled:hover {
+    background-color: $colorSecondary;
+  }
+}
+
+.rte {
+  h2 {
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    font-size: 1em;
+  }
+
+  h3 {
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    font-size: 1em;
+    margin: 0;
+  }
+
+  > img {
+    margin-left: -$gutter;
+    margin-bottom: $gutter;
+  }
+
+  strong {
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+  }
+
+  &, & > p:last-child {
+    margin-bottom: 0;
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      color: $colorPrimary;
+      font-family: 'Campton-SemiBold';
+    }
+  }
+}
+
+.form-vertical {
+  margin-bottom: 0;
+}
+
+.note:not(.form-success) {
+  clear: both;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  position: relative;
+  border: 1px solid $colorBorders;
+  border-radius: $border-radius;
+  background-color: $noteBackgroundColor;
+  color: $noteColorPrimary;
+  font-family: 'Campton-Bold';
+  margin: -$gutter 0 1em;
+  max-height: 1000px;
+  padding: $gutter;
+  transition: opacity .25s, max-height 1s cubic-bezier(0, 1, 0, 1);
+
+  @include at-query($min, $large) {
+    margin-bottom: 3em;
+    padding: 0;
+  }
+
+  &.note--hide {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  &.note--top {
+    // when the note is butted directly to the element above
+    border-top: none;
+    border-radius: 0 0 $border-radius $border-radius;
+  }
+
+  .note__content {
+    align-self: center;
+    flex: 1 1 auto;
+    padding: 0;
+
+    @include at-query($min, $large) {
+      padding: 2em;
+    }
+  }
+
+  .note__content--minor {
+    font-family: 'Campton-Book';
+    color: $colorBodyText;
+  }
+
+  .note__close {
+    font-size: 1.6em;
+    padding: 0 0.5em;
+
+    &:hover {
+      color: $colorDark;
+    }
+
+    @include at-query($min, $large) {
+      padding: 0 1em;
+    }
+  }
+
+  .note__action {
+    align-self: center;
+    margin-right: 2em;
+  }
+
+  &:not(.no-icon) {
+    background-image: url('{{ "note-icon-background-sm.png" | asset_url }}');
+    background-repeat: repeat-y;
+    background-size: $noteIconSize 1px;
+    padding: 0;
+
+    // &::before {
+    //   align-self: center;
+    //   background-color: $noteColorSecondary;
+    //   color: $noteBackgroundColor;
+    //   content: '\e803'; //icon-info
+    //   display: inline-block;
+    //   font-family: "fly-me-to-the-food";
+    //   font-size: 4em;
+    //   font-style: normal;
+    //   font-variant: normal;
+    //   font-weight: normal;
+    //   line-height: 1em;
+    //   text-align: center;
+    //   text-transform: none;
+    //   flex: 0 0 $noteIconSize;
+    // }
+
+    .note__content {
+      padding: 1em;
+    }
+
+    @include at-query($min, $large) {
+      background-image: none;
+
+      &::before {
+        line-height: 1.6em;
+        flex-basis: $noteIconSize-lg;
+      }
+
+      .note__content {
+        padding: 2em;
+      }
+    }
+  }
+}
+
+.js-drawer-open {
+  overflow: auto;
+}
+
+.js-qty__adjust, .js-qty__num {
+  border: none;
+}
+
+//begin variant-detail
+//initially descendent of template-product though needs to be moved to top of DOM when active
+.variant-detail--modal {
+  align-items: center;
+  background-color: rgba($colorSecondary, .5);
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  position: fixed;
+  width: 100vw;
+  z-index: 1;
+
+  &.hide {
+    display: none;
+  }
+
+  .wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .variant-detail--content {
+    background-color: white;
+    border: 1px solid $colorBorders;
+    border-radius: $border-radius;
+    max-height: calc(100vh - (#{$gutter} * 2));
+    overflow-y: auto;
+    position: relative;
+    width: 100%;
+
+    .add-to-cart__button--main {
+      margin-bottom: 0;
+    }
+  }
+
+  .variant-detail--image {
+    display: block;
+    width: 100%;
+  }
+
+  .variant-detail--text {
+    padding: $gutter;
+
+    @include at-query($min, $medium) {
+      padding: ($gutter * 2);
+      padding-bottom: $gutter;
+    }
+  }
+
+  .variant-detail--close {
+    font-size: 1.5rem;
+    position: absolute;
+    right: $gutter / 2;
+    top: $gutter / 2;
+
+    &:hover {
+      color: $colorSecondary;
+    }
+
+    @include at-query($min, $medium) {
+      right: $gutter;
+      top: $gutter;
+    }
+  }
+
+  .variant-detail--button {
+    bottom: 0;
+    color: $colorBodyText;
+    font-size: 4rem;
+    position: absolute;
+    top: 0;
+
+    &.previous {
+      left: -$gutter;
+    }
+
+    &.next {
+      right: -$gutter;
+    }
+
+    &:hover {
+      color: $colorSecondary;
+    }
+
+    @include at-query($min, $xl) {
+      &.previous {
+        left: -($gutter * 2);
+      }
+
+      &.next {
+        right: -($gutter * 2);
+      }
+    }
+  }
+}
+
+//end variant-detail
+
+.header--background {
+  background-color: $colorSecondary;
+  position: relative;
+
+  &::before {
+    background: transparent url({{ 'Table-01.png' | asset_url }}) center center no-repeat;
+    background-size: cover;
+    content: '';
+    height: calc(100% - #{$navBarBorder});
+    opacity: .5;
+    position: absolute;
+    top: $navBarBorder;
+    width: 100%;
+  }
+
+  @include at-query($min, large) {
+    height: $navBarHeight-lg - $navBarBorder;
+  }
+}
+
+.nav-bar {
+  background-color: transparent;
+  border-top: $navBarBorder solid $colorPrimary;
+  height: $navBarHeight;
+
+  @include at-query($min, $large) {
+    height: $navBarHeight-lg;
+  }
+
+  > .wrapper {
+    position: relative;
+    height: $navBarInnerHeight;
+    line-height: $navBarInnerHeight - $navBarMarginTop;
+    padding-top: $navBarMarginTop;
+
+    @include at-query($min, $large) {
+      padding-top: $navBarMarginTop-lg;
+    }
+  }
+
+  .site-nav__link {
+    padding: 0;
+    padding-left: 20px;
+    color: white;
+
+    &:hover {
+      color: white;
+      font-family: 'Campton-SemiBold';
+
+      #CartCount {
+        font-family: 'Campton-Book';
+      }
+    }
+  }
+
+  .site-nav--active {
+    .site-nav__link {
+      font-weight: normal;
+      font-family: 'Campton-Bold';
+
+      &:before {
+        vertical-align: middle;
+        font-weight: normal;
+        font-size: 1.5em;
+        line-height: 1em;
+        font-family: 'fly-me-to-the-food';
+        content: '\e805'; //icon-chevron-right-small
+      }
+    }
+  }
+
+  .site-nav--mobile {
+    align-items: center;
+    display: flex;
+    line-height: normal;
+    margin: 0; //Timber sets the right margin to -15px - the reason is unclear
+
+    .site-nav__link {
+      padding: 0;
+
+      &.js-drawer-open-left {
+        flex: 0 0 1.4rem;
+        font-size: 1.4rem;
+      }
+    }
+
+    .template-cart & {
+      //following used in specific header variation for template-cart
+      .logo-link {
+        margin-top: $gutter - ($navBarBorder / 2);
+      }
+
+      .icon-logo {
+        color: $colorPrimary;
+        font-size: 2rem;
+      }
+
+      .breadcrumb {
+        flex-basis: 100%;
+        margin: ($gutter - ($navBarBorder / 2)) 0 0;
+        padding: 0;
+
+        a,
+        span {
+          font-size: .8em;
+          margin: 0;
+          padding: 0;
+        }
+
+        a {
+          &::before {
+            margin-right: 0;
+          }
+        }
+
+        .icon-delimiter {
+          margin-left: -.8em;
+          margin-right: -.8em;
+        }
+      }
+
+      .js-drawer-open-right {
+        margin-top: $gutter - $navBarBorder;
+      }
+    }
+  }
+
+  #CartCount {
+    @include count-badge;
+    background-color: white;
+    color: $colorSecondary;
+  }
+
+  .site-header__logo-link {
+    > img {
+      width: $navLogoSize;
+    }
+  }
+
+  &.light {
+    background-color: white;
+    border-bottom: 1px solid $colorBorders;
+    height: $navBarHeightLight;
+
+    > .wrapper {
+      padding-top: $gutter;
+    }
+
+    .site-nav__link {
+      color: $colorPrimary;
+    }
+
+    #CartCount {
+      background-color: $colorPrimary;
+      color: white;
+    }
+  }
+}
+
+.drawer {
+  background-color: white;
+  border: 1px solid $colorBorders;
+  bottom: auto;
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
+  display: none;
+  opacity: 0;
+  overflow: visible; //allow popover arrow to overflow
+  position: absolute;
+  top: 150px;
+  transition: display 0, opacity .25s;
+
+  &.drawer--right {
+    &::after {
+      position: absolute;
+      top: -($cartArrowSize / 2);
+      content: '';
+      width: $cartArrowSize;
+      height: $cartArrowSize;
+      background-color: white;
+      border-top: 1px solid $colorBorders;
+      border-right: 1px solid $colorBorders;
+      transform: rotate(-45deg);
+    }
+  }
+
+  &.condensed-menu {
+    top: 115px;
+  }
+
+  .js-drawer-open & {
+    transition: opacity .25s, display 0 0.25s;
+  }
+
+  &.drawer--left {
+    border-left: 0;
+    border-top: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: scroll;
+    padding: ($gutter / 2) 0 0 ($gutter / 2);
+    position: fixed;
+    top: 0;
+    width: calc(100% - #{$gutter});
+
+    .mobile-nav {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      margin-right: 0;
+      margin-top: 0;
+
+      .mobile-nav__main {
+        flex: 1 1 auto; //IE11 requires 3rd prop
+        margin-top: -($gutter / 2);
+      }
+
+      header {
+        align-items: center;
+        border-top: $navBarBorder solid $colorPrimary;
+        display: flex;
+        height: $navBarHeightLight - 1px;
+        padding: ($gutter - $navBarBorder) (calc(#{$gutter} + 1.4rem)) ($gutter / 2) $gutter;
+
+        .drawer__close {
+          flex: 0 0 1.4rem;
+          font-size: 1.4rem;
+          margin: 0;
+          width: auto;
+        }
+
+        .mobile-nav__logo-wrapper {
+          max-width: 100%;
+          margin: 0 auto;
+        }
+
+        .mobile-nav__logo-link {
+          img {
+            display: block;
+            width: $navLogoSize;
+          }
+        }
+      }
+
+      .mobile-nav__minor {
+        padding: $gutter;
+        border-top: 1px solid $colorBorders;
+
+        .mobile-nav__minor--text {
+          font-size: .75em;
+          color: $colorBodyText;
+        }
+
+        a.mobile-nav__minor--text {
+          font-family: 'Campton-SemiBold';
+        }
+
+        .mobile-nav__list--minor {
+          padding-top: $gutter;
+          text-align: center;
+
+          .mobile-nav__link {
+            color: $colorBodyText;
+            font-family: 'Campton-Book';
+            font-size: .9em;
+          }
+        }
+      }
+
+      .mobile-nav__list,
+      .mobile-nav__list--minor,
+      .mobile-nav__sublist {
+        margin: 0;
+      }
+
+      .mobile-nav__list {
+        border-top: 1px solid $colorBorders;
+        padding: ($gutter / 2) 0;
+      }
+
+      .social-icons {
+        position: absolute;
+        margin: 0;
+        right: $gutter / 2;
+        top: calc((#{$gutter} / 2) + 8px);
+
+        li {
+          margin: 0;
+        }
+
+        a {
+          color: $colorBodyText;
+          font-size: 2em;
+        }
+      }
+    }
+
+    .js-drawer-open-left & {
+      display: block;
+      opacity: 1;
+      transform: none;
+    }
+
+    @include at-query($min, $small) {
+      width: 45%;
+    }
+  }
+
+  .mobile-nav__item {
+    .mobile-nav__link {
+      color: $colorSecondary;
+      margin: 0;
+      padding: 0 $gutter .5em;
+
+      #CartCount {
+        @include count-badge;
+        background-color: $colorPrimary;
+        color: white;
+        margin-left: .25em;
+      }
+    }
+
+    [class*="icon-menu-"] {
+      color: $colorBodyText;
+      font-size: 2em;
+      margin-left: -.3rem;
+      padding-right: 1rem;
+
+      & ~ span {
+        vertical-align: text-bottom;
+      }
+    }
+
+    // #ly-languages-switcher {
+    //   padding-left: $gutter / 2;
+
+    //   img {
+    //     display: inline-block;
+    //     padding-right: calc(1rem + 10px); //arbitrary offset required to match 1rem of icon-menu
+    //   }
+
+    //   a {
+    //     font-family: 'Campton-SemiBold';
+    //     padding: 1em 0 0;
+    //   }
+    // }
+
+    &::after {
+      border: none;
+    }
+
+    &:last-child {
+      a {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .mobile-nav__item--active {
+    font-weight: normal;
+
+    a {
+      color: $colorPrimary;
+    }
+  }
+
+  &.drawer--right {
+    color: $colorBodyText;
+    padding: $gutter;
+    right: $gutter / 2;
+    width: calc(100% - #{$gutter});
+
+    .js-drawer-open-right & {
+      display: block;
+      opacity: 1;
+      transform: none;
+    }
+
+    &::after {
+      right: 19px;
+    }
+    @include at-query($min, $large) {
+      right: calc(50% - (100vw / 2) + #{$gutter});
+      width: $drawerCartWidth;
+
+      &::after {
+        right: $gutter;
+      }
+    }
+
+    @include at-query($min, $xl) {
+      right: calc(50% - (#{$siteWidth} / 2) + #{$gutter});
+      width: $drawerCartWidth;
+
+      &::after {
+        right: $gutter;
+      }
+    }
+  }
+
+  #CartContainer > p:only-child {
+    // signifies the "no items" message
+    // leave space to counter the negative position of "Continue shopping"
+    margin-bottom: 3em
+  }
+
+  .drawer__close {
+    color: $colorPrimary;
+    display: inline-block;
+    font-size: inherit;
+    margin-top: 1em;
+    text-align: right;
+    width: 50%;
+
+    &:hover {
+      font-family: 'Campton-SemiBold';
+      opacity: 1;
+    }
+  }
+
+  .ajaxcart__inner {
+    margin-bottom: 0;
+  }
+
+  .ajaxcart__product {
+    .ajaxcart__product-image {
+      width: 48px;
+      height: 48px;
+      img {
+        width: inherit;
+        height: inherit;
+        display: block;
+        margin: 0;
+        object-fit: cover;
+      }
+    }
+    .ajaxcart__product-name {
+      font-family: 'Campton-Bold';
+      display: inline;
+    }
+    .ajaxcart__product-meta {
+      display: inline;
+    }
+  }
+
+  .ajaxcart__row {
+    margin-bottom: 0;
+    border-bottom: none;
+
+    .grid {
+      width: auto; //default 100% leaves grid too narrow
+    }
+
+    p, a {
+      margin-bottom: 0;
+    }
+
+    a {
+      &:hover {
+        color: $colorPrimary;
+        opacity: 1;
+      }
+    }
+
+    .line-price {
+      vertical-align: text-top;
+    }
+  }
+
+  .ajaxcart__qty-num {
+    border: none;
+    color: $colorBodyText;
+  }
+
+  .ajaxcart__qty-adjust {
+    border: none;
+    color: $colorBodyText;
+    padding: 0;
+
+    &:hover {
+      color: $colorPrimary;
+    }
+  }
+
+  .ajaxcart__qty {
+    padding: 0;
+
+    input {
+      padding: 0;
+    }
+  }
+
+  .ajaxcart__footer {
+    padding-top: 1em;
+
+    hr {
+      margin: 0 0 1em;
+
+      & ~ hr {
+        margin-bottom: 2em;
+      }
+    }
+  }
+
+  .subtotal {
+    font-family: 'Campton-Bold';
+    text-transform: uppercase;
+  }
+
+  .cart__checkout {
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    background-color: $colorPrimary;
+    border-radius: $border-radius;
+    &:hover {
+      background-color: $colorPrimaryLighten;
+    }
+  }
+}
+
+.tab-nav,
+.tab-nav--mobile {
+  .tab-count {
+    @include count-badge;
+    background-color: $colorCountBg;
+  }
+}
+
+.tab-nav--container {
+  border-bottom: 1px solid $colorBorders;
+  margin-bottom: 40px;
+}
+
+.tab-nav {
+  font-family: 'Campton-Bold';
+  margin: 0;
+  text-transform: uppercase;
+
+  li {
+    border-bottom: 2px solid transparent;
+    display: block;
+    margin: 0;
+    padding: 0 0 30px 0;
+    white-space: nowrap;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    a {
+      font-weight: normal;
+      color: $colorBodyText;
+    }
+
+    &.filter--active {
+      border-color: $colorPrimary;
+    }
+
+    &.filter--active a, a:hover {
+      color: $colorPrimary;
+
+      .tab-count {
+        color: $colorBodyText;
+      }
+    }
+  }
+
+  > li {
+    display: inline-block;
+  }
+
+  @include at-query($min, $large) {
+    li {
+      margin-right: 25px;
+    }
+  }
+}
+
+.tab-nav--mobile {
+  margin: 0;
+  position: relative;
+
+  &:not(.hide-dropdown) {
+    .tab-nav--toggle::after {
+      content: '\e814'; //icon-down-open
+      display: inline-block;
+      font-family: 'fly-me-to-the-food';
+      font-size: .7em;
+      margin-left: 1.2em;
+      position: relative;
+      // top: .3em;
+      width: 1em;
+    }
+  }
+
+  .tab-nav--toggle {
+    border-bottom: 2px solid $colorPrimary;
+    border-radius: 0;
+    color: $colorPrimary;
+    font-family: 'Campton-Bold';
+    padding-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .tab-nav {
+    display: none;
+  }
+
+  &.tab-nav--open {
+    .tab-nav {
+      background-color: white;
+      box-shadow: 5px 5px 25px rgba(0, 0, 0, .1);
+      border: 1px solid $colorBorders;
+      display: block;
+      min-width: 45%;
+      padding: 1em 4em 1em 1em;
+      position: absolute;
+      z-index: 1;
+
+      li {
+        display: block;
+        padding: 1em 0 1em 1em;
+
+        &.filter--active {
+          border-bottom: 0;
+        }
+      }
+    }
+
+    &:not(.hide-dropdown) {
+      .tab-nav--toggle::after {
+        content: '\e816'; //icon-up-open
+      }
+    }
+
+    @include at-query($min, $large) {
+      .tab-nav {
+        li {
+          padding-right: 1em;
+        }
+      }
+    }
+  }
+}
+
+.product-grid__item {
+  margin-bottom: $gutter;
+}
+
+.product-grid__item-wrapper {
+  position: relative;
+  background-color: white;
+  border: 1px solid $colorBorders;
+  border-radius: $border-radius;
+  height: initial !important;
+  &:hover {
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
+  }
+
+  .grid__item-content {
+    padding: 2em 1.5em 1.5em;
+  }
+
+  .h6 {
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    color: $colorDark;
+    margin-bottom: 0;
+  }
+
+  .price {
+    font-family: 'Campton-Book';
+    font-weight: normal;
+    color: $colorBodyText;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .rte {
+    color: $colorBodyText;
+  }
+
+  &.has-description {
+    text-align: center;
+
+    .grid__item-content {
+      padding: 2em;
+    }
+
+    .h6 {
+      font-size: 1.4em;
+      margin-bottom: 0.5em;
+    }
+
+    .price {
+      font-family: 'Campton-Bold';
+    }
+  }
+
+  .grid__image {
+    position: relative;
+    margin: 0;
+    border-bottom: 1px solid $colorBorders;
+  }
+
+  .grid__image-hover {
+    align-items: center;
+    background-color: rgba($colorSecondary, 0.5);
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    span {
+      font-family: 'Campton-Bold';
+      color: white;
+      border: 1px solid white;
+      border-radius: $border-radius;
+      padding: 0.5em 1.5em;
+    }
+  }
+
+  .grid__image--dummy {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    width: 100%;
+
+    > img {
+      display: block;
+      visibility: hidden;
+    }
+  }
+
+  .add-to-cart__button--wrapper {
+    position: relative;
+  }
+
+  .add-to-cart__button {
+    pointer-events: auto;
+    position: absolute;
+    top: -1em;
+    right: 1em;
+    padding: .4em .35em .3em;
+    border-radius: 2em;
+    font-size: 1.5em;
+  }
+
+  > a {
+    &:hover {
+      .grid__image-hover {
+        display: flex;
+      }
+
+      .add-to-cart__button {
+        background-color: $colorPrimaryLighten;
+      }
+
+      .h6 {
+        color: $colorPrimary;
+      }
+    }
+  }
+
+  @include at-query($min, $large) {
+    height: 100%;
+  }
+}
+
+.site-footer {
+  background-color: white;
+  border-top: 1px solid $colorBorders;
+
+  .footer--mobile {
+    text-align: center;
+  }
+
+  .footer-logo--mobile {
+    display: block;
+    height: $footerLogoSize;
+    margin: -($footerLogoSize * 1.5) auto $footerLogoSize / 2;
+    position: relative;
+    width: $footerLogoSize;
+  }
+
+  @include at-query($min, $large) {
+    .footer-logo {
+      width: 60%;
+    }
+
+    ul li a {
+      color: $colorBodyText;
+
+      &:hover {
+        color: $colorPrimary;
+      }
+    }
+
+    .footer-spacer {
+      margin-top: 4em;
+    }
+
+    .footer-nav {
+      & > ul > li {
+        & > span, & > a {
+          text-transform: uppercase;
+          font-family: 'Campton-Bold';
+          display: inline-block;
+          margin-bottom: 2em;
+        }
+
+      }
+    }
+
+    .footer-minor {
+      font-size: 0.8em;
+      margin-bottom: 0;
+
+      li {
+        padding-right: 20px;
+      }
+    }
+
+    .social-icons {
+      font-size: 3em;
+
+      li {
+        margin: 0 0 0 -0.3em; //counter whitespace between inline elements
+      }
+    }
+  }
+}
+
+.template-index {
+  .nav-bar {
+    height: $navBarHeightIndex;
+  }
+
+  .main-content {
+    position: relative;
+  }
+
+  h2 {
+    color: white;
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    margin-bottom: 1em;
+  }
+
+  input[name=location] {
+    border: 1px solid $colorBorders;
+    border-radius: $border-radius 0 0 $border-radius;
+    color: $colorDark !important;
+    font-size: 1em;
+    padding-left: 50px;
+    padding-top: 22px;
+    height: 5em;
+    position: relative;
+    width: 100%;
+    z-index: 1;
+
+    &, &::placeholder {
+      color: $colorBodyText;
+      font-family: 'Campton-Book';
+    }
+
+    &:placeholder-shown + label {
+      display: none;
+    }
+
+    box-shadow: 0 5px 25px rgba(0, 0, 0, .1);
+
+    @include at-query($min, $large) {
+      font-size: 1.2em;
+      padding-left: 80px;
+      padding-top: 24px;
+    }
+  }
+
+  label[for=location] {
+    display: block;
+    font-size: 0.8em;
+    left: 50px;
+    position: absolute;
+    top: 16px;
+    z-index: 1;
+
+    @include at-query($min, $large) {
+      font-size: 1em;
+      left: 80px;
+      top: 20px;
+    }
+  }
+
+  .icon-pin-outline {
+    font-size: 2em;
+    left: 0.3em;
+    position: absolute;
+    top: 0.5em;
+    z-index: 1;
+
+    @include at-query($min, $large) {
+      font-size: 3em;
+      top: 0.3em;
+    }
+  }
+
+
+  button[name=order] {
+    border: 0;
+    border-radius: $border-radius;
+    font-family: 'Campton-Bold';
+    font-size: 1.2em;
+    font-weight: normal;
+    margin-top: 2em;
+    padding: 1.4em 0;
+    width: 100%;
+    z-index: 2;
+
+    &:enabled:hover {
+      background-color: $colorPrimaryLighten;
+    }
+
+    @include at-query($min, $large) {
+      border-radius: 0 $border-radius $border-radius 0;
+      height: 5em;
+      margin-top: 0;
+    }
+  }
+
+  .no-locations-message--wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .no-locations-message {
+    background-color: white;
+    border: 1px solid $colorBorders;
+    border-top: none;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, .1);
+    display: none;
+    padding: 2em 0;
+    text-align: center;
+    width: 100%;
+
+    p {
+      margin: 0;
+
+      strong {
+        font-family: 'Campton-Bold';
+        font-weight: normal;
+      }
+    }
+
+    @include at-query($min, $large) {
+      padding: 3em 0;
+      position: absolute;
+
+      p {
+        font-size: 1.2em;
+        line-height: 1.2em;
+      }
+    }
+  }
+
+  .supplemental-content {
+    .grid {
+      padding: $gutter;
+    }
+
+    .grid__item {
+      display: flex;
+    }
+
+    img {
+      display: block;
+      margin-right: $gutter;
+      width: 60px;
+    }
+
+    .text-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    h3 {
+      color: $colorDark;
+      font-family: 'Campton-Bold';
+      font-weight: normal;
+      font-size: 1em;
+    }
+
+    @include at-query($min, $large) {
+      .grid {
+        padding: $gutter * 2 0;
+        text-align: center;
+      }
+
+      .grid__item {
+        display: block;
+      }
+
+      img {
+        margin: 0 auto $gutter * 1.5;
+        width: 120px;
+      }
+
+      h3 {
+        font-size: 1.5em;
+      }
+    }
+  }
+}
+
+.template-product,
+.template-cart {
+  .breadcrumb {
+    text-align: center;
+
+    .icon-delimiter {
+      font-size: 1.6em;
+      vertical-align: middle;
+    }
+
+    a {
+      color: $colorBodyText;
+
+      &::before {
+        font-family: "fly-me-to-the-food";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 1.6em;
+        speak: none;
+        display: inline-block;
+        text-decoration: inherit;
+        margin-right: .2em;
+        text-align: center;
+        font-variant: normal;
+        text-transform: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        vertical-align: -2px;
+      }
+
+      span {
+        margin: 0;
+        padding: 0;
+      }
+
+      &:first-child {
+        span {
+          display: none;
+        }
+
+        &::before {
+          content: '\e811'; //icon-one-outline-circled
+        }
+      }
+
+      &:nth-child(3) {
+        span {
+          display: none;
+        }
+
+        &::before {
+          content: '\e812'; //icon-two-outline-circled
+        }
+      }
+
+      &:nth-child(5) {
+        span {
+          display: none;
+        }
+
+        &::before {
+          content: '\e822'; //icon-three-outline-circled
+        }
+      }
+
+      &:hover {
+        color: $colorPrimary;
+      }
+
+      &.active {
+        font-family: 'Campton-Bold';
+
+        &:first-child {
+          span {
+            display: inline;
+          }
+
+          &::before {
+            content: '\e80f'; //icon-one-circled
+          }
+        }
+
+        &:nth-child(3) {
+          span {
+            display: inline;
+          }
+
+          &::before {
+            content: '\e810'; //icon-two-circled
+          }
+        }
+
+        &:hover {
+          color: inherit;
+        }
+      }
+
+      &.disabled {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      i {
+        top: 0.2em;
+        font-size: 1.6em;
+      }
+    }
+
+    @include at-query($min, $large) {
+      a {
+        &:first-child,
+        &:nth-child(3),
+        &:nth-child(5) {
+          span {
+            display: inline;
+          }
+        }
+      }
+    }
+  }
+}
+
+.template-product {
+  // .breadcrumb {
+  //   border-bottom: 1px solid $colorBorders;
+  //   padding-bottom: $gutter / 2;
+  //   margin: -($gutter / 2) -100% ($gutter * 2);
+
+  //   @include at-query($min, $large) {
+  //     margin-top: 0;
+  //     padding-bottom: $gutter;
+  //   }
+  // }
+
+  // .note {
+  //   top: -$gutter;
+  // }
+
+  .product-single__photos {
+    img {
+      width: 100%;
+    }
+  }
+
+  .add-to-cart__button--main,
+  .show-variants__button {
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    border-radius: $border-radius;
+    padding: 0.5em 1.2em 0.4em 0.8em;
+    margin: $gutter 0 $gutter * 2;
+    position: relative;
+  }
+
+  .all-variants--button {
+    margin-top: $gutter;
+    &.filter--active {
+      display: none;
+    }
+
+    .btn {
+      background: none;
+      color: $colorBodyText;
+      border: 1px solid $colorBodyText;
+      border-radius: $border-radius;
+
+      &:hover {
+        color: $colorPrimary;
+        border-color: $colorPrimary;
+      }
+    }
+  }
+
+  .no-variant--button {
+    margin: -10px 0 17px;
+
+    @include at-query($min, $large) {
+      margin-bottom: 28px;
+    }
+  }
+
+  h1,
+  .h2 {
+    margin-bottom: .6rem;
+  }
+
+  .h2 {
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    font-size: 1em;
+  }
+
+  //in the rte, table is used to show product contents
+  .rte {
+    h3 {
+      font-family: 'Campton-Bold';
+      font-weight: normal;
+      font-size: 1em;
+      text-transform: uppercase;
+      margin-bottom: 1em;
+    }
+
+    h4 {
+      font-family: 'Campton-Bold';
+      font-weight: normal;
+      font-size: 1em;
+      margin: 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    td {
+      border: none;
+      padding: 0 2em 1em 0;
+
+      &:first-child {
+        width: calc(#{$imageThumbSize} + 20px + 2em);
+        height: calc(#{$imageThumbSize} + 1em);
+      }
+
+      img {
+        border-radius: $imageThumbSize / 2;
+        display: block;
+        height: 40px;
+        object-fit: cover;
+        width: 40px;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.template-collection,
+[class*="template-customers-"] {
+  .return-link,
+  .logout-link {
+    padding-bottom: 20px;
+
+    a {
+      font-family: 'Campton-Bold';
+      color: $colorBodyText;
+      &::before {
+        content: '> ';
+      }
+      &:hover {
+        color: $colorPrimary;
+      }
+    }
+
+    @include at-query($min, $large) {
+      padding-bottom: $gutter;
+    }
+  }
+}
+
+.template-cart {
+  .site-header__logo {
+    img {
+      margin: auto;
+    }
+  }
+
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 3em;
+
+    &.fieldset--fill {
+      border: 1px solid $colorBorders;
+      background-color: white;
+
+      &.datepicker--fieldset {
+        max-width: calc(100vw - #{$gutter});
+
+        @include at-query($min, $large) {
+          border-left: none;
+          max-width: auto;
+        }
+      }
+
+      @include at-query($min, $large) {
+        height: 100%;
+      }
+    }
+  }
+
+  .cart--display {
+    .btn, .btn--secondary {
+      font-size: 1em;
+      margin-bottom: 1em;
+      border-radius: $border-radius;
+    }
+
+    .btn:not(.update-cart) {
+      width: 100%;
+    }
+
+    .btn--tertiary {
+      background: none;
+      border: 1px solid $colorPrimary;
+      color: $colorPrimary;
+
+      &:hover {
+        border-color: $colorDark;
+        color: $colorDark;
+      }
+    }
+  }
+
+  .h3 {
+    font-family: 'Campton-Book';
+    font-weight: normal;
+    font-size: 1em;
+    margin: 0;
+  }
+
+  .h4 {
+    display: inline;
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    font-size: 1em;
+    color: $colorDark;
+  }
+
+  .cart-table {
+    margin: 2em 0 3em;
+
+    td {
+      padding: 1em;
+
+      &.align--top {
+        vertical-align: top;
+      }
+
+      &:first-child {
+        padding-left: 0;
+      }
+    }
+
+    @include at-query($min, $large) {
+      margin: 0;
+    }
+  }
+
+  .cart__row {
+    border: none;
+    // display: flex;
+    align-items: center;
+
+    @include at-query($max, $medium) {
+      td {
+        clear: none;
+        padding: 0;
+        text-align: left;
+        width: auto;
+
+        &:nth-child(2) {
+          padding-left: 1em;
+          width: 33%;
+        }
+
+        &:nth-child(4) {
+          padding-top: 0.7em;
+        }
+
+        &::before {
+          content: '';
+        }
+      }
+
+      &::after {
+        border-bottom: none;
+      }
+    }
+
+    .h3 {
+      height: 1em;
+    }
+
+    .js-qty__adjust {
+      top: -.2em;
+
+      & > span:first-child {
+        font-size: 1.75em;
+      }
+    }
+
+    .js-qty input {
+      width: auto;
+
+      @include at-query($max, $medium) {
+        padding: 5px;
+      }
+    }
+  }
+
+  .cart__image {
+    width: $imageThumbSize;
+    height: $imageThumbSize;
+
+    img {
+      width: inherit;
+      height: inherit;
+      object-fit: cover;
+      border-radius: $imageThumbSize / 2;
+    }
+
+    @include at-query($min, $large) {
+      width: $imageThumbSize-lg;
+      height: $imageThumbSize-lg;
+
+      img {
+        border-radius: $imageThumbSize-lg / 2;
+      }
+    }
+  }
+
+  .cart__remove {
+    font-size: 1.75em;
+    color: $colorBodyText;
+    height: 1.25em;
+
+    &:hover {
+      color: $colorPrimary;
+    }
+  }
+
+  .cart__subtotal-block {
+    margin-top: 2em;
+
+    .cart__subtotal-row {
+      clear: both;
+      padding-bottom: 2.5em;
+
+      &.cart__subtotal-row--line {
+        border-bottom: 1px solid $colorBorders;
+        margin-bottom: 1.5em;
+      }
+    }
+
+    .cart__total-title, .cart__subtotal-title {
+      font-family: 'Campton-Bold';
+      text-transform: uppercase;
+    }
+
+    .cart__total {
+      font-family: 'Campton-Bold';
+      color: $colorDark;
+    }
+
+    .cart__subtotal-savings {
+      font-family: 'Campton-Bold';
+    }
+  }
+.pick-date-content{
+  width: 66.666%;
+  margin: auto;
+  display: block;
+  .active-cart-box{
+    width: 50%;
+  }
+  .grid-date{
+    width: 50%;
+    .grid-date-content{
+      width: 100%;
+    }
+  }
+
+}
+.datepicker--fieldset{
+  padding: 0!important;
+
+  #datepicker{
+    .ui-datepicker.ui-corner-all{
+      padding: 2em!important;
+
+      .ui-datepicker-header{
+        letter-spacing: 2px;
+      }
+    }
+    .ui-datepicker .ui-state-default{
+      color: #bdbdbd!important;
+    }
+    .ui-datepicker .ui-state-active{
+      color: white!important;
+    }
+  }
+}
+.ui-datepicker td{
+  padding: 0!important;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  a{
+    padding: 0!important;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+  }
+}
+  .pickup-date--display {
+    fieldset {
+      padding: 2em 3.5em;
+
+
+
+      p{
+        input, select, select option{
+          font-size: 1em !important;
+          font-family: 'Campton-Book' !important;
+          font-weight: 700 !important;
+        }
+
+
+
+        &:not(.active-field) {
+          border-bottom: 1px solid #e0e0e0;
+          padding: 1.2em 0 0.2em 0;
+
+          &.flight-p{
+            border-bottom: 0;
+            padding:0;
+            input{
+              font-size: 1em !important;
+              font-family: 'Campton-Book' !important;
+              font-weight: 700 !important;
+            }
+          }
+          input{
+            display: none;
+            font-size: 1em !important;
+
+
+            &[name="attributes[flight_number]"]{
+              display: block;
+              padding-top:0;
+            }
+          }
+          select{
+            font-size: 1em !important;
+
+          }
+          span{
+            width:100%;
+            display: inline-block;
+          }
+          label{
+            position: relative;
+            width: 86%;
+            display: inline-block;
+            font-size: 14px;
+
+          }
+          i{
+            position: absolute;
+            font-size: 1.5em;
+          }
+        }
+      }
+
+      &:not(.fieldset--fill) {
+
+        //padding-top: 0;
+
+        button{
+          &[name="checkout"]{
+            display: none;
+          }
+        }
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 50px;
+        font-size: 1em;
+        font-weight: normal;
+        font-family: 'Campton-Bold';
+        color: $colorDark;
+        //margin-bottom: 1.85em;
+
+        small {
+          display: block;
+          font-family: 'Campton-Book';
+          font-size: 0.8em;
+          color: $colorBodyText;
+        }
+      }
+
+      p {
+        position: relative;
+      }
+
+      label {
+        color: $colorBodyText;
+        position: absolute;
+        top: 0;
+        font-size: 13px;
+
+        &#terminal{
+          display:none;
+        }
+      }
+
+      i {
+        color: $colorBodyText;
+      }
+
+      input[name="attributes[flight_number]"]{
+      outline:none;
+
+        &:focus{
+          outline: none;
+        }
+      }
+      .far.fa-clock{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 1em;
+    font-weight: 100;
+      }
+      select{
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid $colorBorders;
+        border-radius: none;
+        color: $colorDark;
+        font-family: 'Campton-Book';
+        font-size: 1em;
+        padding: 0em 0 0.2em 0;
+        width: 100%;
+        font-weight: bold;
+        background-image: none;
+        outline:0;
+
+        &:focus{
+          outline:0;
+        }
+
+        &:selected{
+          -webkit-text-fill-color: #424242;
+          opacity: 1;
+          font-weight: bold;
+          font-size: 1em;
+          letter-spacing: 0.5px;
+          outline: 0;
+
+
+        }
+        option{
+          color: #bdbdbd;
+          padding: 10px 0;
+          border: 1px solid #bdbdbd;
+          outline: 0;
+        }
+        &:focus{
+          outline: none;
+        }
+      }
+
+      .continuer{
+        width: 100%;
+        margin-top: 15px;
+        margin-bottom: 20px;
+        //background-color: #dbdbdb;
+        color: white;
+      }
+      input {
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid $colorBorders;
+        border-radius: none;
+        color: $colorDark;
+        font-family: 'Campton-Book';
+        font-size: 1em;
+        padding: 1.2em 0 0.2em 0;
+        width: 100%;
+
+        &:disabled {
+          //ios needs these
+          -webkit-text-fill-color: #424242;
+          opacity: 1;
+          font-weight: bold;
+          font-size: 1.1em;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      input + [class^="icon-"] {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        font-size: 1.5em;
+        font-size: 1.1em !important;
+
+      }
+
+      button {
+        font-family: 'Campton-Bold';
+        font-weight: normal;
+        width: 100%;
+        margin: 1em 0 2em;
+        font-size: 1.1em;
+
+        &:disabled {
+          background-color: $colorFooterText;
+          color: white;
+        }
+
+      }
+    }
+
+    @include at-query($min, $large) {
+      padding-top: 2em;
+    }
+  }
+
+  .related-products {
+    h4 {
+      font-family: 'Campton-Bold';
+      font-size: 1rem;
+      font-weight: normal;
+      margin: 0 0 $gutter 0;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.template-page,
+.template-article,
+[class*="template-customers-"] {
+  h1 {
+    font-size: 2em;
+    margin: 1em 0;
+    text-align: center;
+
+    @include at-query($min, $large) {
+      margin-bottom: 2em;
+    }
+  }
+
+  .page__minor, .page__faq, .page__partners {
+    .rte {
+      background-color: white;
+      border: 1px solid $colorBorders;
+      padding: $gutter;
+
+      h2 {
+        font-size: 1.4em;
+        color: $colorDark;
+        text-align: center;
+      }
+    }
+
+    @include at-query($min, $large) {
+      .rte {
+        padding: $gutter $gutter * 2;
+      }
+    }
+  }
+
+  .page__minor, .page__partners {
+    .rte {
+      h2 {
+        margin-bottom: $gutter;
+        padding-bottom: $gutter;
+        border-bottom: 1px solid $colorBorders;
+      }
+    }
+  }
+
+  .page__minor {
+    .goto-top__btn {
+      margin-top: 3em;
+
+      &, &:visited {
+        background-color: $colorPrimary;
+        &:hover {
+          background-color: $colorPrimaryLighten;
+        }
+      }
+    }
+  }
+
+  .page__faq {
+    .rte {
+      margin-bottom: $gutter;
+
+      h3 {
+        border-top: 1px solid $colorBorders;
+        cursor: pointer;
+        position: relative;
+        padding-right: 2em;
+        padding-top: $gutter;
+
+        &:hover {
+          color: $colorPrimary;
+        }
+
+        &::after {
+          position: absolute;
+          top: 1.22em;
+          right: 0;
+          font-family: "fly-me-to-the-food";
+          font-style: normal;
+          font-weight: normal;
+          font-size: 1.6em;
+          line-height: 1em;
+          speak: none;
+          display: inline-block;
+          text-decoration: inherit;
+          width: 1em;
+          margin-right: .2em;
+          text-align: center;
+          font-variant: normal;
+          text-transform: none;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          content: '\e805'; //icon-chevron-right-small
+          transition: transform .25s;
+        }
+
+        &.show {
+          &::after {
+            transform: rotate(90deg);
+          }
+        }
+      }
+
+      p {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 1s cubic-bezier(0, 1, 0, 1);
+
+        &.show {
+          transition-duration: 2s;
+          transition-timing-function: linear;
+          max-height: 999px;
+        }
+      }
+    }
+
+    .note {
+      margin-left: $gutter;
+    }
+
+    @include at-query($max, $medium) {
+      .note {
+        flex-direction: column;
+        margin-bottom: 0;
+      }
+
+      .note__content {
+        margin: 0 0 $gutter;
+      }
+    }
+  }
+
+  .page__partners {
+    .btn__partners {
+      display: block;
+      background-color: white;
+      border: 1px solid $colorBorders;
+      margin-bottom: $gutter;
+
+      img {
+        display: block;
+        width: 100%;
+      }
+
+      // predecessor image is moved dynamically
+      // hide the icon in case there was no image to move
+      .icon-wrapper {
+        display: none;
+      }
+
+      img + .icon-wrapper {
+        display: block;
+        position: relative;
+        border-top: 1px solid $colorBorders;
+      }
+
+      .icon-menu {
+        position: absolute;
+        top: -1.1em;
+        right: 0.8em;
+        padding: .4em .35em .3em;
+        padding: 0.4em 0.4em 0.2em;
+        border-radius: 2em;
+        font-size: 1.5em;
+        background-color: $colorPrimary;
+        color: white;
+      }
+
+      .h4 {
+        color: $colorDark;
+        font-family: 'Campton-Bold';
+        font-size: 1em;
+        font-weight: normal;
+        margin: 2em 1.5em;
+        min-height: 2.75em;
+      }
+
+      &:hover {
+        box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
+
+        .icon-menu {
+          background-color: $colorPrimaryLighten;
+        }
+
+        .h4 {
+          color: $colorPrimary;
+        }
+      }
+
+      &.active {
+        .h4 {
+          color: $colorPrimary;
+        }
+      }
+    }
+
+    section {
+      position: relative;
+    }
+
+    .section-anchor {
+      position: absolute;
+      top: -$gutter;
+    }
+
+    .btn__close {
+      color: $colorBodyText;
+      font-size: 1.6em;
+      position: absolute;
+      right: .5em;
+      top: .5em;
+
+      &:hover {
+        color: $colorPrimary;
+      }
+    }
+
+    @include at-query($min, $large) {
+      .btn__partners {
+        .h4 {
+          min-height: auto;
+        }
+      }
+
+      .btn__close {
+        right: 2.3em;
+        top: 1.2em;
+      }
+
+      //prevent jumping to anchors on large devices
+      .section-anchor {
+        display: none;
+      }
+    }
+  }
+
+  .page__contact,
+  .page__account {
+    h1 {
+      margin-bottom: 0.3em;
+
+      &.no-rte {
+        margin-bottom: 1em;
+      }
+    }
+
+    .rte {
+      margin-bottom: 4em;
+    }
+
+    .form-vertical {
+      background-color: white;
+      border: 1px solid $colorBorders;
+      border-radius: $border-radius;
+      padding: 4em 4em 2em;
+    }
+
+    .input-full {
+      padding: 0.4em;
+      border-radius: 0;
+      border: 0;
+      border-bottom: 1px solid $colorBorders;
+      margin-bottom: 2em;
+      font-family: "Campton-Book";
+      color: $colorDark;
+
+      &::placeholder {
+        color: $colorBodyText;
+      }
+    }
+
+    .btn {
+      border-radius: $border-radius;
+      margin: 0 auto;
+      padding: .6em 1.8em;
+    }
+
+    .text-link, .text-link--p a {
+      font-family: 'Campton-Book' !important;
+
+      &:hover {
+        color: $colorPrimary !important;
+        font-family: 'Campton-SemiBold' !important;
+      }
+    }
+
+    @include at-query($min, $large) {
+      h1 {
+        &.no-rte {
+          margin-bottom: 2em;
+        }
+      }
+    }
+  }
+
+  .page__chef {
+    .rte {
+      img {
+        display: block;
+        margin: (-$gutter) (-$gutter) 0;
+        width: calc(100% + (#{$gutter} * 2));
+        max-width: none;
+      }
+
+      h2 {
+        color: $colorDark;
+        font-size: 1.4em;
+        margin-bottom: 0;
+        text-align: center;
+      }
+
+      h3 {
+        font-size: 1.25em;
+        margin-bottom: 2em;
+        text-align: center;
+      }
+
+      td {
+        border: 0;
+        padding: 0 $gutter;
+        vertical-align: top;
+      }
+
+      p {
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    footer {
+      background-color: $colorChefFooter;
+      margin-top: 4em;
+      margin-left: -$gutter;
+      margin-bottom: -5em;
+      padding: $gutter;
+      width: 100vw;
+
+      @include at-query($max, $medium) {
+        .wrapper {
+          padding: 0;
+        }
+      }
+    }
+
+    @include at-query($max, $small) {
+      footer {
+        margin-left: -$gutter;
+      }
+    }
+
+    @include at-query($max, $medium) {
+      .rte {
+        tr {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+
+    @include at-query($min, $large) {
+      .rte {
+        img {
+          margin: -$gutter 0 0;
+          width: 100%;
+        }
+
+        h2 {
+          font-size: 2em;
+        }
+
+        h3 {
+          font-size: 1.75em;
+        }
+
+        td {
+          padding: 0 ($gutter / 2);
+          width: 50%;
+
+          &:first-child {
+            padding-left: $gutter * 2;
+          }
+
+          &:last-child {
+            padding-right: $gutter * 2;
+          }
+        }
+      }
+
+      footer {
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        padding: $gutter * 2;
+
+        img {
+          display: block;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+}
+
+.page__generic {
+  .rte {
+    img {
+      display: inline-block;
+
+      //allows appropriate gutter if alignment is set in rte
+      &[style="float: left;"] {
+        padding-right: $gutter / 2;
+      }
+
+      &[style="float: right;"] {
+        padding-left: $gutter / 2;
+      }
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0 0 2em;
+      text-align: center;
+    }
+
+    li {
+      display: inline-block;
+      margin: 0;
+      padding: 0 1em;
+      vertical-align: top;
+      width: 100%;
+      img {
+        transform: scale(.5);
+      }
+    }
+
+    h2 {
+      color: $colorDark;
+      font-size: 2em;
+      text-align: center;
+    }
+
+    h3 {
+      color: $colorDark;
+      font-size: 1.5em;
+      margin-bottom: 1em;
+    }
+
+    table {
+      background-color: $colorGenericTableBg;
+      color: white;
+      margin-left: -$gutter;
+      width: 100vw;
+
+      img {
+        display: block;
+        transform: none;
+      }
+
+      h2,
+      h3 {
+        color: white;
+        font-size: 1.5em;
+        text-align: left;
+      }
+
+      a {
+        border: 1px solid white;
+        border-radius: $border-radius;
+        color: white;
+        display: inline-block;
+        font-family: 'Campton-Bold';
+        font-size: 1.2em;
+        margin-top: 1em;
+        padding: .25em 1em;
+        text-decoration: none;
+        width: auto;
+
+        &:hover {
+          color: white;
+          font-family: 'Campton-Bold';
+        }
+      }
+    }
+
+    td {
+      border: 0;
+      padding: 0;
+
+      &:last-child {
+        padding: $gutter;
+      }
+    }
+  }
+
+  @include at-query($max, $medium) {
+    .rte {
+      tr {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  @include at-query($min, $large) {
+    .rte {
+      li {
+        width: calc(33.3333% - 3px); //compensate for whitespace between elements
+
+        &:first-child:nth-last-child(2),
+        &:first-child:nth-last-child(2) ~ li {
+          width: calc(50% - 2px); //compensate for whitespace between elements
+        }
+      }
+
+      table {
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+      }
+
+      td {
+        position: relative;
+
+        &:first-child {
+          width: 25%;
+
+          img {
+            display: block;
+            min-height: 50%;
+            object-fit: cover;
+          }
+        }
+
+        &:last-child {
+          padding: 1em 8em;
+        }
+      }
+    }
+  }
+
+  @include at-query($min, $xl) {
+    .rte {
+      table {
+        td {
+          &:first-child {
+            width: 33%;
+          }
+        }
+      }
+    }
+  }
+}
+
+[class*="template-customers-"] {
+  .table-wrap,
+  .content-wrap {
+    background-color: white;
+    border: 1px solid $colorBorders;
+    padding: $gutter;
+
+    &:not(:last-child) {
+      margin-bottom: $gutter;
+    }
+
+    .form-vertical {
+      border: none;
+      margin: 1em 0;
+      padding: 0;
+    }
+  }
+
+  h2 {
+    color: $colorDark;
+    font-family: 'Campton-Bold';
+    font-size: 1.2em;
+    font-weight: normal;
+    margin: 0 0 2em;
+    text-align: center;
+  }
+
+  h3, h4 {
+    font-family: 'Campton-Bold';
+    font-size: 1.2em;
+    font-weight: normal;
+    margin: 1em 0 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  table {
+    margin-bottom: 0;
+  }
+
+  tr {
+    border-bottom: 1px solid $colorBorders;
+
+    &:last-child {
+      border: none;
+    }
+
+    &[data-order-link] {
+      cursor: pointer;
+
+      &:hover {
+        td {
+          color: $colorSecondary;
+        }
+
+        .icon-order-details {
+          color: $colorPrimary;
+        }
+      }
+    }
+  }
+  tbody tr {
+    border-bottom: none;
+    td {
+      padding: 0;
+    }
+  }
+
+  td,
+  th {
+    border: none;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  strong {
+    font-family: 'Campton-SemiBold';
+    font-weight: normal;
+  }
+
+  hr {
+    margin: 1em 0;
+  }
+
+  .order-name {
+    color: $colorSecondary;
+    font-family: 'Campton-SemiBold';
+  }
+
+  .btn-wrap {
+    text-align: center;
+    margin: 1em 0;
+  }
+
+  @include at-query($min, $large) {
+    .table-wrap,
+    .content-wrap {
+      padding: 2em 4em;
+    }
+  }
+}
+
+.template-blog {
+  .section-header {
+    margin-bottom: 2em;
+  }
+
+  .article__featured-image {
+    position: relative;
+
+    img {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  .article__featured-image--hover {
+    align-items: center;
+    background-color: rgba($colorSecondary, 0.5);
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    span {
+      font-family: 'Campton-Bold';
+      color: white;
+      border: 1px solid white;
+      border-radius: $border-radius;
+      padding: 0.5em 1.5em;
+    }
+  }
+
+  .article__information {
+    padding: 2em;
+    text-align: center;
+  }
+
+  .h3 {
+    font-family: 'Campton-Bold';
+    font-size: 1.44em;
+    font-weight: normal;
+  }
+
+  .h4 {
+    font-family: 'Campton-Bold';
+    font-size: 1em;
+    font-weight: normal;
+    text-transform: uppercase;
+  }
+
+  .article__more {
+    font-family: 'Campton-Bold';
+    font-weight: normal;
+    text-transform: uppercase;
+  }
+
+  .article {
+    a {
+      background-color: white;
+      border: 1px solid $colorBorders;
+      border-radius: $border-radius;
+      display: block;
+
+      .h3 {
+        color: $colorDark;
+        margin: 0 0 0.5em;
+      }
+
+      .h4 {
+        color: $colorBodyText;
+      }
+
+      .rte {
+        color: $colorBodyText;
+      }
+
+      &:hover {
+        background-color: white;
+        border: 1px solid $colorBorders;
+        box-shadow: 5px 5px 25px 0px rgba(0, 0, 0, 0.03);
+
+        .article__featured-image--hover {
+          display: flex;
+        }
+
+        .h3 {
+          color: $colorPrimary;
+        }
+      }
+    }
+  }
+
+  @include at-query($min, $large) {
+    .article__information {
+      padding: 3em;
+    }
+
+    .article {
+      a {
+        background-color: transparent;
+        border: none;
+
+        .h3 {
+          margin: 0 3em 0.5em;
+        }
+      }
+    }
+  }
+}
+
+.template-customers-login {
+  fieldset {
+    border: 0;
+    padding: 15px 0 0;
+  }
+}
+
+.template-article {
+  background-color: white;
+
+  .section-header {
+    margin: 0;
+  }
+
+  .section-header--bar {
+    background-color: $colorBodyBg;
+    border-bottom: 1px solid $colorBorders;
+    margin-top: -$gutter;
+    margin-left: -$gutter;
+    margin-right: -$gutter;
+    margin-bottom: 2em;
+    padding: 1.5em 0;
+  }
+
+  .section-header__left {
+    span {
+      font-family: 'Campton-Bold';
+    }
+
+    ul {
+      display: inline-block;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: inline-block;
+    }
+
+    a {
+      color: $colorBodyText;
+
+      &:hover {
+        color: $colorPrimary;
+      }
+    }
+
+    i {
+      font-size: 2em;
+
+      &::before {
+        vertical-align: middle;
+        margin: 0 .1em;
+      }
+    }
+  }
+
+  .section-header__center {
+    text-align: center;
+    vertical-align: middle;
+
+    p {
+      margin: 0;
+    }
+
+    strong {
+      color: $colorPrimary;
+      font-family: 'Campton-Bold';
+      font-weight: normal;
+      text-transform: uppercase;
+    }
+  }
+
+  .section-header__right {
+    a {
+      color: $colorBodyText;
+      font-family: 'Campton-Bold';
+      font-weight: normal;
+
+      &:hover {
+        color: $colorPrimary;
+      }
+    }
+
+    i {
+      font-size: 0.5em;
+      vertical-align: middle;
+    }
+  }
+
+  .article__featured-image {
+    margin-bottom: 1em;
+
+    img {
+      display: block;
+      height: auto;
+      width: 100%;
+    }
+  }
+
+  @include at-query($min, $large) {
+    .section-header--bar {
+      margin: -$gutter 0 0;
+      padding: .75em 0;
+      transform: translateX(calc(((#{$siteWidth } - 100vw) / 2) - #{$gutter}));
+      width: 100vw;
+    }
+
+    .section-header {
+      margin: 0 auto;
+      max-width: $siteWidth - ($gutter * 2);
+    }
+
+    .section-header__center {
+      display: table-cell;
+    }
+
+    h1 {
+      margin-top: 2em;
+    }
+  }
+}
+
+// #ly-languages-switcher {
+//   list-style-type: none;
+//   margin: 0;
+
+//   li {
+//     margin: 0;
+//   }
+
+//   img {
+//     display: inline-block;
+//     padding: $gutter / 2 0 0 $gutter / 2;
+//   }
+
+//   .ly-languages-switcher-link {
+//     color: $colorPrimary;
+//     display: inline-block;
+//     margin: 4px 0 0;
+//     vertical-align: top;
+
+//     &:hover {
+//       font-family: 'Campton-SemiBold';
+//     }
+//   }
+
+//   @include at-query($min, $large) {
+//     li {
+//       margin-top: -8px;
+//     }
+
+//     img {
+//       padding: 0;
+//     }
+
+//     .ly-languages-switcher-link {
+//       margin-left: .5em;
+//     }
+//   }
+// }
+// START CART STYLE
+.template-cart{
+  .pickup-date--display{
+        label{
+          &#hour{
+            display: none;
+          }
+        }
+    fiELdset{
+      select[name="attributes[display_hour_lg]"]{
+        padding: 1.2em 0 0.2em 0;
+
+      }
+    }
+    .active-cart-box{
+      .fieldset--fill{
+        padding: 2em 3.5em;
+
+        h2{
+          margin-bottom: 50px;
+        }
+
+        input{
+          &:disabled{
+            -webkit-text-fill-color: #424242;
+            opacity: 1;
+            font-weight: bold;
+            font-size: 1.1em;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 910px){
+  .template-cart .pickup-date--display fieldset,.template-cart .pickup-date--display .active-cart-box .fieldset--fill{
+    padding: 2em;
+  }
+  .template-cart .datepicker--fieldset #datepicker .ui-datepicker.ui-corner-all{
+    padding: 0.8em 0em!important;
+  }
+  .ui-datepicker table{
+    font-size: 0.7em!important;
+  }
+  .template-cart .ui-datepicker td{
+    width: 25px;
+    height: 25px;
+  }
+  .template-cart .ui-datepicker td a{
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+  }
+  .template-cart .pickup-date--display .active-cart-box .fieldset--fill input:disabled{
+    font-size: 1em;
+  }
+}
+@media screen and (max-width: 1150px){
+  .template-cart .pickup-date--display fieldset,.template-cart .pickup-date--display .active-cart-box .fieldset--fill{
+    padding: 1em;
+  }
+  .template-cart .datepicker--fieldset #datepicker .ui-datepicker.ui-corner-all{
+    padding: 0.8em 0em!important;
+  }
+}
+@media screen and (max-width: 768px){
+  .grid-date-content{
+    margin-top: 30px;
+  }
+  .template-cart .pick-date-content{
+    width: 100%;
+    .active-cart-box{
+      width: 100%;
+      margin-top: 30px;
+      padding-left:0;
+    }
+    .grid-date{
+      width: 100%;
+      padding-left:0;
+    }
+  }
+  .template-cart .datepicker--fieldset{
+    margin-top: 30vh;
+    padding: 40px!important;
+  }
+}
+@media screen and (max-width: 480px){
+  .template-cart .datepicker--fieldset{
+    padding: 1%!important;
+  }
+  .template-cart .pickup-date--display fieldset p:not(.active-field) i{
+    position: absolute;
+  }
+  .template-cart .pickup-date--display .active-cart-box .fieldset--fill input:disabled,.template-cart .pickup-date--display fieldset input:disabled,.template-cart .pickup-date--display fieldset input[name="attributes[flight_number]"]{
+    font-size: 0.9em;
+  }
+  .template-cart .pickup-date--display fieldset select{
+    font-size: 0.9em!important;
+  }
+}
+@media screen and (max-width: 320px){
+  .template-cart .pickup-date--display fieldset,.template-cart .pickup-date--display .active-cart-box .fieldset--fill{
+    padding: 2em 1.5em;
+  }
+}
+
+.first-option{
+  display: none!important;
+  visibility: hidden!important;
+  font-size: 0!important;
+  height: 0!important;
+  width: 0!important;
+  overflow: hidden!important;
+  opacity:0!important;
+}
+select[name="attributes[terminal]"]{
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+option[hidden] {
+  display: none;
+  visibility: hidden;
+}
+.fa-clock:before {
+    content: "\f017";
+}
+@media (max-width: 768px) {
+  .linkedin svg {
+    top: 4px;
+    position: relative;
+  }
+}
+.linkedin svg {
+  top: 6px;
+  position: relative;
+}
+
+
+// TR - DIGITAL VILLAGE - CUSTOM SCSS
+// FONT
+select {
+  padding: 4px 9px;
+  padding-right: 17px;
+}
+input, textarea, select {
+    font-family: 'Campton-Book' !important;
+
+}
+// COOKIE BANNER & RGPD
+.eg-cc-message {
+    font-family: 'Campton-Book' !important;
+
+}
+.eg-cc-window {
+  font-size: 14px !important;
+  font-family: 'Campton-Book' !important;
+  a {
+    color: #bdbdbd !important;
+    font-family: 'Campton-Book' !important;
+  }
+  a.eg-cc-dismiss {
+    color: white !important;
+  }
+  color: #bdbdbd !important;
+  background: #EDEEF2 !important;
+  max-width: 1120px !important;
+  margin: auto !important;
+}
+.container {
+  width: 80% !important;
+  margin: auto !important;
+}
+.page__generic .rte table {
+    background-color: #EDEEF2 !important;
+    color: white !important;
+    margin-left: -30px !important;
+    width: 90vw !important;
+}
+.EG-table th {
+    background-color: #bdbdbd !important;
+}
+.EG-buttons button {
+  margin: 8px;
+}
+.page__generic .rte table td {
+  padding: 5px;
+}
+.page__generic .rte table td:first-child {
+    width: initial !important;
+}
+@media screen and (min-width: 769px) {
+  .page__generic .rte table {
+      position: relative !important;
+      color: #bdbdbd !important;
+      left: 40% !important;
+      right: 40% !important;
+      margin-left: -40vw !important;
+      margin-right: -40vw !important;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .eg-cc-window {
+    width: 100% !important;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+// Collection + TOOLTIP + BOXCONTAINS + Badge
+.add-to-cart__button {
+    display: none;
+}
+
+@media screen and (max-width: 768px) and (hover: none) {
+  .add-to-cart__button {
+      display: block;
+  }
+}
+.tooltiped {
+  display: none;
+  background: #ECEFF1;
+  position: absolute;
+  top: -39px;
+  right: 20px;
+  color: #B6C3CA;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+.box-contains {
+  margin-top: 22px;
+  position: relative;
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: space-between;
+  h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    margin: 0 0 0;
+    font-family: 'Campton-SemiBold';
+    letter-spacing: 1.5px;
+
+  }
+  .images {
+    display: flex;
+    float: right;
+    padding: 10px;
+    img {
+          border-radius: 20px;
+          display: block;
+          height: 40px;
+          object-fit: cover;
+          width: 40px;
+          margin-left: -10px;
+          transition: 0.5s;
+
+      &:hover {
+        border: solid 2px white;
+
+        z-index: 1000;
+        transform: scale(1.2);
+        transition: 0.5s;
+      }
+    }
+  }
+}
+.badge-bio {
+  position: absolute;
+  width: 25px;
+  right: 20px;
+  bottom: 20px;
+}
+
+.badges-cont{
+  position: relative;
+  .badges {
+    float: right;
+    .badge {
+      width: 25px;
+    }
+  }
+  .tooltiped {
+    top: -55px;
+    right: 10px;
+    position: absolute;
+  }
+}
+
+.other-box {
+  text-align: center;
+  font-family: 'Campton-SemiBold';
+  font-weight: 400;
+  font-size: 16px;
+  margin: 10px 0 40px 0;
+}
+.sub-string {
+  color: #bdbdbd;
+}
+.no-mercy {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 22px;
+  button.no-variant--button {
+    margin-bottom: 0;
+    margin: initial;
+  }
+}
+#selected-menu {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin: auto 20px;
+}
+
+@media (max-width: 768px) {
+  .note--top {
+    #selected-menu {
+      margin: auto 10px;
+    }
+  }
+}
+
+.register .btn--full {
+  margin-bottom: 20px !important;
+}
+
+@media screen and (max-width: 768px) {
+  .table--responsive thead {
+    display: block;
+  }
+ .table--responsive thead tr, .cart__row {
+  display: flex !important;
+  justify-content: space-around;
+ }
+  .table--responsive thead th {
+    &:nth-child(4) {
+      padding-right: 0;
+      padding-right: 0;
+      width: 20%;
+      overflow: auto;
+
+    }
+    &:nth-child(3) {
+      width: 20%;
+      text-align: right;
+    }
+    &:nth-child(2) {
+      width: 50%;
+    }
+    &:nth-child(1) {
+      width: 10%;
+    }
+  }
+}
+.product-grid__item-wrapper .price {
+  font-family:'Campton-Bold';
+}
+
+@media (max-width: 768px) {
+  .note.note--top {
+    background-color: #ECEFF1 !important;
+        background-image: none !important;
+    img {
+      display: none !important;
+    }
+  }
+  .breadcrumb {
+    opacity: 0;
+  }
+}
+
+
+
+
+.page__generic {
+  .rte {
+    img {
+      display: inline-block !important;
+
+      //allows appropriate gutter if alignment is set in rte
+      &[style="float: left !important;"] {
+        padding-right: $gutter / 2 !important;
+      }
+
+      &[style="float: right !important;"] {
+        padding-left: $gutter / 2 !important;
+      }
+    }
+
+    ul {
+      list-style-type: none !important;
+      margin: 0 0 2em !important;
+      text-align: center !important;
+    }
+
+    li {
+      display: inline-block !important;
+      margin: 0 !important;
+      padding: 0 1em !important;
+      vertical-align: top !important;
+      width: 100% !important;
+      img {
+        transform: scale(.5) !important;
+      }
+    }
+
+    h2 {
+      color: $colorDark !important;
+      font-size: 2em !important;
+      text-align: center !important;
+    }
+
+    h3 {
+      color: $colorDark !important;
+      font-size: 1.5em !important;
+      margin-bottom: 1em !important;
+    }
+
+    table {
+      background-color: $colorGenericTableBg !important;
+      color: white !important;
+      margin-left: -$gutter !important;
+      width: 100vw !important;
+
+      img {
+        display: block !important;
+        transform: none !important;
+      }
+
+      h2,
+      h3 {
+        color: white !important;
+        font-size: 1.5em !important;
+        text-align: left !important;
+      }
+
+      a {
+        border: 1px solid white !important;
+        border-radius: $border-radius !important;
+        color: white !important;
+        display: inline-block !important;
+        font-family: 'Campton-Bold' !important;
+        font-size: 1.2em !important;
+        margin-top: 1em !important;
+        padding: .25em 1em !important;
+        text-decoration: none !important;
+        width: auto !important;
+
+        &:hover {
+          color: white !important;
+          font-family: 'Campton-Bold' !important;
+        }
+      }
+    }
+
+    td {
+      border: 0 !important;
+      padding: 0 !important;
+
+      &:last-child {
+        padding: $gutter !important;
+      }
+    }
+  }
+
+  @include at-query($max, $medium) {
+    .rte {
+      tr {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+    }
+  }
+
+  @include at-query($min, $large) {
+    .rte {
+      li {
+        width: calc(33.3333% - 3px) !important; //compensate for whitespace between elements
+
+        &:first-child:nth-last-child(2),
+        &:first-child:nth-last-child(2) ~ li {
+          width: calc(50% - 2px) !important; //compensate for whitespace between elements
+        }
+      }
+
+      table {
+        position: relative !important;
+        left: 50% !important;
+        right: 50% !important;
+        margin-left: -50vw !important;
+        margin-right: -50vw !important;
+      }
+
+      td {
+        position: relative !important;
+
+        &:first-child {
+          width: 25% !important;
+
+          img {
+            display: block !important;
+            min-height: 50% !important;
+            object-fit: cover !important;
+          }
+        }
+
+        &:last-child {
+          padding: 1em 8em !important;
+        }
+      }
+    }
+  }
+
+  @include at-query($min, $xl) {
+    .rte {
+      table {
+        td {
+          &:first-child {
+            width: 33% !important;
+
+          }
+        }
+      }
+    }
+  }
+}
+
+.product-description td {
+  // width: 50px !important;
+  // max-width: 50px !important;
+
+
+  img {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50px !important;
+  }
+}
+
+.column1 {
+  width: 20%;
+  padding-left: 0 !important;
+}
+.column2 {
+  width: 50%;
+}
+.column3 {
+  width: 30%;
+}
+.grid.display-table {
+  width: 100% !important;
+  margin-left: 0 !important;
+}
+
+.login-title {
+  font-size: 1em !important;
+}
+.clock {
+  width: 19px;
+  width: 19px;
+  position: absolute;
+  float: right;
+  right: 7px;
+  bottom: 9px;
+}
+ button:disabled,
+ .btn[disabled],
+  [disabled].btn--secondary,
+  .btn.disabled,
+  .disabled.btn--secondary,
+  .rte .btn[disabled],
+  .rte [disabled].btn--secondary,
+  .rte .btn.disabled,
+  .rte .disabled.btn--secondary {
+    background-color: #bdbdbd !important;
+    color: white;
+}
+.minicart {
+  float:right;
+  width: initial;
+}
+.minicart-secondary {
+  color: #fe5442;
+  text-align: left !important;
+  bottom: 44px;
+  position: relative;
+}
+
+.pickup-date--display {
+  .active-field {
+    font-family: 'Campton-Book' !important;
+    font-size: 1em !important;
+  }
+}
+.weglot-container {
+  margin-top: 50px
+}
+
+a.weglot-link-fr {
+  &::before {
+    content: "";
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-top: -1px;
+    display: inline-block;
+    overflow: hidden;
+    background-position: -2760px 0;
+    background-image: url(https://cdn.weglot.com/images/circular_flag.png);
+    background-size: auto 24px;
+    border-radius: 0;
+    width: 24px;
+    height: 24px;
+  }
+}
+a.weglot-link-en {
+  &::before {
+    content: "";
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-top: -1px;
+    display: inline-block;
+    overflow: hidden;
+    background-position: -2520px 0;
+    background-image: url(https://cdn.weglot.com/images/circular_flag.png);
+    background-size: auto 24px;
+    border-radius: 0;
+    width: 24px;
+    height: 24px;
+  }
+}
+a.weglot-link-es {
+  &::before {
+    content: "";
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-top: -1px;
+    display: inline-block;
+    overflow: hidden;
+    background-position: -3576px 0;
+    background-image: url(https://cdn.weglot.com/images/circular_flag.png);
+    background-size: auto 24px;
+    border-radius: 0;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.bold {
+  font-weight: bold !important;
+}
+label[for=agreed] {
+  line-height: initial;
+}
+@media (min-width: 768px) {
+  .no-mobile {
+    display: none;
+  }
+}
+.CartContainer-pickup{
+  .ajaxcart__inner{
+    .ajaxcart__product{
+      .ajaxcart__row{
+        margin-bottom: 0;
+        border-bottom: none;
+      }
+    }
+  }
+}
+.pickup-date--display{
+  @media only screen and (max-width: 768px){
+  	max-width: 480px;
+    margin: 0 auto;
+  }
+  .steps{
+    .step-two, .step-three{ 
+      margin-top: 30px;
+      clear: both;
+      //border-top: solid #e0e0e0;
+      border-width: 1px 0 0;
+      padding-top: 30px;
+    }
+    .step-two.active, .step-three.active{border-top: 1px solid #e0e0e0;}
+    .step{ 
+      width: 100%; 
+      float: left;
+      h3{
+        text-align: left;
+        font-size: 1em;
+        font-weight: normal;
+        font-family: 'Campton-Bold';
+        color: #bdbdbd;
+        @media only screen and (max-width: 768px){
+          margin-top: 30px;
+          margin-bottom: 30px;
+          width:calc( 100% - 86px ) !important;
+        }
+        .step-number {
+          background: transparent;
+          border-radius: 2em;
+          -moz-border-radius: 2em;
+          -webkit-border-radius: 2em;
+          border: solid 1px #bdbdbd;
+          color: #bdbdbd;
+          display: inline-block;
+          line-height: 2em;
+          margin-right: 10px;
+          text-align: center;
+          width: 2em;
+          float: left;
+        }
+      }
+      .step-content.edit-step-one, .step-content.edit-step-two{ 
+        display: block;
+        text-align: right;
+        color: #fe5442;
+        font-size: 1em;
+        font-weight: normal;
+        font-family: 'Campton-Bold';
+        cursor: pointer;
+        @media only screen and (max-width: 768px){ 
+          margin-top: 30px;
+          width: 86px !important;
+        }
+      }
+      .step-content{ 
+        display: none;
+        .field-group{
+          margin-bottom: 10px;
+          label{
+            top: 10px;
+            position: relative;
+            margin-left: 10px;
+            font-size: 0.8em;
+          }
+        }
+        .radio-toolbar{
+          hr{
+          	border: none;
+          }
+          .fieldset--fill{
+            padding: 11px;
+            input[type="radio"] {
+              display: none;
+            }
+            label {
+              display: inline-block;
+              padding: 4px 11px;
+              font-family: Arial;
+              font-size: 16px;
+              cursor: pointer;
+              color: #fff;
+              position:relative;
+              width: 100%;
+              .location-title{
+                width: calc( 100% - 65px );
+                float: left;
+                .location-name{
+                  font-size: 0.9em;
+                  font-weight: normal;
+                  font-family: 'Campton-Bold';
+                  color: #424242;
+                }
+                .location-name.disabled{
+                  color: #bdbdbd;
+                }
+                .location-city, .location-desc{
+                  font-family: 'Campton-Book';
+                  font-size: 13px;
+                  color: #bdbdbd;
+                  .price-terminal {
+                    text-decoration: line-through;
+                  }
+                }
+                .location-name, .location-city{ width: 100%; float: left;}
+              }
+              .checked-icon svg{ 
+                display: none;
+              }
+              .air-icon {
+                float: left;
+                margin-right: 10px;
+                svg {
+                  width: 30px;
+                  height: 30px;
+                }
+              }
+            }
+            input[type="radio"]:checked+label {
+              .checked-icon{
+                width: 25px;
+                float: right;
+                svg{ 
+                  display: block;
+                  width: 25px;
+                  height: 25px;
+                  float: right;
+                }
+              }
+              .air-icon {
+                svg {
+                  fill: #fe5442;
+                }
+              }
+              .location-name{ 
+                color: #fe5442;
+              }
+            }
+          }
+          .fieldset--fill.not-first{
+          	border-top: none;
+          }
+          .container{
+            line-height: 20px;
+            margin-bottom: 20px !important;
+            margin-top: 20px !important;
+            width: 100% !important;
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-family: 'Campton-Book';
+            font-size: 13px;
+            color: #bdbdbd;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            input {
+              position: absolute;
+              opacity: 0;
+              cursor: pointer;
+              height: 0;
+              width: 0;
+            }
+            input:checked + .checkmark{
+              background-color: #fe5442;
+              display: block;
+              border: 5px solid #ccc;
+            }
+            .checkmark {
+              position: absolute;
+              top: 0;
+              left: 0;
+              height: 20px;
+              width: 20px;
+              border: 1px solid #ccc;
+            }
+            &:after {
+              content: "";
+              position: absolute;
+              display: none;
+              left: 9px;
+              top: 5px;
+              width: 5px;
+              height: 10px;
+              border: solid white;
+              border-width: 0 3px 3px 0;
+              -webkit-transform: rotate(45deg);
+              -ms-transform: rotate(45deg);
+              transform: rotate(45deg);
+            }
+            .check-agreed{
+              opacity: 1;
+              height: auto;
+              left: 0;
+              width: auto;
+              top: 3px;
+            }
+          }
+          &:hover{
+            input + .checkmark {
+              background-color: #ccc;
+            }
+          }
+        }
+        .input_container{
+          position:relative;
+          input[type="text"], select{
+            width: 100%;
+            background-color: transparent !important;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-size: 1em;
+            font-weight: normal;
+            font-family: 'Campton-Book' !important;
+            color: #424242;
+          }
+          input[type="text"]::placeholder {
+            color: #bdbdbd;
+          }
+          .icon-calendar-outline, .icon-down-open{
+            position:absolute;
+            bottom:2px;
+            right:5px;
+            width:24px;
+            height:24px;
+          }
+        }
+        .iti{ width: 100%;}
+      }
+      &.active{
+        .step-content{ 
+          display: block;
+        }
+        .edit-step-one, .edit-step-two{ display: none;}
+        h3.step-title{ 
+          color: #424242;
+          @media only screen and (max-width: 768px){ width: 100% !important;}
+          .step-number {
+            background: #fe5442;
+            border: none;
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+  .CartContainer-pickup{
+    border: solid #e0e0e0;
+    border-width: 1px;
+    margin-left: 20px;
+    padding: 25px;
+    .subtotal {
+      font-family: 'Campton-Bold';
+      text-transform: uppercase;
+      font-size: 16px;
+    }
+    .price-subtotal{ color:#424242;}
+  }
+}
+
+.ui-datepicker{ max-width: 343px;}
+@media only screen and (max-width: 768px){
+
+}
+.grey{ 
+  color: #bdbdbd;
+  font-size: 13px;
+  vertical-align: middle;
+  font-family: 'Campton';
+  letter-spacing: 1px;
+}
+.grey-x{ 
+  bottom: 1px;
+  position: relative;
+  font-size: 11px;
+  font-family: "HelveticaNeue","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+/***Neha CSS***/
+.one-whole.l6e .field-group.one-half {float: left;}
+label.terminal-l6e, label.terminal-rbl {display: none !important;}
+#retrait_section .step-content .radio-toolbar div.aero_section {border-top: 1px solid #e0e0e0; margin-top: 30px;}
+div.location-L6E .field-group label, div.location-RBL .field-group label, div#retrait_section .step-content .radio-toolbar .field-group label{font-family: 'Campton-Book' !important; font-size: 12px !important; color: #bdbdbd !important;}
+div#retrait_section .step-content .field-group label {font-size: 13px;top: 4px;}
+
+div#retrait_section .step-content .field-group .input_container select{background-image: none; outline: 0;}
+.pickup-date--display .steps .step .step-content .radio-toolbar .fieldset--fill.localiton-l6e.terminals label, .pickup-date--display .steps .step .step-content .radio-toolbar .fieldset--fill.localiton-rbl.terminals label, .pickup-date--display .steps .step .step-content .radio-toolbar .fieldset--fill.localiton-qo6.terminals label { margin-left: 0;padding: 4px 0;}
+/*.pickup-date--display .steps .step-two .step-content .radio-toolbar fieldset#LT1, .pickup-date--display .steps .step-one .step-content .radio-toolbar fieldset#SEL {margin-top: 20px;border-top: 1px solid #e0e0e0;}*/
+
+div#retrait_section .step-content .field-group .input_container select option {
+  color: #000;
+  padding: 10px 0;
+  border: 1px solid #bdbdbd;
+  outline: 0;
+}
+
+.pickup-date--display .steps .step .step-content .input_container input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  font-family: 'Campton-Book' !important;
+}
+.pickup-date--display .steps .step .step-content .input_container input::-moz-placeholder { /* Firefox 19+ */
+  font-family: 'Campton-Book' !important;
+}
+.pickup-date--display .steps .step .step-content .input_container input:-ms-input-placeholder { /* IE 10+ */
+  font-family: 'Campton-Book' !important;
+}
+.pickup-date--display .steps .step .step-content .input_container input:-moz-placeholder { /* Firefox 18- */
+  font-family: 'Campton-Book' !important;
+}
+.step.step-two h3.grid__item.one-half.medium-down--one-whole.step-title.hide, #retrait_section .hide{display: none;}
+select#Heure_de_retrait option, select#Heure_de_livaraison option{color: #000; }
+select#Heure_de_livaraison option:nth-child(6){color: #bdbdbd;}
