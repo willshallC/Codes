@@ -1,0 +1,72 @@
+<div class="home-page-product-sec">
+<div class="featured-products">
+{% for block in section.blocks %}
+    {% assign product = all_products[block.settings.featured-product] %}
+    <div class="slider-product">
+	<div class="main-product-slide">
+      <div class="left-col-one">
+      	<img src="{{ product.featured_image | img_url: 'master' }}">
+      </div>
+      <div class="right-col-two">
+      <h4>Mount Rigi</h4>		
+      <h3>{{ product.title }}</h3>
+      <p>{{product.description}}</p>
+      <p>{% include 'product-price', variant: current_variant %}</p>
+      <form method="post" action="/cart/add">
+        <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+        <input min="1" type="number" id="quantity" name="quantity" value="1"/>
+        <input type="submit" value="Add to cart" class="btn" />
+      </form>
+	  </div>
+    </div>
+    </div>
+    
+{% endfor %}
+</div>  
+</div>
+  
+
+{% schema %}
+{
+    "name": "Featured Product Slider",
+    "settings": [
+        {
+            "id" : "text-box",
+            "type" : "text",
+            "label" : "Title of Section",
+            "default" : "Featured Products"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "slide",
+            "name": "Slide",
+            "settings": [
+              {
+                  "id": "featured-product",
+                  "type": "product",
+                  "label": "Featured Product"
+              }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name" : "Featured Product Slider",
+            "category" : "Allsops Sections"
+        }
+    ]
+}
+{% endschema %}
+
+ <script type="text/javascript">
+    jQuery(document).ready(function(){
+      jQuery('.featured-products').slick({
+          dots: true,
+          infinite: true,
+          speed: 300,
+          slidesToShow: 1,
+          adaptiveHeight: true
+      });
+    });
+  </script>
