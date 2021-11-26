@@ -1,0 +1,26 @@
+Transfer Ownership from partner account:
+-----------------------------------------------------
+
+1) Add client as a staff member(Need firstname, lastname, email Id),Client create staff account 
+2) Add client store address(Setting-> General) before transfering ownership.
+
+
+Steps:
+1) Log in to your Partner Dashboard, and click Stores.
+
+2) Click Transfer ownership beside the development store that you want to transfer.
+
+3) On the Transfer store ownership dialog, select the new owner from the list of eligible owners. If you haven't added your client as a staff member yet, then click Add a staff account and create a new account for your client before you continue. Your client must complete the staff account setup before you can transfer store ownership to them.
+
+4) When you're done, click Transfer store. The store now appears on the Stores page in your Partner Dashboard under the Managed tab. The new owner receives an email with instructions to create the account and select a plan. Until your client accepts the transfer, the store is paused. After the client begins paying for a Shopify subscription plan, you start to receive your recurring commission.
+
+5)After you've transferred a store to your client, you can also send them the Merchant Handoff Kit. Make sure to provide them with information about:
+
+6) How they can access the store, including the URL (client-store.myshopify.com/admin)
+The Shopify plan that you recommend for them
+Anything else that you would recommend (such as apps to download, webinars to watch, or other resources to help them build their business)
+You can work with your client to determine when your collaboration is no longer required, and they can delete your account.
+
+Next: Learn what to do when you've finished building the store.
+
+
