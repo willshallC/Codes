@@ -1,0 +1,119 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+?>
+
+<!---------------Get Product Detail------------------------------------>
+
+<?php $_product = $block->getProduct(); ?>
+
+
+<!----------------Get product field value-------------------------------->
+
+<?php echo $_product->getDescription();?>
+<?php echo $_product->getTechnical();?>
+
+
+<!-----------Get custom attribute(Text field, select field) value------->
+ <?php 
+        $_silhouetteProductShape = trim($_product->getAttributeText('silhouette_product_shape'));
+        $_productHeight = $_product->getAttributeText('product_height');
+        $_productWidth =  $_product->getAttributeText('product_width');
+
+
+            if($_silhouetteProductShape == 'Circle'){
+
+            }else if($_silhouetteProductShape == 'Pill-shaped'){
+
+            }else if($_silhouetteProductShape == 'Oval'){
+
+            }else if($_silhouetteProductShape == 'Arch'){
+
+            }else if($_silhouetteProductShape == 'Pebble'){
+
+            }else{
+
+            }
+
+?>            
+
+          <div class="specifications-col-3">
+             <h3>Specifications</h3>
+             <div class="specifications-table table_onec">
+                <table>
+                   <tr>
+                      <td>Model No.</td>
+                      <td class="prod-sku"><?php echo $_product->getSku();?></td>
+                      <span class="base-prod-sku" style="display:none"><?php echo $_product->getSku();?></span>
+                   </tr>
+                   <tr>
+                        <td>Dimensions</td>
+                        <td>H:<?php echo $_product->getAttributeText('product_height');?><br> W:<?php echo $_product->getAttributeText('product_width');?><br> D:<?php echo $_product->getAttributeText('product_depth');?></td>
+                   </tr>
+                   <tr>
+                      <td>Mirror</td>
+                      <td><?php echo $_product->getMirror();?></td>
+                   </tr>
+                   <tr>
+                      <td>On/Off operation</td>
+                      <td><?php echo $_product->getOnOffOperation();?></td>
+                   </tr>
+                   <tr>
+                      <td>Light source</td>
+                      <td><?php echo str_replace("3W power strip","LED strip",$_product->getLightSource());?></td>
+                   </tr>
+                   <tr>
+                      <td>Colour temperature</td>
+                      <td><?php echo $_product->getColourTemperature();?></td>
+                   </tr>
+                   <tr>
+                      <td>LED driver</td>
+                      <td><?php echo $_product->getLedDriver();?></td>
+                   </tr>
+                   <tr>
+                      <td>Rear Frame</td>
+                      <td><?php echo str_replace('Brushed aluminium','Aluminium',$_product->getFinish());?></td>
+                   </tr>
+                   <tr>
+                      <td>Power supply</td>
+                      <td><?php echo $_product->getPowerSupply();?></td>
+                   </tr>
+                </table>
+             </div>
+             <div class="specifications-table table_twoc">
+                <table>
+                   <tr>
+                      <td>Power connection</td>
+                      <td><?php echo $_product->getPowerConnection();?></td>
+                   </tr>
+                   <tr>
+                      <td>Standards</td>
+                      <td><?php echo $_product->getStandards();?></td>
+                   </tr>
+                   <tr>
+                      <td>Fittings</td>
+                      <td><?php echo $_product->getFittings();?></td>
+                   </tr>
+                   <tr>
+                      <td>Installation</td>
+                      <td><?php echo $_product->getInstallation();?></td>
+                   </tr>
+                   <tr>
+                      <td>Instructions</td>
+                      <td><?php echo $_product->getInstructions();?></td>
+                   </tr>
+                   <tr>
+                      <td>Package shipping<br> dimensions </td>
+                      <td><?php echo $_product->getPackageShippingDimensions();?></td>
+                   </tr>
+                   <tr>
+                      <td>Shipping weight</td>
+                      <td><?php echo round($_product->getWeight(), 1);?>kg</td>
+                   </tr>
+                </table>
+             </div>
+          </div>
