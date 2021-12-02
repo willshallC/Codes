@@ -12,4 +12,6 @@ return $message;
 // register shortcode
 add_shortcode('greeting', 'wpb_demo_shortcode');
 
+//You can now use the [greeting] shortcode inside your WordPress posts, pages, and sidebar widgets.
+
 ?>
