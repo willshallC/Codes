@@ -14,7 +14,7 @@ parent::__construct(
 __('WPBeginner Widget', 'wpb_widget_domain'), 
   
 // Widget description
-array( 'description' => __( 'Sample widget based on WPBeginner Tutorial', 'wpb_widget_domain' ), ) 
+array( 'description' => __( 'Sample widget', 'wpb_widget_domain' ), ) 
 );
 }
   
