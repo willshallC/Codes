@@ -1,0 +1,38 @@
+Magento 2. Using the below method, you can simplify your tasks such as managing that offer bar in the store or the sale banner that you’ve put up for the festive season!
+
+Before calling CMS block in phtml file in Magento 2, first of all, you need to create a static block:
+
+   1. Login to Magento 2, move to Content –> Blocks. Click “Add New Block“, add below information and save configuration.
+       a) Enable Block: Enable the block.
+       b) Block Title: Name of the block to easily identify the purpose of creating the block.
+       c) Identifier: Enter a unique block identifier.
+       d) Store View: Select the store views to show the static block in.
+       e) Block Content: Add content of the block.
+   2. Once the static block is saved, it can be seen enlisted in the grid.
+
+-------------------------------------------------------------
+
+Method to call CMS static block in phtml file in Magento 2:
+<?php
+    echo $this->getLayout()
+    ->createBlock('Magento\Cms\Block\Block')
+    ->setBlockId('your_block_identifier')
+    ->toHtml();
+?>
+
+----------------------------------------------------------------
+Display CMS Static Block In CMS Content:
+
+{{block class="Magento\\Cms\\Block\\Block" block_id="block_identifier"}}
+
+----------------------------------------------------------------
+
+Display CMS Static Block In XML:
+
+<referenceContainer name="content"> 
+    <block class="Magento\Cms\Block\Block" name="block_identifier"> 
+        <arguments> 
+            <argument name="block_id" xsi:type="string">block_identifier</argument> 
+        </arguments> 
+    </block> 
+</referenceContainer>
