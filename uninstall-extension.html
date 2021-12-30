@@ -1,0 +1,40 @@
+Manual Uninstall:-
+**************************************************
+
+Step 1: Connect via SSH to the root of your magento installation (this is the folder that has the app folder in it) and check the list of all modules including their enable / disable status
+
+    php bin/magento module:status
+
+ 
+
+Step 2:  Disable the module by executing below commands:
+
+    php bin/magento module:disable <ExtensionProvider_ExtensionName> --clear-static-content
+    php bin/magento setup:upgrade
+
+ 
+
+Step 3: Remove extension files
+
+    cd app/code/<ExtensionProvider>/
+    rm -rf <ExtensionName>
+
+
+Composer Uninstall:-
+******************************************************
+
+Step 1: Connect via SSH to the root of your magento installation (this is the folder that has the app folder in it) and check the list of all modules including their enable / disable status
+
+    php bin/magento module:status
+
+ 
+
+Step 2: Disable the module by executing below commands::
+
+    php bin/magento module:disable <ExtensionProvider_ExtensionName> --clear-static-content
+    php bin/magento setup:upgrade
+    composer remove VendorName/VendorExtensionRepository
+
+
+
+    
