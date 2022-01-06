@@ -1,0 +1,76 @@
+Shopify Liquid Logic Tags:-
+********************************************************** 
+
+1) {% comment %} :- Comments will be hidden
+	My name is {% comment %}Mark{% endcomment %} Dunkley
+
+2) {% raw %}:- No liquid will be parsed in within these tags
+	{% raw %} {{mustache.js}} {% endraw %}
+
+3) {% if %}:- "If" statements let you determine if something is true or not
+	{% if user.name == 'elvis' %}
+		hey elvis
+	{% elsif user.name == 'Mark' %}
+		hey mark
+	{% else %}
+		hi stranger
+	{% endif %} 	
+
+4) {% unless %}:- If not true, then it will do something
+	{% unless user.name == 'elvis' %}
+	 hey ugly
+	{% endunless %}
+
+5) {% case %}:- Used when you have consistent cases of something
+	{% case handle %}
+	{% when 'cake' %}
+		This is a cake
+	{% when 'cookie' %}
+		This is a cookie
+	{% else %}
+		This is not a cookie/cake
+	{% endcase %}	 	
+
+6) {% cycle %}:- Use when you need to alternate between something.
+	{% cycle 'one', 'two' %}
+	{% cycle 'one', 'two' %}
+	{% cycle 'one', 'two' %} 	
+
+7) {% for %} :- Use "for loops" if you want to repeat/test something over and over
+	{% for product in collection.products %}
+		{{ product.name }},
+	{% endfor %} 	
+
+8) {% tablerow %}:- Generate table rows/cells
+	
+	<table>
+		{{% tablerow product in collection.products cols: 2 %}
+			<td>
+				{{ product.title }}
+			</td>
+		{% endtablerow %}
+	</table>
+
+9) {% assign %}:- Create variables
+	{% assign myvariable = false %}
+		{% if myvariable != true %}
+			The if statement is valid
+		{% endif %}
+
+10) {% increment %} :- Creates a new variable and everytime it's called the value increases by 1, with the initial value being 0
+
+	{% increment variablename %}
+
+11) {% decrement %}:- Creates a new variable and everytime it's called the value decreases by 1, with the initial value being -1
+
+	{% decrement variablename %}
+
+12) {% capture %}:- Similar to {% assign %} and allows you to "capture" a variable you output
+	{% capture productlink %}
+	{% product.url %}
+	{% endcapture %}
+
+	{% productlink %} 				
+
+13) {% include %}:- Insert a snippet into your layout
+	{% include 'color' %}	
