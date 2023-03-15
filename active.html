@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .section{
+            height: 100vh;
+            width: 100%;
+            background-color: gray;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
+        #home{
+            background-color: royalblue;
+        }
+        #about{
+            background-color: aquamarine;
+        }
+        #contact{
+            background-color: crimson;
+        }
+        #nav{
+            position: sticky;
+            top: 0;
+            background-color: white;
+        }
+        .container{
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 10px;
+        }
+        ul{
+            list-style: none;
+        }
+        ul li{
+            display: inline-block;
+        }
+        ul li a{
+            display: inline-block;
+            padding: 10px 20px;
+            color: black;
+            text-decoration: none;
+        }
+        ul li.active{
+            background-color: crimson;
+            transition: 0.3 ease backgroud-color;
+        }
+        ul li.active a{
+            color: white;
+        }
+        /* .container2{
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        .section{
+            scroll-snap-align: start !important;
+            height: 100vh;
+        } */
+        
+        
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <div class="container">
+            <ul>
+                <li class="home"><a href="#">Home</a></li>
+                <li class="about"><a href="#">About</a></li>
+                <li class="contact"><a href="#">Contact</a></li>
+                <li class="footer"><a href="#">Footer</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container2">
+        <div id="home" class="section">
+            <h1>HOME</h1>
+        </div>
+        <div id="about" class="section">
+            <h1>About</h1>
+        </div>
+        <div id="contact" class="section">
+            <h1>Contact</h1>
+        </div>
+        <div id="footer" class="section">
+            <h1>Footer</h1>
+        </div>
+    </div>
+    <script>
+        const sections = document.querySelectorAll(".section");
+        const navList = document.querySelectorAll("li");
+        window.addEventListener('scroll',()=>{
+            console.log("fjshfdsjf");
+            let current ="";
+            sections.forEach(section =>{
+                const secionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if(pageYOffset >= (secionTop - sectionHeight/3)){
+                    current = section.getAttribute("id");
+                }
+            })
+            navList.forEach(li=>{
+                li.classList.remove("active");
+                if(li.classList.contains(current)){
+                    li.className += " active";
+                }
+            })
+        })
+        document.addEventListener("DOMContentLoaded",()=>{
+
+        })
+    </script>
+</body>
+</html>
