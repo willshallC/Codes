@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html{
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            transition-property: all;
+            transition-duration: 2s;
+        }
+        
+        body::-webkit-scrollbar{
+            display: none;
+        }
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        .main{
+            display: flex;
+        }
+        
+        /*List styling*/
+        .list{
+            width: 20%;
+            position: fixed;
+        }
+        .list li{
+            padding: 20px;
+            background-color: lightskyblue;
+        }
+        .list li:hover{
+            background-color: darkblue;
+            color:white;
+            cursor: pointer;
+            transition-duration: 2s;
+        }
+        .list .active-li{
+            background-color: darkblue;
+            color: white;
+        }
+        .main-container{
+            border: 2px solid red;
+            width: 80%;
+            margin-left: auto;
+            scroll-behavior: smooth;
+        }
+        /* .container{
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        } */
+        .container::-webkit-scrollbar{
+            display: none;
+        }
+        .slides{
+            scroll-behavior: smooth;
+            color: white;
+            scroll-snap-align: start;
+            width: 100%;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+        
+        }
+        
+        #sec1{
+            scroll-behavior: smooth;
+            transition-duration: 2s;
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        #sec2{
+            height: 100vh;
+            background-color: pink;
+        }
+        #sec3{
+            height: 100vh;
+            background-color: lightblue;
+        }
+        .sections{
+            scroll-snap-align: start;
+            
+            background-color: coral;
+            display: flex;
+            justify-content: center;
+        }
+
+        /*slides list*/
+        .slides ul{
+            list-style: none;
+        }
+        .slides li:hover{
+            cursor: pointer;
+        }
+        .slides li{
+            -ms-transform: rotate(270deg); /* IE 9 */
+            transform: rotate(270deg);
+            padding: 30px;
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="list">
+            <ul>
+                <li id="l1">Sec1</li>
+                <li id="l2">Sec2</li>
+                <li id="l3" >Sec3</li>
+            </ul>
+        </div>
+        <div id="con" class="main-container">
+            <div id="sec1" class="sections">
+                <div class="container">
+                    <div id="div1" class="slides" style="background-image: url('img1.jpg');">
+                        <ul>
+                            <li style="color:yellow" onclick="divShow(1)">Div1</li>
+                            <li onclick="divShow(2)">Div2</li>
+                            <li onclick="divShow(3)">Div3</li>
+                            <li onclick="divShow(4)">Div4</li>
+                        </ul>
+                        <h1>Headings...</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore quae eius possimus! Voluptatibus, non possimus.</p>
+                    </div>
+                    <div id="div2" class="slides" style="background-image: url('img2.jpg');">
+                        <ul>
+                            <li onclick="divShow(1)">Div1</li>
+                            <li onclick="divShow(2)" style="color:yellow">Div2</li>
+                            <li onclick="divShow(3)">Div3</li>
+                            <li onclick="divShow(4)">Div4</li>
+                        </ul>
+                        <h1>Headings...</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore quae eius possimus! Voluptatibus, non possimus.</p>
+                    </div>
+                    <div id="div3" class="slides" style="background-image: url('img5.jpg');">
+                        <ul>
+                            <li onclick="divShow(1)">Div1</li>
+                            <li onclick="divShow(2)">Div2</li>
+                            <li onclick="divShow(3)" style="color:yellow" >Div3</li>
+                            <li onclick="divShow(4)">Div4</li>
+                        </ul>
+                        <h1>Headings...</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore quae eius possimus! Voluptatibus, non possimus.</p>
+                    </div>
+                    <div id="div4" class="slides" style="background-image: url('img6.jpg');">
+                        <ul>
+                            <li onclick="divShow(1)" >Div1</li>
+                            <li onclick="divShow(2)">Div2</li>
+                            <li onclick="divShow(3)">Div3</li>
+                            <li onclick="divShow(4)" style="color:yellow">Div4</li>
+                        </ul>
+                        <h1>Headings...</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore quae eius possimus! Voluptatibus, non possimus.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="sec2" class="sections">
+                <h1>Section 2</h1>
+            </div>
+            <div id="sec3" class="sections">
+                <h1>Section 3</h1>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+
+        document.addEventListener("DOMContentLoaded",()=>{
+            document.getElementById("l1").classList += "active-li";
+        })
+
+        document.getElementById("l1").addEventListener('click', ()=>{
+            let listItems = document.getElementsByTagName("li");
+            for(let list of listItems){
+                list.classList.remove("active-li");
+            }
+            document.getElementById("l1").className += "active-li";
+            document.getElementById("sec1").scrollIntoView({behavior:"smooth"});
+        })
+        document.getElementById("l2").addEventListener('click', ()=>{
+            let listItems = document.getElementsByTagName("li");
+            for(let list of listItems){
+                list.classList.remove("active-li");
+            }
+            document.getElementById("l2").className += "active-li";
+            document.getElementById("sec2").scrollIntoView({behavior:"smooth"});
+        })
+        document.getElementById("l3").addEventListener('click', ()=>{
+            let listItems = document.getElementsByTagName("li");
+            for(let list of listItems){
+                list.classList.remove("active-li");
+            }
+            document.getElementById("l3").className += "active-li";
+            document.getElementById("sec3").scrollIntoView({behavior:"smooth"});
+        })
+
+
+        //scroll event
+        window.addEventListener('scroll',(event)=>{
+            console.log("fkfkdls");
+            if(document.getElementById("sec1").getBoundingClientRect().top>=0 && document.getElementById("sec1").getBoundingClientRect().bottom<=window.innerHeight && document.getElementById("sec1").getBoundingClientRect().left>=0 && document.getElementById("sec1").getBoundingClientRect().right<=window.innerWidth){
+            let s = document.getElementsByTagName("li");
+            for(let sec of s){
+                sec.classList.remove("active-li");
+            }
+
+            document.getElementById("l1").className += " active-li";
+            }
+            if(document.getElementById("sec2").getBoundingClientRect().top>=0 && document.getElementById("sec2").getBoundingClientRect().bottom<=window.innerHeight && document.getElementById("sec2").getBoundingClientRect().left>=0 && document.getElementById("sec2").getBoundingClientRect().right<=window.innerWidth){
+                let s = document.getElementsByTagName("li");
+                for(let sec of s){
+                    sec.classList.remove("active-li");
+                }
+
+                document.getElementById("l2").className += " active-li";
+            }
+            if(document.getElementById("sec3").getBoundingClientRect().top>=0 && document.getElementById("sec3").getBoundingClientRect().bottom<=window.innerHeight && document.getElementById("sec3").getBoundingClientRect().left>=0 && document.getElementById("sec3").getBoundingClientRect().right<=window.innerWidth){
+                let s = document.getElementsByTagName("li");
+                for(let sec of s){
+                    sec.classList.remove("active-li");
+                }
+
+                document.getElementById("l3").className +=" active-li";
+            }
+        });
+
+
+        function divShow(d){
+            if(d==1){
+                document.getElementById("div1").scrollIntoView({behavior:"smooth"});
+            }
+            if(d==2){
+                document.getElementById("div2").scrollIntoView({behavior:"smooth"});
+            }
+            if(d==3){
+                document.getElementById("div3").scrollIntoView({behavior:"smooth"});
+            }
+            if(d==4){
+                document.getElementById("div4").scrollIntoView({behavior:"smooth"});
+            }
+        }
+    </script>
+
+</body>
+</html>
